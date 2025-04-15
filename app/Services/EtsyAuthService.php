@@ -20,11 +20,12 @@ class EtsyAuthService
 			return 'https://www.etsy.com/oauth/connect?' . http_build_query([
 					'response_type'         => 'code',
 					'client_id'             => config('services.etsy.api.key'),
-					'redirect_uri'          => route('etsy-api-redirect-url'),
+					'redirect_uri'          => route('etsy-api.redirect-url'),
 					'scope'                 => implode(' ', [
 						'shops_r',
 						'transactions_r',
-						'listings_r'
+						'listings_r',
+						'email_r',
 					]),
 					'state'                 => session('state'),
 					'code_challenge'        => config('services.etsy.api.code_challenge'),
@@ -64,7 +65,7 @@ class EtsyAuthService
 		return self::requestNewToken([
 			'grant_type'    => 'authorization_code',
 			'client_id'     => config('services.etsy.api.key'),
-			'redirect_uri'  => route('etsy-api-redirect-url'),
+			'redirect_uri'  => route('etsy-api.redirect-url'),
 			'code'          => $code,
 			'code_verifier' => config('services.etsy.api.code_verifier'),
 		]);
@@ -79,16 +80,21 @@ class EtsyAuthService
 		]);
 	}
 
-	public static function getAccessToken()
+	public static function getAccessToken():?string
 	{
-		if ( self::currentTokenExpiresAt()->isPast() ) {
+		if ( self::getCurrentTokenExpiresAt()?->isPast() ) {
 			self::refreshToken();
 		}
 		return cache(self::ACCESS_TOKEN);
 	}
 
-	public static function currentTokenExpiresAt():Carbon
+	public static function getCurrentTokenExpiresAt():?Carbon
 	{
 		return cache(self::ACCESS_TOKEN_EXPIRES_AT);
+	}
+
+	public static function getRefreshToken():?string
+	{
+		return cache(self::REFRESH_TOKEN);
 	}
 }
