@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DataImportService;
+use App\Services\TransactionService;
+use App\Services\ListingService;
 use Throwable;
 
 class ListingController extends Controller
@@ -10,7 +11,7 @@ class ListingController extends Controller
 	public function import()
 	{
 		try {
-			DataImportService::importListings();
+			ListingService::importAll();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}

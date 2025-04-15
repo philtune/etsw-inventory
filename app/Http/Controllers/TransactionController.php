@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DataImportService;
+use App\Services\TransactionService;
 use Throwable;
 
 class TransactionController extends Controller
@@ -10,7 +10,7 @@ class TransactionController extends Controller
 	public function import()
 	{
 		try {
-			DataImportService::importTransactions();
+			TransactionService::import();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}

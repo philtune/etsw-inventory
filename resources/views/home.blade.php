@@ -25,6 +25,7 @@
 			</tr>
 		</table>
 		<ul>
+			<li><a href="{{ route('import-all') }}">Import Everything</a></li>
 			<li><a href="{{ route('listings.import') }}">Import Listings</a> - <strong>{{ number_format($listing_count) }}</strong> <small>(as of {{ $listing_latest->diffForHumans(short: true) }}, {{ $listing_latest->format('Y-m-d g:i a') }})</small></li>
 			<li><a href="{{ route('receipts.import') }}">Import Receipts (Orders)</a> - <strong>{{ number_format($receipt_count) }}</strong> <small>(as of {{ $receipt_latest->diffForHumans(short: true) }}, {{ $receipt_latest->format('Y-m-d g:i a') }})</small></li>
 			<li><a href="{{ route('transactions.import') }}">Import Transactions</a> - <strong>{{ number_format($transaction_count) }}</strong> <small>(as of {{ $transaction_latest->diffForHumans(short: true) }}, {{ $transaction_latest->format('Y-m-d g:i a') }})</small></li>

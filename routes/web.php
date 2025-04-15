@@ -16,7 +16,7 @@ Route::get('/etsy-api/redirect-url', [EtsyAuthorizationController::class, 'redir
 Route::get('/etsy-api/refresh-token', [EtsyAuthorizationController::class, 'refreshToken'])
      ->name('etsy-api.refresh-token');
 
-Route::post('/import-all', [HomeController::class, 'importAll'])
+Route::get('/import-all', [HomeController::class, 'importAll'])
      ->name('import-all');
 
 Route::get('/listings/import', [ListingController::class, 'import'])

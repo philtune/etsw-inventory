@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DataImportService;
+use App\Services\ReceiptService;
 use Throwable;
 
 class ReceiptController extends Controller
@@ -10,7 +10,7 @@ class ReceiptController extends Controller
 	public function import()
 	{
 		try {
-			DataImportService::importReceipts();
+			ReceiptService::import();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
