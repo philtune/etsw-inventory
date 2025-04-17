@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Number;
 
 class Listing extends Model
 {
@@ -29,6 +31,67 @@ class Listing extends Model
 		'user'                 => 'json',
 		'translations'         => 'json',
 		'inventory'            => 'json',
+	];
+	protected $attributes = [
+		'id',
+		'user_id',
+		'shop_id',
+		'shop_section_id',
+		'title',
+		'description',
+		'state',
+		'original_creation_at',
+		'creation_at',
+		'created_at',
+		'ending_at',
+		'last_modified_at',
+		'updated_at',
+		'state_at',
+		'quantity',
+		'featured_rank',
+		'url',
+		'num_favorers',
+		'non_taxable',
+		'is_taxable',
+		'is_customizable',
+		'is_personalizable',
+		'personalization_is_required',
+		'personalization_char_count_max',
+		'personalization_instructions',
+		'listing_type',
+		'tags',
+		'materials',
+		'shipping_profile_id',
+		'return_policy_id',
+		'processing_min',
+		'processing_max',
+		'who_made',
+		'when_made',
+		'is_supply',
+		'item_weight',
+		'item_weight_unit',
+		'item_length',
+		'item_width',
+		'item_height',
+		'item_dimensions_unit',
+		'is_private',
+		'style',
+		'file_data',
+		'has_variations',
+		'should_auto_renew',
+		'language',
+		'price',
+		'taxonomy_id',
+		'production_partners',
+		'skus',
+		'views',
+		'shipping_profile',
+		'shop',
+		'images',
+		'videos',
+		'user',
+		'translations',
+		'inventory',
 	];
 	const CREATED_AT = 'original_creation_at';
 
@@ -131,4 +194,9 @@ class Listing extends Model
 		self::ITEM_DIMENSIONS_UNIT_YD,
 		self::ITEM_DIMENSIONS_UNIT_INCHES,
 	];
+
+	public function priceFormatted():Attribute
+	{
+		return Attribute::get(fn() => Number::currency($this->price['amount'] / $this->price['divisor'], $this->price['currency_code']))->shouldCache();
+	}
 }

@@ -16,7 +16,7 @@ use Throwable;
 
 class HomeController extends Controller
 {
-	public function __invoke():View
+	public function dashboard():View
 	{
 		return view('home', [
 			'access_token'  => EtsyAuthService::getAccessToken(),

@@ -1,3 +1,16 @@
 @use "reset";
 
 @use "layouts/l_all";
+
+
+table {
+	border: 1px solid;
+	border-collapse: collapse;
+	th, td {
+		border: 1px solid;
+		padding: 0.25rem;
+	}
+	tbody th {
+		text-align: left;
+	}
+}

@@ -2,12 +2,11 @@
 
 use App\Http\Controllers\EtsyAuthorizationController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)
+Route::get('/', [HomeController::class, 'dashboard'])
      ->name('home');
 
 Route::get('/etsy-api/redirect-url', [EtsyAuthorizationController::class, 'redirectUrl'])
@@ -19,11 +18,12 @@ Route::get('/etsy-api/refresh-token', [EtsyAuthorizationController::class, 'refr
 Route::get('/import-all', [HomeController::class, 'importAll'])
      ->name('import-all');
 
-Route::get('/listings/import', [ListingController::class, 'import'])
-     ->name('listings.import');
-
 Route::get('/receipts/import', [ReceiptController::class, 'import'])
      ->name('receipts.import');
 
 Route::get('/transactions/import', [TransactionController::class, 'import'])
      ->name('transactions.import');
+
+Route::group([], [
+	base_path('/routes/web/listings.php')
+]);

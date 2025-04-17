@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.app page-title="Home">
 	@if( $access_token )
 		<table>
 			<tr>
@@ -24,13 +24,25 @@
 				</td>
 			</tr>
 		</table>
-		<ul>
-			<li><a href="{{ route('import-all') }}">Import Everything</a></li>
-			<li><a href="{{ route('listings.import') }}">Import Listings</a> - <strong>{{ number_format($listing_count) }}</strong> <small>(as of {{ $listing_latest->diffForHumans(short: true) }}, {{ $listing_latest->format('Y-m-d g:i a') }})</small></li>
-			<li><a href="{{ route('receipts.import') }}">Import Receipts (Orders)</a> - <strong>{{ number_format($receipt_count) }}</strong> <small>(as of {{ $receipt_latest->diffForHumans(short: true) }}, {{ $receipt_latest->format('Y-m-d g:i a') }})</small></li>
-			<li><a href="{{ route('transactions.import') }}">Import Transactions</a> - <strong>{{ number_format($transaction_count) }}</strong> <small>(as of {{ $transaction_latest->diffForHumans(short: true) }}, {{ $transaction_latest->format('Y-m-d g:i a') }})</small></li>
-			<li>Revenue to Date: <strong>${{ number_format($revenue_to_date, 2) }}</strong></li>
-		</ul>
+		<p><a href="{{ route('import-all') }}">Import Everything</a></p>
+		<table>
+			<tr>
+				<th>Listings (<a href="{{ route('listings.import') }}">Import</a>)</th>
+				<td><strong>{{ number_format($listing_count) }}</strong> <small>(as of {{ $listing_latest->diffForHumans(short: true) }}, {{ $listing_latest->format('Y-m-d g:i a') }})</small></td>
+			</tr>
+			<tr>
+				<th>Receipts (Orders) (<a href="{{ route('receipts.import') }}">Import</a>)</th>
+				<td><strong>{{ number_format($receipt_count) }}</strong> <small>(as of {{ $receipt_latest->diffForHumans(short: true) }}, {{ $receipt_latest->format('Y-m-d g:i a') }})</small></td>
+			</tr>
+			<tr>
+				<th>Transactions (<a href="{{ route('transactions.import') }}">Import</a>)</th>
+				<td><strong>{{ number_format($transaction_count) }}</strong> <small>(as of {{ $transaction_latest->diffForHumans(short: true) }}, {{ $transaction_latest->format('Y-m-d g:i a') }})</small></td>
+			</tr>
+			<tr>
+				<th>Revenue to Date</th>
+				<td><strong>${{ number_format($revenue_to_date, 2) }}</strong></td>
+			</tr>
+		</table>
 	@else
 		<a href="{!! etsy_oauth_connect_url() !!}">Connect to Etsy account</a>
 	@endif
