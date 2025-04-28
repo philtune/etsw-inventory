@@ -1,0 +1,42 @@
+.u_badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	white-space: nowrap;
+	font-size: 0.8125rem;
+	border-radius: 0.125rem;
+	height: 1.5rem;
+	padding: 0 0.5rem;
+	--z-background-color: #e6f5ff;
+	--z-color: #31556d;
+	--z-border-color: #7db3d6;
+	background-color: var(--z-background-color);
+	color: var(--z-color);
+	border-left: 0.125rem solid var(--z-border-color);
+	&.--success {
+		--z-background-color: #e0fbd1;
+		--z-color: #31700e;
+		--z-border-color: #79bd53;
+	}
+	&.--warning {
+		--z-background-color: #fff9d8;
+		--z-color: #62571a;
+		--z-border-color: #e6d264;
+	}
+	&.--danger {
+		--z-background-color: #fbc3c3;
+		--z-color: #7c2020;
+		--z-border-color: #dd5d5d;
+	}
+	&.--accent {
+		background-color: #eddeff;
+		--z-color: #54179c;
+		--z-border-color: #ba87f7;
+	}
+	&.--muted {
+		--z-background-color: #eaeaea;
+		--z-color: #4b4b4b;
+		--z-border-color: #bdbdbd;
+	}
+	box-shadow: 0.0625rem 0.0625rem 0.5rem -0.25rem #eaeaea;
+}

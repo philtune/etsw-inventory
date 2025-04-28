@@ -25,5 +25,7 @@ Route::get('/transactions/import', [TransactionController::class, 'import'])
      ->name('transactions.import');
 
 Route::group([], [
-	base_path('/routes/web/listings.php')
+	base_path('/routes/web/product-types.php'),
+	base_path('/routes/web/scents.php'),
+	base_path('/routes/web/listings.php'),
 ]);

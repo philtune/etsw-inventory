@@ -59,6 +59,7 @@ class EtsyApplicationApi
 				'limit'  => $params['limit'] ?? 100,
 				'offset' => $params['offset'] ?? 0,
 				'state'  => $params['state'] ?? 'active',
+				'includes' => $params['includes'] ?? '',
 			]));
 	}
 

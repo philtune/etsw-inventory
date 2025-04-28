@@ -12,7 +12,7 @@ return new class extends Migration {
 			      ->primary();
 			$table->unsignedInteger('section_id')
 			      ->nullable();
-			$table->string('code', 8)
+			$table->string('code', 16)
 			      ->unique();
 			$table->string('label')
 			      ->unique();

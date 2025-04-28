@@ -1,5 +1,33 @@
-body {
+html, body {
 	margin: 0;
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14 / 16 * 1rem;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+	-webkit-tap-highlight-color: transparent;
+}
+
+html {
+	height: 100%;
+	box-sizing: border-box;
+	*, *:before, *:after {
+		box-sizing: inherit;
+	}
+}
+
+body {
+	min-height: 100%;
+}
+
+select, button, input {
+	background: white;
+	color: inherit;
+	font: inherit;
+	border: 1px solid #b8b8b8;
+	border-radius: 0.25rem;
+}
+
+button {
+	cursor: pointer;
+	border-width: 1px;
 }

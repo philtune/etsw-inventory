@@ -3,44 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductType;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProductTypeController extends Controller
 {
-	public function index()
+	public function index():View
 	{
-		return ProductType::all();
-	}
-
-	public function store(Request $request)
-	{
-		$data = $request->validate([
-
+		return view('product-types.index', [
+			'productTypes' => ProductType
+				::query()
+				->orderBy('label')
+				->get()
 		]);
-
-		return ProductType::create($data);
 	}
 
-	public function show(ProductType $productType)
+	public function store(Request $request):RedirectResponse
 	{
-		return $productType;
+		ProductType::create($request->validate([
+			'code'  => 'nullable|string|max:16',
+			'label' => 'nullable|string|max:255',
+		]));
+		return back()->with('status', 'Product type created!');
 	}
 
-	public function update(Request $request, ProductType $productType)
+	public function update(Request $request, ProductType $productType):RedirectResponse
 	{
-		$data = $request->validate([
-
-		]);
-
-		$productType->update($data);
-
-		return $productType;
+		$productType->update($request->validate([
+			'code'  => 'nullable|string|max:16',
+			'label' => 'nullable|string|max:255',
+		]));
+		return back()->with('status', 'Product type updated!');
 	}
 
-	public function destroy(ProductType $productType)
+	public function destroy(ProductType $productType):RedirectResponse
 	{
 		$productType->delete();
-
-		return response()->json();
+		return back()->with('status', 'Product type deleted!');
 	}
 }

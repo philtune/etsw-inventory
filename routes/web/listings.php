@@ -1,12 +1,9 @@
 <?php
 
-use App\Http\Controllers\ListingController;
+use App\Http\Controllers\EtsyListingController;
 
-Route::get('/listings', [ListingController::class, 'index'])
-     ->name('listings.index');
+Route::get('/etsy-listings', [EtsyListingController::class, 'index'])
+     ->name('etsy-listings.index');
 
-Route::patch('/listings/{listing}', [ListingController::class, 'update'])
-     ->name('listings.update');
-
-Route::get('/listings/import', [ListingController::class, 'import'])
-     ->name('listings.import');
+Route::get('/etsy-listings/import', [EtsyListingController::class, 'import'])
+     ->name('etsy-listings.import');

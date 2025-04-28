@@ -27,4 +27,10 @@ class Transaction extends Model
 	{
 		return $this->belongsTo(Receipt::class);
 	}
+
+	public function listing():BelongsTo
+	{
+		return $this->belongsTo(Listing::class);
+	}
+
 }

@@ -17,6 +17,8 @@ class ProductType extends Model
 	/** @use HasFactory<ProductTypeFactory> */
 	use HasFactory;
 
+	protected $guarded = [];
+
 	protected $casts = [
 		'meta' => 'json',
 	];

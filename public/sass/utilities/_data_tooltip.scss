@@ -1,0 +1,104 @@
+[data-tooltip] {
+	position: relative;
+	--z-triangle-height: 0.375rem;
+	--z-triangle-side: 0.375rem;
+	&:before, &:after {
+		position: absolute;
+		pointer-events: none;
+		z-index: 2;
+		transition: opacity 150ms;
+	}
+	&:before {
+		content: attr(data-tooltip);
+		background: white;
+		border: 1px solid lightgray;
+		border-radius: 0.25rem;
+		padding: 0.5rem;
+		text-align: center;
+		font-size: 0.75rem;
+		font-weight: normal;
+	}
+	&:after {
+		content: '';
+	}
+	&:not(:hover):before,
+	&:not(:hover):after {
+		opacity: 0;
+	}
+	&.--tt-sm:before {
+		width: 8rem;
+	}
+	&.--tt-md:before {
+		width: 16rem;
+	}
+	&.--tt-lg:before {
+		width: 24rem;
+	}
+	&:not(.--tt-left):not(.--tt-right) {
+		&:before, &:after {
+			left: 50%;
+			translate: -50%;
+		}
+		&:after {
+			border-top: var(--z-triangle-height) solid lightgray;
+			border-left: var(--z-triangle-side) solid transparent;
+			border-right: var(--z-triangle-side) solid transparent;
+		}
+	}
+	&.--tt-top,
+	&:not(.--tt-bottom):not(.--tt-left):not(.--tt-right) {
+		&:before, &:after {
+			bottom: 100%;
+		}
+		&:before {
+			margin: 0 0 var(--z-triangle-height) 0;
+		}
+		&:after {
+			border-top: var(--z-triangle-height) solid lightgray;
+		}
+	}
+	&.--tt-bottom {
+		&:before, &:after {
+			top: 100%;
+		}
+		&:before {
+			margin: var(--z-triangle-height) 0 0 0;
+		}
+		&:after {
+			border-bottom: var(--z-triangle-height) solid lightgray;
+		}
+	}
+	&.--tt-right, &.--tt-left {
+		&:before, &:after {
+			top: 50%;
+			bottom: auto;
+			translate: 0 -50%;
+		}
+		&:after {
+			border-top: var(--z-triangle-side) solid transparent;
+			border-bottom: var(--z-triangle-side) solid transparent;
+		}
+	}
+	&.--tt-right {
+		&:before, &:after {
+			left: 100%;
+		}
+		&:before {
+			margin: 0 0 0 var(--z-triangle-height);
+		}
+		&:after {
+			border-right: var(--z-triangle-height) solid lightgray;
+		}
+	}
+	&.--tt-left {
+		&:before, &:after {
+			right: 100%;
+		}
+		&:before {
+			margin: 0 var(--z-triangle-height) 0 0;
+		}
+		&:after {
+			border-left: var(--z-triangle-height) solid lightgray;
+		}
+	}
+}
