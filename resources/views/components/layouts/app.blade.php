@@ -20,7 +20,8 @@
 	<a href="{{ route('home') }}">Home</a> |
 	<a href="{{ route('product-types.index') }}">Product Types</a> |
 	<a href="{{ route('scents.index') }}">Scents</a>
-	<fieldset style="padding: 0.5rem;">
+	<fieldset style="margin-bottom: 0.5rem;">
+		<legend><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/></legend>
 		<a href="{{ route('etsy-listings.index') }}">Listings</a> |
 		<a href="#">Orders</a> |
 		<a href="#">Transactions</a>

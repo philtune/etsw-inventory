@@ -1,0 +1,10 @@
+.l_rows {
+	display: flex;
+	flex-direction: column;
+	&:not(.--sm) {
+		gap: 0.5rem;
+	}
+	&.--sm {
+		gap: 0.25rem;
+	}
+}

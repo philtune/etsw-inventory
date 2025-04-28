@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Listing;
 use App\Models\ProductType;
 use App\Models\Scent;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +36,10 @@ class EtsyListingsTable extends Component
 	public ?string $product_type_id = null;
 	#[Url]
 	public ?string $edit_mode = null;
+	#[Url]
+	public ?string $sales_before = null;
+	#[Url]
+	public ?string $sales_after = null;
 
 	public function mount():void
 	{
@@ -74,7 +80,13 @@ class EtsyListingsTable extends Component
 					fn($query) => $query->where('listings.product_type_id', '=', $this->product_type_id),
 				)
 				->select([
-					'listings.*',
+					'listings.id',
+					'listings.scent_id',
+					'listings.product_type_id',
+					'listings.title',
+					'listings.meta',
+					'listings.ending_at',
+					'listings.state_enum',
 					DB::raw("`listings`.`meta`->>'$.views' AS `views`"),
 					DB::raw("`listings`.`meta`->>'$.num_favorers' AS `num_favorers`")
 				])
@@ -87,9 +99,26 @@ class EtsyListingsTable extends Component
 				)
 				->leftJoin('product_types', 'listings.product_type_id', '=', 'product_types.id')
 				->leftJoin('scents', 'listings.scent_id', '=', 'scents.id')
-				->with('productType')
 				->withCount('transactions')
-				->withSum('transactions as revenue', DB::raw("price->>'$.amount' / price->>'$.divisor'"))
+				->selectSub(
+					Transaction
+						::query()
+						->selectRaw("sum(price->>'$.amount' / price->>'$.divisor')")
+						->whereRaw('`listings`.`listing_id` = `transactions`.`listing_id`')
+					->when(
+						$this->sales_before,
+						fn($query) => $query->where('transactions.created_at', '<', Carbon::parse($this->sales_before)),
+					)
+					->when(
+						$this->sales_after,
+						fn($query) => $query->where('transactions.created_at', '>', Carbon::parse($this->sales_after)),
+					)
+					,
+					'revenue'
+				)
+				//				->selectRaw("(select sum(price ->> '$.amount' / price ->> '$.divisor') from `transactions` where `listings`.`listing_id` = `transactions`.`listing_id`) as `revenue`")
+				//				->withSum('transactions as revenue', DB::raw("price->>'$.amount' / price->>'$.divisor'"))
+//								->ddRawSql()
 				->paginate($this->perPage),
 		]);
 	}
@@ -152,4 +181,34 @@ class EtsyListingsTable extends Component
 	{
 		Listing::where('id', $listing_id)->update(['is_archived' => false]);
 	}
+
+	public function allTime():void
+	{
+		$this->reset(['sales_before', 'sales_after']);
+	}
+
+	public function lastYear():void
+	{
+		$this->sales_before = now()->subYear()->endOfYear()->format('Y-m-d');
+		$this->sales_after = now()->subYear()->startOfYear()->format('Y-m-d');
+	}
+
+	public function last12Months():void
+	{
+		$this->sales_before = now()->format('Y-m-d');
+		$this->sales_after = now()->subYear()->format('Y-m-d');
+	}
+
+	public function last30Days():void
+	{
+		$this->sales_before = now()->format('Y-m-d');
+		$this->sales_after = now()->subMonth()->format('Y-m-d');
+	}
+
+	public function last24Hours():void
+	{
+		$this->sales_before = now()->format('Y-m-d');
+		$this->sales_after = now()->subDay()->format('Y-m-d H:i:s');
+	}
+
 }

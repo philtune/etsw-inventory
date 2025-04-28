@@ -1,0 +1,19 @@
+.l_cols {
+	&:not(.--inline) {
+		display: flex;
+	}
+	&.--inline {
+		display: inline-flex;
+	}
+	gap: 1rem;
+	&.--md {
+		gap: 0.5rem;
+	}
+	&.--sm {
+		gap: 0.25rem;
+	}
+	align-items: center;
+	&.--right {
+		justify-content: flex-end;
+	}
+}

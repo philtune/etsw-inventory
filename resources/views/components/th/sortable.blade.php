@@ -1,20 +1,23 @@
 @props([
-	'label',
+	'label' => null,
 	'column' => null,
-	'key' => null
+	'key' => null,
+	'descFirst' => false,
 ])
 <th
-	wire:click="{{ $key ? "orderByKey('$key')" : "orderBy('$column')" }}"
+	wire:click="{{ $key ? "orderByKey('$key', " . boolval($descFirst) . ")" : "orderBy('$column', " . boolval($descFirst) . ")" }}"
 	{{ $attributes->style('cursor:pointer') }}
 >
-	{{ $label }}
-	@if( $this->order_column === $column )
-		<small class="text-muted">
+	<span class="l_cols --inline">
+	{{ $label ?: $slot }}
+		@if( $this->order_column === $column )
+			<small class="text-muted">
 			@if( $this->order_desc )
-				&triangledown;
-			@else
-				&triangle;
-			@endif
+					@svg('icon-arrow-down-z-a')
+				@else
+					@svg('icon-arrow-up-a-z')
+				@endif
 		</small>
-	@endif
+		@endif
+	</span>
 </th>

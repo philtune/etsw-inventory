@@ -1,3 +1,14 @@
+fieldset {
+	border: 1px solid #8c8c8c;
+	margin: 0;
+	padding: 0.5rem;
+	&:has(> legend) {
+		padding-top: 0;
+	}
+	> legend {
+		font-size: 0.8125rem;
+	}
+}
 .ts-wrapper .ts-control .item {
 	overflow: hidden;
 	white-space: nowrap;
@@ -8,6 +19,22 @@
 	text-align: center;
 }
 
+.text-success {
+	color: #31700e;
+}
+
+.text-muted {
+	color: #8c8c8c;
+}
+
+.w-100 {
+	width: 100%;
+}
+
 .w-1px {
 	width: 1px;
+}
+
+.nowrap {
+	white-space: nowrap;
 }
