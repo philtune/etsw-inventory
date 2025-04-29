@@ -1,0 +1,19 @@
+@mixin scrollbar {
+	&::-webkit-scrollbar {
+		width: 1.125rem;
+		height: 1.125rem;
+		background-color: var(--content-bg);
+		&-button {
+			width: 0;
+			height: 0;
+		}
+		&-thumb {
+			border: 0.4375rem solid var(--content-bg);
+			background-color: var(--clr-muted-low);
+			border-radius: 2rem;
+		}
+	}
+	&:hover::-webkit-scrollbar-thumb {
+		background-color: var(--clr-muted-med);
+	}
+}

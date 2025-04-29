@@ -10,7 +10,8 @@
 	}
 	&:before {
 		content: attr(data-tooltip);
-		background: white;
+		background: var(--content-bg);
+		color: var(--content-txt);
 		border: 1px solid lightgray;
 		border-radius: 0.25rem;
 		padding: 0.5rem;

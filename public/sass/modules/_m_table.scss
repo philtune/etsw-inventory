@@ -1,0 +1,25 @@
+@import "../library";
+
+.m_table {
+	width: 100%;
+	&__container {
+		max-width: 100%;
+		overflow: auto;
+		@include scrollbar;
+	}
+	> thead {
+		> tr:last-child {
+			border-bottom: 1px solid var(--base-bg);
+		}
+	}
+	> tbody {
+		> tr {
+			&:hover, &:focus-within {
+				background-color: var(--tint-low);
+			}
+			&:nth-child(even):not(:hover):not(:focus-within) {
+				background-color: var(--shade-lowest);
+			}
+		}
+	}
+}

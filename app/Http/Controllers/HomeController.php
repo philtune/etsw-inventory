@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use App\Models\Receipt;
 use App\Models\Transaction;
-use App\Services\ReceiptService;
-use App\Services\TransactionService;
 use App\Services\EtsyAuthService;
-use App\Services\ListingService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Throwable;
 
 class HomeController extends Controller
 {
@@ -34,18 +29,6 @@ class HomeController extends Controller
 				->first()
 				->revenue
 		]);
-	}
-
-	public function importAll():RedirectResponse
-	{
-		try {
-			ListingService::importAll();
-			ReceiptService::import();
-			TransactionService::import();
-		} catch ( Throwable $th ) {
-			return back()->withErrors('Error: ' . $th->getMessage());
-		}
-		return back()->with('status', 'Everything imported!');
 	}
 
 }

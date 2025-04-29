@@ -9,22 +9,21 @@ fieldset {
 		font-size: 0.8125rem;
 	}
 }
-.ts-wrapper .ts-control .item {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
 
 .text-center {
 	text-align: center;
 }
 
 .text-success {
-	color: #31700e;
+	color: var(--clr-success-highest);
 }
 
 .text-muted {
-	color: #8c8c8c;
+	color: var(--clr-muted-highest);
+}
+
+.w-auto {
+	width: auto;
 }
 
 .w-100 {

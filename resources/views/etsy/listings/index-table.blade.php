@@ -29,8 +29,7 @@
 					placeholder="Search"
 					class="input"
 				/>
-				<label style="margin-top: -1.1875rem">
-					<small>Product Type</small><br/>
+				<label>
 					<x-form.select
 						wire:model.live="product_type_id"
 						:options="$product_type_options"
@@ -39,8 +38,7 @@
 						:default="$product_type_id"
 					/>
 				</label>
-				<label style="margin-top: -1.1875rem">
-					<small>Scent</small><br/>
+				<label>
 					<x-form.select
 						wire:model.live="scent_id"
 						:options="$scent_options"
@@ -53,11 +51,11 @@
 			<div class="l_cols --md --right">
 				<fieldset>
 					<legend>Sales for</legend>
-					<button type="button" wire:click="allTime()">All Time</button>
-					<button type="button" wire:click="lastYear()">Last Year</button>
-					<button type="button" wire:click="last12Months()">Last 12 months</button>
-					<button type="button" wire:click="last30Days()">Last 30 days</button>
-					<button type="button" wire:click="last24Hours()">Last 24 hours</button>
+					<button type="button" class="u_btn --sm" wire:click="allTime()">All Time</button>
+					<button type="button" class="u_btn --sm" wire:click="lastYear()">Last Year</button>
+					<button type="button" class="u_btn --sm" wire:click="last12Months()">Last 12 months</button>
+					<button type="button" class="u_btn --sm" wire:click="last30Days()">Last 30 days</button>
+					<button type="button" class="u_btn --sm" wire:click="last24Hours()">Last 24 hours</button>
 				</fieldset>
 				<label>
 					<small>Sales From</small><br/>
@@ -88,8 +86,8 @@
 			overflow:      hidden;
 		}
 	</style>
-	<div id="overflow" style="max-width:100%;overflow:auto">
-		<table style="width:100%">
+	<div class="m_table__container">
+		<table class="m_table">
 			<thead>
 			<tr>
 				<x-th.sortable label="Product Type" column="product_types.label"/>
@@ -99,6 +97,7 @@
 				<x-th.sortable label="Views" column="views" :desc-first="true"/>
 				<x-th.sortable label="Favs" column="num_favorers" :desc-first="true"/>
 				<x-th.sortable label="Ending" column="ending_at"/>
+				<x-th.sortable label="Age" column="listings.created_at" :desc-first="true"/>
 				<x-th.sortable label="Sales" column="transactions_count" :desc-first="true"/>
 				<x-th.sortable label="Revenue" column="revenue" :desc-first="true"/>
 				<th><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
@@ -107,7 +106,7 @@
 			<tbody>
 			@foreach( $listings as $listing )
 				<tr>
-					<td @style(['background:#fff6e2'=>!$listing->product_type_id])>
+					<td @style(['background:var(--clr-warning-lowest)'=>!$listing->product_type_id])>
 						@if( $edit_mode )
 							<x-form.select
 								wire:change="updateProductType('{{ $listing->id }}', $event.target.value)"
@@ -120,7 +119,7 @@
 							<span data-tooltip="{{ $listing->productType?->label }}" class="--tt-right --tt-sm">{{ $listing->productType?->code ?: '[Undefined]' }}</span>
 						@endif
 					</td>
-					<td @style(['background:#fff6e2'=>!$listing->scent_id])>
+					<td>
 						@if( $edit_mode )
 							<x-form.select
 								wire:change="updateScent('{{ $listing->id }}', $event.target.value)"
@@ -130,7 +129,14 @@
 								style="width:14rem"
 							/>
 						@else
-							<span data-tooltip="{{ $listing->scent?->label }}" class="--tt-right --tt-sm">{{ $listing->scent?->code ?: '[Undefined]' }}</span>
+							@if( $listing->scent_id )
+								<span
+									data-tooltip="{{ $listing->scent->label }}"
+									class="--tt-right --tt-sm"
+								>{{ $listing->scent->code }}</span>
+							@else
+								<span class="u_badge --warning">Undefined</span>
+							@endif
 						@endif
 					</td>
 					<td>
@@ -147,7 +153,7 @@
 						<div class="u_badge {{  $listing->state_class }}">{{ $listing->state }}</div>
 					</td>
 					<td>
-						<div class="l_cols --sm">@svg('icon-eyes', 'text-success') {{ number_format($listing->meta['views']) }}</div>
+						<div class="l_cols --sm">@svg('icon-eye', 'text-success') {{ number_format($listing->meta['views']) }}</div>
 					</td>
 					<td>
 						<div class="l_cols --sm">@svg('icon-heart', 'text-success') {{ number_format($listing->meta['num_favorers']) }}</div>
@@ -155,6 +161,9 @@
 					<td class="nowrap">
 						<div class="l_cols --sm">@svg('icon-calendar-days', 'text-muted') {{ $listing->ending_at->format('M d, Y') }}</div>
 						<small>{{ $listing->ending_at->diffForHumans(short:true) }}</small>
+					</td>
+					<td>
+						{{ $listing->created_at->diffForHumans(syntax: true, short:true) }}
 					</td>
 					<td>
 						<div class="l_cols --sm">@svg('icon-sack-dollar', 'text-success') {{ $listing->transactions_count }}</div>

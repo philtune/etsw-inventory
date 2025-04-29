@@ -1,0 +1,56 @@
+@import "../library";
+.ts-wrapper {
+	.ts-control .item {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	&.single .ts-control,
+	.ts-dropdown.single {
+		border-color: var(--clr-muted-highest);
+	}
+	&.single .ts-control {
+		background-image: none;
+		box-shadow: none;
+		.ts-dropdown.single {
+			border-color: var(--clr-muted-highest);
+		}
+	}
+
+	.ts-dropdown,
+	.ts-control,
+	.ts-control input {
+		color: inherit;
+	}
+
+	.ts-dropdown .active {
+		background-color: inherit;
+		color: inherit;
+	}
+
+	.ts-dropdown {
+		border-color: var(--clr-muted-low);
+		background: var(--content-bg);
+		box-shadow: 0 1px 3px var(--clr-muted-lowest);
+	}
+	.ts-control,
+	&.single.input-active .ts-control {
+		background: var(--content-bg);
+	}
+	.plugin-dropdown_input.focus.dropdown-active .ts-control {
+		border-color: var(--clr-muted-highest);
+	}
+	.ts-dropdown-content {
+		@include scrollbar;
+		.option:nth-child(even) {
+			background: var(--clr-muted-lowest);
+		}
+		.option.active {
+			background: var(--clr-default-highest);
+			color: var(--content-bg);
+		}
+	}
+
+}
+

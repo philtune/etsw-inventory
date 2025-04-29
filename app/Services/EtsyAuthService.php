@@ -20,7 +20,7 @@ class EtsyAuthService
 			return 'https://www.etsy.com/oauth/connect?' . http_build_query([
 					'response_type'         => 'code',
 					'client_id'             => config('services.etsy.api.key'),
-					'redirect_uri'          => route('etsy-api.redirect-url'),
+					'redirect_uri'          => route('etsy-api.api-redirect-url'),
 					'scope'                 => implode(' ', [
 						'shops_r',
 						'transactions_r',
@@ -65,7 +65,7 @@ class EtsyAuthService
 		return self::requestNewToken([
 			'grant_type'    => 'authorization_code',
 			'client_id'     => config('services.etsy.api.key'),
-			'redirect_uri'  => route('etsy-api.redirect-url'),
+			'redirect_uri'  => route('etsy-api.api-redirect-url'),
 			'code'          => $code,
 			'code_verifier' => config('services.etsy.api.code_verifier'),
 		]);

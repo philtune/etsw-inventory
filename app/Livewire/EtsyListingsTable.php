@@ -62,7 +62,7 @@ class EtsyListingsTable extends Component
 	public function render():View
 	{
 		$this->dispatch('render');
-		return view('etsy-listings.index-table', [
+		return view('etsy.listings.index-table', [
 			'listings' => Listing
 				::query()
 				->whereRaw('listings.`meta`->>"$.who_made" = "i_did"')
@@ -87,6 +87,7 @@ class EtsyListingsTable extends Component
 					'listings.meta',
 					'listings.ending_at',
 					'listings.state_enum',
+					'listings.created_at',
 					DB::raw("`listings`.`meta`->>'$.views' AS `views`"),
 					DB::raw("`listings`.`meta`->>'$.num_favorers' AS `num_favorers`")
 				])

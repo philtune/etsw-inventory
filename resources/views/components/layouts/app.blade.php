@@ -22,7 +22,7 @@
 	<a href="{{ route('scents.index') }}">Scents</a>
 	<fieldset style="margin-bottom: 0.5rem;">
 		<legend><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/></legend>
-		<a href="{{ route('etsy-listings.index') }}">Listings</a> |
+		<a href="{{ route('etsy.listings.index') }}">Listings</a> |
 		<a href="#">Orders</a> |
 		<a href="#">Transactions</a>
 	</fieldset>
@@ -43,7 +43,9 @@
 		@endforeach
 	</ul>
 @endif
-{{ $slot }}
+<div class="m_card">
+	{{ $slot }}
+</div>
 @stack('below-body')
 </body>
 </html>

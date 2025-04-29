@@ -4,17 +4,19 @@
 			@csrf
 			<div>Code</div>
 			<input
+				class="input"
 				name="code"
 				maxlength="16"
 			/>
 			<div>Label</div>
 			<input
+				class="input"
 				name="label"
 				maxlength="255"
 			/>
-			<button type="submit">Add</button>
+			<button type="submit" class="u_btn">Add</button>
 		</form>
-		<table>
+		<table class="m_table">
 			<thead>
 			<tr>
 				<th>Code</th>
@@ -30,6 +32,7 @@
 							@csrf
 							@method('PATCH')
 							<input
+								class="input"
 								name="code"
 								value="{{ $productType->code }}"
 								maxlength="16"
@@ -38,6 +41,7 @@
 					</td>
 					<td>
 						<input
+							class="input"
 							form="form_{{ $productType->id }}"
 							name="label"
 							value="{{ $productType->label }}"
@@ -45,7 +49,11 @@
 						/>
 					</td>
 					<td>
-						<button type="submit" form="form_{{ $productType->id }}">Update</button>
+						<button
+							type="submit"
+							form="form_{{ $productType->id }}"
+							class="u_btn"
+						>Update</button>
 					</td>
 				</tr>
 			@endforeach

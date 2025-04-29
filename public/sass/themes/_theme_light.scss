@@ -1,0 +1,39 @@
+:root {
+	@media (prefers-color-scheme: light) {
+		--base-bg: #eeeeee;
+		--base-txt: #385c8d;
+		--content-bg: #ffffff;
+		--content-txt: #333333;
+
+		--clr-muted-highest: #4b4b4b;
+		--clr-muted-high: #4b4b4b;
+		--clr-muted-med: #b8b8b8;
+		--clr-muted-low: #eaeaea;
+		--clr-muted-lowest: #f8f8f8;
+
+		--clr-default-highest: #2b5d7c;
+		--clr-default-high: #2b78a7;
+		--clr-default-low: #88c1e6;
+		--clr-default-lowest: #e6f5ff;
+
+		--clr-success-highest: #31700e;
+		--clr-success-high: #31700e;
+		--clr-success-low: #79bd53;
+		--clr-success-lowest: #e0fbd1;
+
+		--clr-warning-highest: #62571a;
+		--clr-warning-high: #62571a;
+		--clr-warning-low: #e6d264;
+		--clr-warning-lowest: #fff9d8;
+
+		--clr-danger-highest: #7c2020;
+		--clr-danger-high: #7c2020;
+		--clr-danger-low: #dd5d5d;
+		--clr-danger-lowest: #ffd5d5;
+
+		--clr-accent-highest: #54179c;
+		--clr-accent-high: #7d37cf;
+		--clr-accent-low: #ba87f7;
+		--clr-accent-lowest: #eddeff;
+	}
+}

@@ -1,29 +1,35 @@
+@use "theme_light";
+@use "theme_dark";
+@import "../library";
+
+:root {
+	--clr-txt-link: var(--clr-default-highest);
+
+	--tint-highest: rgb(from var(--clr-default-highest) r g b / 45%);
+	--tint-high: rgb(from var(--clr-default-highest) r g b / 35%);
+	--tint-med: rgb(from var(--clr-default-highest) r g b / 20%);
+	--tint-low: rgb(from var(--clr-default-highest) r g b / 10%);
+	--tint-lowest: rgb(from var(--clr-default-highest) r g b / 5%);
+
+	--shade-highest: rgb(from var(--clr-muted-highest) r g b / 75%);
+	--shade-high: rgb(from var(--clr-muted-highest) r g b / 55%);
+	--shade-med: rgb(from var(--clr-muted-highest) r g b / 35%);
+	--shade-low: rgb(from var(--clr-muted-highest) r g b / 15%);
+	--shade-lowest: rgb(from var(--clr-muted-highest) r g b / 5%);
+}
+
 body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14 / 16 * 1rem;
-	@media (prefers-color-scheme: dark) {
-		background: #1f2023;
-		color: #ababab;
-	}
-	background: #eeeeee;
+	background: var(--base-bg);
+	color: var(--base-txt);
+	@include scrollbar;
 }
 
-table {
-	 background: white;
-	 border: 1px solid;
-	 border-collapse: collapse;
-	 th, td {
-		 border: 1px solid;
-		 padding: 0.375rem;
-	 }
-	 tbody th {
-		 text-align: left;
-	 }
- }
-
 a {
-	@media (prefers-color-scheme: dark) {
-		color: #6da6f5;
+	color: var(--clr-txt-link);
+	&:hover, &:focus {
+		text-decoration: none;
 	}
 }
 
@@ -35,4 +41,14 @@ input.input,
 select.select,
 textarea.textarea {
 	padding: 0 0.5rem;
+	border: 1px solid var(--clr-muted-highest);
+	border-radius: 0.25rem;
+	background: var(--content-bg);
 }
+input.input {
+	&.--sm {
+		width: 4rem;
+	}
+}
+
+

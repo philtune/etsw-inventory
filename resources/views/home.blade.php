@@ -1,6 +1,6 @@
 <x-layouts.app page-title="Home">
 	@if( $access_token )
-		<table>
+		<table class="m_table">
 			<tr>
 				<th>access_token</th>
 				<td>
@@ -20,22 +20,22 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<a href="{{ route('etsy-api.refresh-token') }}">Refresh Token</a>
+					<a href="{{ route('etsy-api.api-refresh-token') }}">Refresh Token</a>
 				</td>
 			</tr>
 		</table>
-		<p><a href="{{ route('import-all') }}">Import Everything</a></p>
-		<table>
+		<p><a href="{{ route('etsy-api.import-all') }}">Import Everything</a></p>
+		<table class="m_table">
 			<tr>
-				<th>Listings (<a href="{{ route('listings.import') }}">Import</a>)</th>
+				<th>Listings (<a href="{{ route('etsy-api.import-listings') }}">Import</a>)</th>
 				<td><strong>{{ number_format($listing_count) }}</strong> <small>(as of {{ $listing_latest->diffForHumans(short: true) }}, {{ $listing_latest->format('Y-m-d g:i a') }})</small></td>
 			</tr>
 			<tr>
-				<th>Receipts (Orders) (<a href="{{ route('receipts.import') }}">Import</a>)</th>
+				<th>Receipts (Orders) (<a href="{{ route('etsy-api.import-receipts') }}">Import</a>)</th>
 				<td><strong>{{ number_format($receipt_count) }}</strong> <small>(as of {{ $receipt_latest->diffForHumans(short: true) }}, {{ $receipt_latest->format('Y-m-d g:i a') }})</small></td>
 			</tr>
 			<tr>
-				<th>Transactions (<a href="{{ route('transactions.import') }}">Import</a>)</th>
+				<th>Transactions (<a href="{{ route('etsy-api.import-transactions') }}">Import</a>)</th>
 				<td><strong>{{ number_format($transaction_count) }}</strong> <small>(as of {{ $transaction_latest->diffForHumans(short: true) }}, {{ $transaction_latest->format('Y-m-d g:i a') }})</small></td>
 			</tr>
 			<tr>

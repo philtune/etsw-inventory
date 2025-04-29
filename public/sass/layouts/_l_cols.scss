@@ -5,6 +5,9 @@
 	&.--inline {
 		display: inline-flex;
 	}
+	&.--wrap {
+		flex-wrap: wrap;
+	}
 	gap: 1rem;
 	&.--md {
 		gap: 0.5rem;
