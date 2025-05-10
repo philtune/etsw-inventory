@@ -16,6 +16,16 @@
 	--shade-med: rgb(from var(--clr-muted-highest) r g b / 35%);
 	--shade-low: rgb(from var(--clr-muted-highest) r g b / 15%);
 	--shade-lowest: rgb(from var(--clr-muted-highest) r g b / 5%);
+
+	--highlight-highest: rgb(from var(--clr-warning-low) r g b / 75%);
+	--highlight-high: rgb(from var(--clr-warning-low) r g b / 55%);
+	--highlight-med: rgb(from var(--clr-warning-low) r g b / 35%);
+	--highlight-low: rgb(from var(--clr-warning-low) r g b / 15%);
+	--highlight-lowest: rgb(from var(--clr-warning-low) r g b / 5%);
+}
+
+.t_highlight {
+	background: var(--highlight-low);
 }
 
 body {

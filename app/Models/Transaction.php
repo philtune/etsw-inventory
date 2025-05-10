@@ -30,7 +30,7 @@ class Transaction extends Model
 
 	public function listing():BelongsTo
 	{
-		return $this->belongsTo(Listing::class);
+		return $this->belongsTo(EtsyListing::class);
 	}
 
 }

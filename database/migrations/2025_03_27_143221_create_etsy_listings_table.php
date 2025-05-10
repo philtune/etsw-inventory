@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Listing;
+use App\Models\EtsyListing;
+use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Scent;
 use Illuminate\Database\Migrations\Migration;
@@ -10,10 +11,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
 	public function up():void
 	{
-		Schema::create('listings', function (Blueprint $table) {
+		Schema::create('etsy_listings', function (Blueprint $table) {
 			$table->uuid('id')
 			      ->primary();
 			$table->unsignedBigInteger('listing_id');
+			$table->foreignIdFor(Product::class)
+			      ->nullable()
+			      ->constrained()
+			      ->cascadeOnUpdate()
+			      ->cascadeOnDelete();
 			$table->foreignIdFor(ProductType::class)
 			      ->nullable()
 			      ->constrained()
@@ -25,7 +31,7 @@ return new class extends Migration {
 			      ->cascadeOnUpdate()
 			      ->nullOnDelete();
 			$table->string('title');
-			$table->enum('state_enum', array_keys(Listing::state_options));
+			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')
 			      ->default(false);
 			$table->json('price');
@@ -102,6 +108,6 @@ return new class extends Migration {
 
 	public function down():void
 	{
-		Schema::dropIfExists('listings');
+		Schema::dropIfExists('etsy_listings');
 	}
 };

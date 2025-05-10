@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Listing;
+use App\Models\EtsyListing;
 use App\Models\Receipt;
 use App\Models\Transaction;
 use App\Services\EtsyAuthService;
@@ -17,8 +17,8 @@ class HomeController extends Controller
 			'access_token'  => EtsyAuthService::getAccessToken(),
 			'expires_at'    => EtsyAuthService::getCurrentTokenExpiresAt(),
 			'refresh_token' => EtsyAuthService::getRefreshToken(),
-			'listing_count' => Listing::count(),
-			'listing_latest' => Listing::latest()->first()->created_at->setTimezone('America/New_York'),
+			'listing_count' => EtsyListing::count(),
+			'listing_latest' => EtsyListing::latest()->first()->created_at->setTimezone('America/New_York'),
 			'receipt_count' => Receipt::count(),
 			'receipt_latest' => Receipt::latest()->first()->created_at->setTimezone('America/New_York'),
 			'transaction_count' => Transaction::count(),

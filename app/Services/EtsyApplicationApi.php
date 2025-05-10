@@ -43,7 +43,7 @@ class EtsyApplicationApi
 	 * @see https://developers.etsy.com/documentation/reference/#operation/getListingsByShop
 	 * @throws ConnectionException
 	 */
-	public static function listings(array $params = []):array
+	public static function getListings(array $params = []):array
 	{
 		$params = Validator::make($params, [
 			'state'      => 'string',
@@ -66,7 +66,7 @@ class EtsyApplicationApi
 	/**
 	 * @throws ConnectionException
 	 */
-	public static function receipts(array $params = []):array
+	public static function getReceipts(array $params = []):array
 	{
 		$params = Validator::make($params, [
 			'min_created'       => 'string',
@@ -93,7 +93,7 @@ class EtsyApplicationApi
 	/**
 	 * @throws ConnectionException
 	 */
-	public static function transactions(array $params = []):array
+	public static function getTransactions(array $params = []):array
 	{
 		$params = Validator::make($params, [
 			'limit'  => 'integer|min:1',

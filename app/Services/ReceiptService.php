@@ -17,7 +17,7 @@ class ReceiptService
 		$latest = Receipt::latest()->first();
 		$offset = 0;
 		do {
-			$response = EtsyApplicationApi::receipts(['limit' => 100, 'offset' => $offset]);
+			$response = EtsyApplicationApi::getReceipts(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $row ) {
 				Receipt::updateOrCreate(['id' => $row['receipt_id']],

@@ -1,7 +1,11 @@
 @props([
+	'scrollTo' => 'body',
 	/** @var \Illuminate\Pagination\LengthAwarePaginator */
 	'paginator'
 ])
+<?php
+$scrollIntoViewJsSnippet = ( $scrollTo !== false ) ? "document.querySelector('$scrollTo').scrollIntoView()" : '';
+?>
 <p>
 	Showing
 	@if ($paginator->firstItem())
@@ -27,6 +31,7 @@
 				type="button"
 				class="u_btn --sm"
 				wire:click="previousPage('{{ $paginator->getPageName() }}')"
+				x-on:click="{{ $scrollIntoViewJsSnippet }}"
 				wire:loading.attr="disabled"
 				title="Previous"
 			>@svg('icon-chevron-left')</button>
@@ -54,6 +59,7 @@
 							type="button"
 							class="u_btn --sm"
 							wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')"
+							x-on:click="{{ $scrollIntoViewJsSnippet }}"
 						>{{ $page }}</button>
 					@endif
 				@endforeach
@@ -66,6 +72,7 @@
 				type="button"
 				class="u_btn --sm"
 				wire:click="nextPage('{{ $paginator->getPageName() }}')"
+				x-on:click="{{ $scrollIntoViewJsSnippet }}"
 				wire:loading.attr="disabled"
 				aria-label="@lang('pagination.next')"
 				title="Next"

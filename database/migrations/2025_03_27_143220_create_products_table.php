@@ -24,7 +24,8 @@ return new class extends Migration {
 			      ->nullOnDelete();
 			$table->string('label');
 			$table->boolean('is_archived');
-			$table->json('meta');
+			$table->json('meta')
+			      ->nullable();
 			$table->datetimes();
 			$table->softDeletesDatetime();
 		});

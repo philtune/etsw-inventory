@@ -28,18 +28,18 @@ class Scent extends Model
 	}
 
 	/**
-	 * @return HasMany<Listing,$this>
+	 * @return HasMany<EtsyListing,$this>
 	 */
-	public function listings():HasMany
+	public function etsyListings():HasMany
 	{
-		return $this->hasMany(Listing::class);
+		return $this->hasMany(EtsyListing::class);
 	}
 
 	/**
-	 * @return HasManyThrough<Transaction,Listing,$this>
+	 * @return HasManyThrough<Transaction,EtsyListing,$this>
 	 */
 	public function transactions():HasManyThrough
 	{
-		return $this->through('listings')->has('transactions');
+		return $this->through('etsyListings')->has('transactions');
 	}
 }

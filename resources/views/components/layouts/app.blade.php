@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="{{ asset('css/styles.css') }}"/>
 </head>
 <body class="l_body">
-<nav style="display: flex; align-items: center; gap: 0.5rem;">
+<nav class="l_cols --md">
 	<a href="{{ route('home') }}">Home</a> |
 	<a href="{{ route('product-types.index') }}">Product Types</a> |
 	<a href="{{ route('scents.index') }}">Scents</a>
@@ -24,7 +24,8 @@
 		<legend><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/></legend>
 		<a href="{{ route('etsy.listings.index') }}">Listings</a> |
 		<a href="#">Orders</a> |
-		<a href="#">Transactions</a>
+		<a href="#">Transactions</a> |
+		{{ number_format(cache(\App\Services\EtsyApplicationApi::CALLS_REMAINING_TODAY)[0]) }} API calls remaining today
 	</fieldset>
 </nav>
 <div style="display:flex;gap:1rem;justify-content:space-between;align-items:center;">

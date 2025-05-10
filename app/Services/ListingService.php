@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Listing;
+use App\Models\EtsyListing;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 
@@ -15,7 +15,7 @@ class ListingService
 	{
 		$offset = 0;
 		do {
-			$response = EtsyApplicationApi::listings([
+			$response = EtsyApplicationApi::getListings([
 				'limit'    => 100,
 				'offset'   => $offset,
 				'state'    => $state,
@@ -23,7 +23,7 @@ class ListingService
 			]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $row ) {
-				Listing::updateOrCreate(['listing_id' => $row['listing_id']],
+				EtsyListing::updateOrCreate(['listing_id' => $row['listing_id']],
 					[
 						'title'      => $row['title'],
 						'state_enum' => $row['state'],

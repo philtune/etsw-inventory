@@ -16,7 +16,7 @@ class TransactionService
 		$latest = Transaction::latest()->first();
 		$offset = 0;
 		do {
-			$response = EtsyApplicationApi::transactions(['limit' => 100, 'offset' => $offset]);
+			$response = EtsyApplicationApi::getTransactions(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $row ) {
 				Transaction::updateOrCreate(['id' => $row['transaction_id']],

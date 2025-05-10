@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Listing;
+use App\Models\EtsyListing;
 use App\Models\Receipt;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,7 +16,7 @@ return new class extends Migration {
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();
-			$table->foreignIdFor(Listing::class)
+			$table->foreignIdFor(EtsyListing::class, 'listing_id')
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();

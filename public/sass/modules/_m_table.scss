@@ -11,6 +11,9 @@
 		> tr:last-child {
 			border-bottom: 1px solid var(--base-bg);
 		}
+		th, td {
+			text-align: left;
+		}
 	}
 	> tbody {
 		> tr {
