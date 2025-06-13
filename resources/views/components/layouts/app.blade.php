@@ -13,21 +13,11 @@
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.default.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+	<script src="https://kit.fontawesome.com/9b9b99bb33.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="{{ asset('css/styles.css') }}"/>
 </head>
 <body class="l_body">
-<nav class="l_cols --md">
-	<a href="{{ route('home') }}">Home</a> |
-	<a href="{{ route('product-types.index') }}">Product Types</a> |
-	<a href="{{ route('scents.index') }}">Scents</a>
-	<fieldset style="margin-bottom: 0.5rem;">
-		<legend><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/></legend>
-		<a href="{{ route('etsy.listings.index') }}">Listings</a> |
-		<a href="#">Orders</a> |
-		<a href="#">Transactions</a> |
-		{{ number_format(cache(\App\Services\EtsyApplicationApi::CALLS_REMAINING_TODAY)[0]) }} API calls remaining today
-	</fieldset>
-</nav>
+@include('components.layouts.nav')
 <div style="display:flex;gap:1rem;justify-content:space-between;align-items:center;">
 	<h1>{{ $pageTitle }}</h1>
 	<div>{{ $toolbar }}</div>
@@ -44,9 +34,20 @@
 		@endforeach
 	</ul>
 @endif
+@if( session('toast') )
+	@push('scripts')
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				toast('{!! __(session('toast')) !!}', '--success')
+			})
+		</script>
+	@endpush
+@endif
 <div class="m_card">
 	{{ $slot }}
 </div>
+<div class="m_toast__container"></div>
+<script type="module" src="{{ asset('js/scripts.js') }}"></script>
 @stack('below-body')
 </body>
 </html>

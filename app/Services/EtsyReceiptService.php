@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Receipt;
-use App\Models\Transaction;
+use App\Models\EtsyReceipt;
+use App\Models\EtsyTransaction;
 use Illuminate\Http\Client\ConnectionException;
 
-class ReceiptService
+class EtsyReceiptService
 {
 
 	/**
@@ -14,13 +14,13 @@ class ReceiptService
 	 */
 	public static function import():void
 	{
-		$latest = Receipt::latest()->first();
+		$latest = EtsyReceipt::latest()->first();
 		$offset = 0;
 		do {
 			$response = EtsyApplicationApi::getReceipts(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $row ) {
-				Receipt::updateOrCreate(['id' => $row['receipt_id']],
+				EtsyReceipt::updateOrCreate(['id' => $row['receipt_id']],
 					[
 						'receipt_type'         => strval($row['receipt_type']),
 						'seller_user_id'       => $row['seller_user_id'],
@@ -61,7 +61,7 @@ class ReceiptService
 					]);
 			}
 			$offset += 100;
-		} while ( Receipt::count() < $count && $latest && ( $row['id'] ?? 0 ) > $latest->id );
+		} while ( EtsyReceipt::count() < $count && $latest && ( $row['id'] ?? 0 ) > $latest->id );
 	}
 
 }

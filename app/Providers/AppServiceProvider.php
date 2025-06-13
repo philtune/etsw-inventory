@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 	    URL::forceScheme(scheme: 'https');
+
 		Collection::macro('paginate', function ($perPage, $pageName = 'page') {
 			/** @var Collection $this */
 			$currentPage = Paginator::resolveCurrentPage($pageName);

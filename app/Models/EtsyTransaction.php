@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Transaction extends Model
+class EtsyTransaction extends Model
 {
 	public $timestamps = false;
 	protected $guarded = [];
@@ -21,14 +21,14 @@ class Transaction extends Model
 	];
 
 	/**
-	 * @return BelongsTo<Receipt,$this>
+	 * @return BelongsTo<EtsyReceipt,$this>
 	 */
-	public function receipt():BelongsTo
+	public function etsyReceipt():BelongsTo
 	{
-		return $this->belongsTo(Receipt::class);
+		return $this->belongsTo(EtsyReceipt::class);
 	}
 
-	public function listing():BelongsTo
+	public function etsyListing():BelongsTo
 	{
 		return $this->belongsTo(EtsyListing::class);
 	}

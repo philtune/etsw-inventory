@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\EtsyListings;
 
 use App\Models\EtsyListing;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Scent;
-use App\Models\Transaction;
+use App\Models\EtsyTransaction;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +17,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EtsyListingsTable extends Component
+class IndexTable extends Component
 {
 	use WithPagination;
 
@@ -96,12 +96,8 @@ class EtsyListingsTable extends Component
 			->where('etsy_listings.is_archived', '=', $this->archived)
 			->select([
 				'products.label',
-				//				'product_types.label',
-				//				'scents.label',
 				'etsy_listings.id',
 				'etsy_listings.product_id',
-				//				'etsy_listings.scent_id',
-				//				'etsy_listings.product_type_id',
 				'etsy_listings.title',
 				'etsy_listings.meta',
 				'etsy_listings.ending_at',
@@ -111,6 +107,37 @@ class EtsyListingsTable extends Component
 				DB::raw("`etsy_listings`.`meta`->>'$.views' AS `views`"),
 				DB::raw("`etsy_listings`.`meta`->>'$.num_favorers' AS `num_favorers`")
 			])
+			->selectSub(
+				EtsyTransaction
+					::query()
+					->selectRaw('count(*)')
+					->whereColumn('etsy_listings.listing_id', 'etsy_transactions.listing_id')
+					->when(
+						$this->sales_before,
+						fn($query) => $query->where('etsy_transactions.created_at', '<', Carbon::parse($this->sales_before)),
+					)
+					->when(
+						$this->sales_after,
+						fn($query) => $query->where('etsy_transactions.created_at', '>', Carbon::parse($this->sales_after)),
+					),
+				'etsy_transactions_count'
+			)
+			->selectSub(
+				EtsyTransaction
+					::query()
+					->selectRaw("sum(price->>'$.amount' / price->>'$.divisor')")
+					->whereColumn('etsy_listings.listing_id', 'etsy_transactions.listing_id')
+					->when(
+						$this->sales_before,
+						fn($query) => $query->where('etsy_transactions.created_at', '<', Carbon::parse($this->sales_before)),
+					)
+					->when(
+						$this->sales_after,
+						fn($query) => $query->where('etsy_transactions.created_at', '>', Carbon::parse($this->sales_after)),
+					)
+				,
+				'revenue'
+			)
 			->when(
 				in_array($this->order_column, ['views', 'num_favorers']),
 				fn($query) => $query
@@ -124,37 +151,6 @@ class EtsyListingsTable extends Component
 						fn($query) => $query
 							->orderBy('revenue', $this->order_desc ? 'desc' : 'asc'),
 					)
-			)
-			->selectSub(
-				Transaction
-					::query()
-					->selectRaw('count(*)')
-					->whereColumn('etsy_listings.listing_id', 'transactions.listing_id')
-					->when(
-						$this->sales_before,
-						fn($query) => $query->where('transactions.created_at', '<', Carbon::parse($this->sales_before)),
-					)
-					->when(
-						$this->sales_after,
-						fn($query) => $query->where('transactions.created_at', '>', Carbon::parse($this->sales_after)),
-					),
-				'transactions_count'
-			)
-			->selectSub(
-				Transaction
-					::query()
-					->selectRaw("sum(price->>'$.amount' / price->>'$.divisor')")
-					->whereColumn('etsy_listings.listing_id', 'transactions.listing_id')
-					->when(
-						$this->sales_before,
-						fn($query) => $query->where('transactions.created_at', '<', Carbon::parse($this->sales_before)),
-					)
-					->when(
-						$this->sales_after,
-						fn($query) => $query->where('transactions.created_at', '>', Carbon::parse($this->sales_after)),
-					)
-				,
-				'revenue'
 			)
 			->selectRaw("TIMESTAMPDIFF(MONTH, `etsy_listings`.`created_at`, NOW()) as age")
 			->get()
@@ -196,8 +192,6 @@ class EtsyListingsTable extends Component
 				])
 			)
 			->leftJoin('products', 'etsy_listings.product_id', '=', 'products.id')
-			//			->leftJoin('product_types', 'etsy_listings.product_type_id', '=', 'product_types.id')
-			//			->leftJoin('scents', 'etsy_listings.scent_id', '=', 'scents.id')
 			->when(
 				$this->scent_id,
 				fn($query) => $query->where('products.scent_id', '=', $this->scent_id),
@@ -253,25 +247,6 @@ class EtsyListingsTable extends Component
 		]);
 		EtsyListing::where('id', $listing_id)->update(['product_id' => $product_id]);
 	}
-
-	//	public function updateProductType(string $listing_id, ?string $product_type_id):void
-	//	{
-	//		Validator::validate(compact('listing_id', 'product_type_id'), [
-	//			'listing_id'      => 'required|exists:etsy_listings,id',
-	//			'product_type_id' => 'nullable|exists:product_types,id',
-	//		]);
-	//		EtsyListing::where('id', $listing_id)->update(['product_type_id' => $product_type_id]);
-	//	}
-	//
-	//	public function updateScent(string $listing_id, ?string $scent_id):void
-	//	{
-	//		$scent_id = $scent_id ?: null;
-	//		Validator::validate(compact('listing_id', 'scent_id'), [
-	//			'listing_id' => 'required|exists:etsy_listings,id',
-	//			'scent_id'   => 'nullable|exists:scents,id',
-	//		]);
-	//		EtsyListing::where('id', $listing_id)->update(['scent_id' => $scent_id]);
-	//	}
 
 	public function archive(string $listing_id):void
 	{

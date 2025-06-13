@@ -91,10 +91,10 @@
 	<div class="l_cols">
 		@if( !$archived )
 			<h2>Active Listings</h2>
-			<a href="{{ request()->fullUrlWithQuery(['archived'=>true]) }}">View {{ $archived_count }} Archived</a>
+			<a wire:click.prevent="$toggle('archived')" href="#">View {{ $archived_count }} Archived</a>
 		@else
 			<h2>Archived Listings</h2>
-			<a href="{{ request()->fullUrlWithQuery(['archived'=>false]) }}">View {{ $active_count }} Active</a>
+			<a wire:click.prevent="$toggle('archived')" href="#">View {{ $active_count }} Active</a>
 		@endif
 	</div>
 	<div class="m_table__container">
@@ -110,7 +110,7 @@
 				<x-th.sortable label="Favs" column="num_favorers" :desc-first="true"/>
 				<x-th.sortable label="Ending" column="ending_at"/>
 				<x-th.sortable label="Age" column="age" :desc-first="true"/>
-				<x-th.sortable label="Sales" column="transactions_count" :desc-first="true"/>
+				<x-th.sortable label="Sales" column="etsy_transactions_count" :desc-first="true"/>
 				<x-th.sortable label="Revenue" column="revenue" :desc-first="true"/>
 				<x-th.sortable label="Rev/mo" column="revenue_per_month" :desc-first="true"/>
 				<th><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
@@ -129,7 +129,7 @@
 								style="width:14rem"
 							/>
 						@else
-							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-sm">{{ $etsyListing->product?->scent->code ?? '?' }} - {{ $etsyListing->product?->productType->code ?? '?' }}</span>
+							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->scent->code ?? '?' }} - {{ $etsyListing->product?->productType->code ?? '?' }}</span>
 						@endif
 					</td>
 					{{--					<td @class(['t_highlight' => !$etsyListing->scent_id])>--}}
@@ -190,8 +190,8 @@
 						{{ $etsyListing->age }} mos
 					</td>
 					<td>
-						<div class="l_cols --sm">@svg('icon-sack-dollar', 'text-success') {{ $etsyListing->transactions_count }}</div>
-						<small>{{ round($etsyListing->transactions_count / $etsyListing->age) }}/mo</small>
+						<div class="l_cols --sm">@svg('icon-sack-dollar', 'text-success') {{ $etsyListing->etsy_transactions_count }}</div>
+						<small>{{ round($etsyListing->etsy_transactions_count / $etsyListing->age) }}/mo</small>
 					</td>
 					<td>
 						${{ number_format($etsyListing->revenue, 2) }}

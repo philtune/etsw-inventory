@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Receipt extends Model
+class EtsyReceipt extends Model
 {
 	public $timestamps = false;
 	protected $guarded = [];
@@ -28,11 +28,11 @@ class Receipt extends Model
 	const TYPE_PATTERN_SHOP = 1;
 
 	/**
-	 * @return HasMany<Transaction,$this>
+	 * @return HasMany<EtsyTransaction,$this>
 	 */
-	public function transactions():HasMany
+	public function etsyTransactions():HasMany
 	{
-		return $this->hasMany(Transaction::class);
+		return $this->hasMany(EtsyTransaction::class);
 	}
 
 }

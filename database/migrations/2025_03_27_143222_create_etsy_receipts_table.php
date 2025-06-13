@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Receipt;
+use App\Models\EtsyReceipt;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
 	public function up():void
 	{
-		Schema::create('receipts', function (Blueprint $table) {
+		Schema::create('etsy_receipts', function (Blueprint $table) {
 			$table->unsignedBigInteger('id')
 			      ->primary();
 			// The numeric value for the Etsy channel that serviced the purchase: 0 for Etsy.com, 1 for a Pattern shop.
 			$table->unsignedTinyInteger('receipt_type')
-			      ->default(Receipt::TYPE_ETSY_COM);
+			      ->default(EtsyReceipt::TYPE_ETSY_COM);
 			$table->unsignedBigInteger('seller_user_id');
 			$table->string('seller_email');
 			$table->unsignedBigInteger('buyer_user_id');
@@ -60,6 +60,6 @@ return new class extends Migration {
 
 	public function down():void
 	{
-		Schema::dropIfExists('receipts');
+		Schema::dropIfExists('etsy_receipts');
 	}
 };

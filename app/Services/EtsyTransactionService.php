@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Transaction;
+use App\Models\EtsyTransaction;
 use Illuminate\Http\Client\ConnectionException;
 
-class TransactionService
+class EtsyTransactionService
 {
 
 	/**
@@ -13,13 +13,13 @@ class TransactionService
 	 */
 	public static function import():void
 	{
-		$latest = Transaction::latest()->first();
+		$latest = EtsyTransaction::latest()->first();
 		$offset = 0;
 		do {
 			$response = EtsyApplicationApi::getTransactions(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $row ) {
-				Transaction::updateOrCreate(['id' => $row['transaction_id']],
+				EtsyTransaction::updateOrCreate(['id' => $row['transaction_id']],
 					[
 						'title'               => $row['title'],
 						'description'         => $row['description'],
@@ -27,7 +27,7 @@ class TransactionService
 						'buyer_user_id'       => $row['buyer_user_id'],
 						'quantity'            => $row['quantity'],
 						'listing_image_id'    => $row['listing_image_id'],
-						'receipt_id'          => $row['receipt_id'],
+						'etsy_receipt_id'     => $row['receipt_id'],
 						'is_digital'          => $row['is_digital'],
 						'file_data'           => $row['file_data'],
 						'listing_id'          => $row['listing_id'],
@@ -52,7 +52,7 @@ class TransactionService
 					]);
 			}
 			$offset += 100;
-		} while ( Transaction::count() < $count && ( $row['id'] ?? 0 ) > $latest->id );
+		} while ( EtsyTransaction::count() < $count && ( $row['id'] ?? 0 ) > $latest->id );
 	}
 
 }

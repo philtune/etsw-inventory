@@ -8,14 +8,18 @@
 	&.--wrap {
 		flex-wrap: wrap;
 	}
-	gap: 1rem;
+	& {
+		gap: 1rem;
+	}
 	&.--md {
 		gap: 0.5rem;
 	}
 	&.--sm {
 		gap: 0.25rem;
 	}
-	align-items: center;
+	& {
+		align-items: center;
+	}
 	&.--right {
 		justify-content: flex-end;
 	}

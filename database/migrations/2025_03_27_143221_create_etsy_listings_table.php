@@ -20,16 +20,6 @@ return new class extends Migration {
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();
-			$table->foreignIdFor(ProductType::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
-			$table->foreignIdFor(Scent::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
 			$table->string('title');
 			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')

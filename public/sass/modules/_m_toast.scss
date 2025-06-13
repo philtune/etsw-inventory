@@ -1,0 +1,42 @@
+@import "../library";
+.m_toast {
+	opacity: 0;
+	box-shadow: var(--box-shadow-sm);
+	cursor: default;
+	&__container {
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		right: 0;
+		margin: 1rem 1.2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.25rem;
+	}
+
+	@include animate(500ms 250ms forwards, animtoastin) {
+		to {
+			opacity: 1;
+		}
+	}
+	&:hover {
+		opacity: 1;
+		transition: opacity 50ms;
+	}
+	&.--fadeOut {
+		pointer-events: none;
+		@include animate(500ms forwards, animtoastout) {
+			from {
+				opacity: 0.95;
+			}
+			from, 99% {
+				display: initial;
+			}
+			to {
+				opacity: 0;
+				display: none;
+			}
+		}
+	}
+}

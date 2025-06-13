@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\EtsyListing;
-use App\Models\Receipt;
+use App\Models\EtsyReceipt;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
 	public function up():void
 	{
-		Schema::create('transactions', function (Blueprint $table) {
+		Schema::create('etsy_transactions', function (Blueprint $table) {
 			$table->unsignedBigInteger('id')
 			      ->primary();
-			$table->foreignIdFor(Receipt::class)
+			$table->foreignIdFor(EtsyReceipt::class)
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();
@@ -72,6 +72,6 @@ return new class extends Migration {
 
 	public function down():void
 	{
-		Schema::dropIfExists('transactions');
+		Schema::dropIfExists('etsy_transactions');
 	}
 };

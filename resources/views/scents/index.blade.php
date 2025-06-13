@@ -31,8 +31,8 @@
 			<th>Code</th>
 			<th>Label</th>
 			<th>Update</th>
-			<th>Listings</th>
-			<th>Revenue</th>
+			<th>Etsy Listings</th>
+			<th>Etsy Revenue</th>
 		</tr>
 		</thead>
 		<tbody>

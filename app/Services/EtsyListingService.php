@@ -6,7 +6,7 @@ use App\Models\EtsyListing;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 
-class ListingService
+class EtsyListingService
 {
 	/**
 	 * @throws ConnectionException

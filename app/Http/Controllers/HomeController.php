@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\EtsyListing;
-use App\Models\Receipt;
-use App\Models\Transaction;
+use App\Models\EtsyReceipt;
+use App\Models\EtsyTransaction;
 use App\Services\EtsyAuthService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +19,12 @@ class HomeController extends Controller
 			'refresh_token' => EtsyAuthService::getRefreshToken(),
 			'listing_count' => EtsyListing::count(),
 			'listing_latest' => EtsyListing::latest()->first()->created_at->setTimezone('America/New_York'),
-			'receipt_count' => Receipt::count(),
-			'receipt_latest' => Receipt::latest()->first()->created_at->setTimezone('America/New_York'),
-			'transaction_count' => Transaction::count(),
-			'transaction_latest' => Transaction::latest()->first()->created_at->setTimezone('America/New_York'),
-			'revenue_to_date' => DB
-				::table('receipts')
-				->selectRaw("sum(json_extract(grandtotal, '\$.amount'))/100 as revenue")
+			'receipt_count' => EtsyReceipt::count(),
+			'receipt_latest' => EtsyReceipt::latest()->first()->created_at->setTimezone('America/New_York'),
+			'transaction_count' => EtsyTransaction::count(),
+			'transaction_latest' => EtsyTransaction::latest()->first()->created_at->setTimezone('America/New_York'),
+			'revenue_to_date' => EtsyReceipt
+				::selectRaw("sum(json_extract(grandtotal, '\$.amount'))/100 as revenue")
 				->first()
 				->revenue
 		]);

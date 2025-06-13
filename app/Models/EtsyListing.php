@@ -39,9 +39,9 @@ class EtsyListing extends Model
 		//		'inventory'            => 'json',
 	];
 
-	public function transactions():HasMany
+	public function etsyTransactions():HasMany
 	{
-		return $this->hasMany(Transaction::class, 'listing_id', 'listing_id');
+		return $this->hasMany(EtsyTransaction::class, 'listing_id', 'listing_id');
 	}
 
 	/**

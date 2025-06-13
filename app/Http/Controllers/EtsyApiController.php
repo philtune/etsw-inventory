@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\EtsyAuthService;
-use App\Services\ListingService;
-use App\Services\ReceiptService;
-use App\Services\TransactionService;
+use App\Services\EtsyListingService;
+use App\Services\EtsyReceiptService;
+use App\Services\EtsyTransactionService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,9 +37,9 @@ class EtsyApiController extends Controller
 	public function importAll():RedirectResponse
 	{
 		try {
-			ListingService::importAll();
-			ReceiptService::import();
-			TransactionService::import();
+			EtsyListingService::importAll();
+			EtsyReceiptService::import();
+			EtsyTransactionService::import();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
@@ -49,7 +49,7 @@ class EtsyApiController extends Controller
 	public function importListings():RedirectResponse
 	{
 		try {
-			ListingService::importAll();
+			EtsyListingService::importAll();
 		} catch ( ConnectionException $th ) {
 			return back()->withErrors($th->getMessage());
 		}
@@ -59,7 +59,7 @@ class EtsyApiController extends Controller
 	public function importReceipts()
 	{
 		try {
-			ReceiptService::import();
+			EtsyReceiptService::import();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
@@ -69,7 +69,7 @@ class EtsyApiController extends Controller
 	public function importTransactions()
 	{
 		try {
-			TransactionService::import();
+			EtsyTransactionService::import();
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
