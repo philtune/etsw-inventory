@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WholesaleCustomer;
 use App\Models\WholesaleOrder;
-use App\Models\WholesaleOrderLineItem;
+use App\Models\WholesaleOrderProduct;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -28,9 +28,9 @@ class WholesaleOrderController extends Controller
 					!$wholesaleCustomer,
 					fn(Builder $query) => $query->with('wholesaleCustomer')
 				)
-				->withCount('wholesaleOrderLineItems')
-				->selectSub(WholesaleOrderLineItem
-					::whereRaw('wholesale_orders.id = wholesale_order_line_items.wholesale_order_id')
+				->withCount('wholesaleOrderProducts')
+				->selectSub(WholesaleOrderProduct
+					::whereRaw('wholesale_orders.id = wholesale_order_products.wholesale_order_id')
 					->selectRaw('sum(price_per_unit * quantity)'),
 					'items_grand_total'
 				)
@@ -58,10 +58,6 @@ class WholesaleOrderController extends Controller
 	{
 		return view('wholesale.orders.show', [
 			'wholesaleOrder' => $wholesaleOrder,
-			'items_quantity' => $wholesaleOrder->wholesaleOrderLineItems()->sum('quantity'),
-			'wholesaleOrderLineItems' => $wholesaleOrder
-				->wholesaleOrderLineItems()
-			->get(),
 		]);
 	}
 

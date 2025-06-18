@@ -57,11 +57,11 @@ class Product extends Model
 	}
 
 	/**
-	 * @return HasMany<WholesaleOrderLineItem,$this>
+	 * @return HasMany<WholesaleOrderProduct,$this>
 	 */
-	public function wholesaleOrderLineItems():HasMany
+	public function wholesaleOrderProducts():HasMany
 	{
-		return $this->hasMany(WholesaleOrderLineItem::class);
+		return $this->hasMany(WholesaleOrderProduct::class);
 	}
 
 }

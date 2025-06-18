@@ -17,10 +17,16 @@
 	&.--sm {
 		gap: 0.25rem;
 	}
-	& {
+	&:not(.--top) {
 		align-items: center;
+	}
+	&.--top {
+		align-items: flex-start;
 	}
 	&.--right {
 		justify-content: flex-end;
+	}
+	&.--split {
+		justify-content: space-between;
 	}
 }

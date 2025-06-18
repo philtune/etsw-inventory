@@ -33,7 +33,7 @@
 				})
 			}
 			if ( typeof Livewire !== 'undefined' ) {
-				Livewire.on('render', () => setTimeout(init, 100))
+				Livewire.hook('morphed', init)
 			}
 			init()
 		})

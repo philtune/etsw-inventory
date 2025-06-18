@@ -53,7 +53,7 @@ select.select {
 input.input,
 select.select,
 textarea.textarea {
-	padding: 0.5rem;
+	padding: 0.4rem 0.5rem;
 	border: 1px solid var(--clr-muted-highest);
 	border-radius: 0.25rem;
 	background: var(--content-bg);
@@ -62,6 +62,9 @@ input.input {
 	&.--sm {
 		width: 4rem;
 	}
+}
+select.select {
+	padding-right: 0.75rem;
 }
 textarea.textarea {
 	min-height: 4rem;

@@ -18,8 +18,20 @@ fieldset {
 	color: var(--clr-success-highest);
 }
 
+.text-warning {
+	color: var(--clr-warning-highest);
+}
+
+.text-danger {
+	color: var(--clr-danger-highest);
+}
+
+.text-accent {
+	color: var(--clr-accent-highest);
+}
+
 .text-muted {
-	color: var(--clr-muted-highest);
+	color: var(--clr-muted-high);
 }
 
 .w-auto {
@@ -36,4 +48,8 @@ fieldset {
 
 .nowrap {
 	white-space: nowrap;
+}
+
+.text-right {
+	text-align: right;
 }

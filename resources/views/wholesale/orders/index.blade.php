@@ -24,9 +24,6 @@
 				@endif
 				<th>Products</th>
 				<th>Total</th>
-				<th>Paid</th>
-				<th>Status</th>
-				<th>Delivery Method</th>
 				<th>Notes</th>
 				<th class="text-center w-1px"><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
 			</tr>
@@ -35,13 +32,10 @@
 			@foreach( $wholesaleOrders as $wholesaleOrder )
 				<td>{{ $wholesaleOrder->ordered_at->format('m/d/Y - g:ia') }}</td>
 				@if( !$wholesaleCustomer )
-					<td>{{ $wholesaleOrder->wholesaleCustomer->name }}</td>
+					<td>{{ $wholesaleCustomer->name }}</td>
 				@endif
-				<td>{{ $wholesaleOrder->wholesale_order_line_items_count }}</td>
-				<td>${{ ( $wholesaleOrder->items_grand_total ?: $wholesaleOrder->subtotal ) + $wholesaleOrder->total_adjustment }}</td>
-				<td>${{ $wholesaleOrder->amount_paid }}</td>
-				<td>{{ $wholesaleOrder->status() }}</td>
-				<td>{{ $wholesaleOrder->delivery_method() }}</td>
+				<td>{{ $wholesaleOrder->wholesale_order_products_count }}</td>
+				<td>${{ $wholesaleOrder->items_grand_total }}</td>
 				<td>{{ Str::limit($wholesaleOrder->notes, 64) }}</td>
 				<td>
 					<a href="{{ route('wholesale-orders.show', $wholesaleOrder) }}">View</a>
