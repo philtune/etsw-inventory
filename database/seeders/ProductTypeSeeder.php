@@ -14,38 +14,27 @@ class ProductTypeSeeder extends Seeder
 				'section_id' => 19684707,
 				'code'       => 'CPS',
 				'label'      => 'Cold Processed Soap',
-				'meta'       => [
-					'variants' => [
-						[
-							'label' => "5 oz",
-							"price" => 12.99
-						],
-						[
-							'label' => "3.5 oz",
-							"price" => 10.99
-						],
-						[
-							'label' => "1.5 oz",
-							"price" => 7.99
-						],
+				'variants'   => [
+					'label'   => 'Weight',
+					'options' => [
+						'5oz'   => '5 oz',
+						'3.5oz' => '3.5 oz',
+						'1.5oz' => '1.5 oz',
 					],
+					'default' => '5oz'
 				],
 			],
 			[
 				'section_id' => 36188927,
 				'code'       => 'SB',
 				'label'      => 'Shampoo Bar',
-				'meta'       => [
-					'variants' => [
-						[
-							'label' => "2.4 oz",
-							"price" => 15.99
-						],
-						[
-							'label' => "3.9 oz",
-							"price" => 23.49
-						],
+				'variants'   => [
+					'label'   => 'Weight',
+					'options' => [
+						'2.4oz' => '2.4 oz',
+						'3.9oz' => '3.9 oz',
 					],
+					'default' => '2.4oz'
 				],
 			],
 			[
@@ -77,6 +66,14 @@ class ProductTypeSeeder extends Seeder
 				'section_id' => 27609224,
 				'code'       => 'WSS',
 				'label'      => 'Whipped Sugar Scrub',
+				'variants'   => [
+					'label'   => 'Weight',
+					'options' => [
+						'8oz' => '8 oz',
+						'4oz' => '4 oz',
+					],
+					'default' => '8oz'
+				]
 			],
 			[
 				'section_id' => 32315602,

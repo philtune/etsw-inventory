@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\OauthToken;
 use Closure;
 use Http;
 use Illuminate\Http\Client\ConnectionException;
@@ -13,18 +14,16 @@ use Validator;
 class EtsyApplicationApi
 {
 
-	const CALLS_REMAINING_THIS_SECOND = 'etsy_calls_remaining_this_second';
-	const CALLS_REMAINING_TODAY = 'etsy_calls_remaining_today';
-
 	/**
 	 * @param Closure():Response $callback
 	 */
 	protected static function send(Closure $callback):array
 	{
-		if ( cache(self::CALLS_REMAINING_TODAY) === 0 ) {
+		$etsyOauthToken = OauthToken::getEtsyToken();
+		if ( $etsyOauthToken?->remaining_today === 0 ) {
 			throw new TooManyRequestsHttpException(3600, 'Proxy tried too many times. Try again later.');
 		}
-		if ( cache(self::CALLS_REMAINING_THIS_SECOND) === 0 ) {
+		if ( $etsyOauthToken?->remaining_this_second === 0 ) {
 			sleep(1);
 		}
 		$pendingRequest = Http
@@ -34,8 +33,10 @@ class EtsyApplicationApi
 				'x-api-key' => config('services.etsy.api.key'),
 			]);
 		$response = $callback($pendingRequest);
-		cache([self::CALLS_REMAINING_THIS_SECOND => $response->getHeader('X-Remaining-This-Second')]);
-		cache([self::CALLS_REMAINING_TODAY => $response->getHeader('X-Remaining-Today')]);
+		$etsyOauthToken->update([
+			'remaining_today'       => $response->getHeader('X-Remaining-Today')[0],
+			'remaining_this_second' => $response->getHeader('X-Remaining-This-Second')[0],
+		]);
 		return $response->json();
 	}
 
@@ -56,9 +57,9 @@ class EtsyApplicationApi
 		return self::send(fn(PendingRequest $request) => $request
 			->withUrlParameters(['shop_id' => config('services.etsy.shop_id')])
 			->get('/shops/{shop_id}/listings', [
-				'limit'  => $params['limit'] ?? 100,
-				'offset' => $params['offset'] ?? 0,
-				'state'  => $params['state'] ?? 'active',
+				'limit'    => $params['limit'] ?? 100,
+				'offset'   => $params['offset'] ?? 0,
+				'state'    => $params['state'] ?? 'active',
 				'includes' => $params['includes'] ?? '',
 			]));
 	}

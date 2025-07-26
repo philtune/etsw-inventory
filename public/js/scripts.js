@@ -1,9 +1,8 @@
-
 const register = init => {
 	document.addEventListener('DOMContentLoaded', () => {
 		init()
 		if ( typeof Livewire !== 'undefined' ) {
-			Livewire.on('render', () => setTimeout(init, 300))
+			Livewire.hook('morphed', () => setTimeout(init, 300))
 		}
 	})
 }

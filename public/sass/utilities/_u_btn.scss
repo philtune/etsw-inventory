@@ -44,7 +44,7 @@
 	}
 	&.--danger {
 		--btn-bg: var(--clr-danger-high);
-		--btn-txt: var(--clr-danger-lowest);
+		--btn-txt: var(--clr-danger-btn-txt);
 		--btn-bg-hover: var(--clr-danger-highest);
 	}
 	&.--accent {

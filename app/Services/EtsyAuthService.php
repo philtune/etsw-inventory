@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\OauthToken;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -16,7 +17,8 @@ class EtsyAuthService
 	public static function connectUrl():string
 	{
 		return once(function ():string {
-			session()->put('state', Str::random(40));
+			$state = Str::random(40);
+			OauthToken::getEtsyToken()?->update(['state' => $state]);
 			return 'https://www.etsy.com/oauth/connect?' . http_build_query([
 					'response_type'         => 'code',
 					'client_id'             => config('services.etsy.api.key'),
@@ -25,9 +27,10 @@ class EtsyAuthService
 						'shops_r',
 						'transactions_r',
 						'listings_r',
+						'listings_w',
 						'email_r',
 					]),
-					'state'                 => session('state'),
+					'state'                 => $state,
 					'code_challenge'        => config('services.etsy.api.code_challenge'),
 					'code_challenge_method' => 'S256',
 				], encoding_type: PHP_QUERY_RFC3986);
@@ -51,9 +54,11 @@ class EtsyAuthService
 				::retry(2, 500)
 				->post('https://api.etsy.com/v3/public/oauth/token', $params)
 				->json();
-			cache([self::ACCESS_TOKEN => $response['access_token']]);
-			cache([self::ACCESS_TOKEN_EXPIRES_AT => now()->addSeconds($response['expires_in'])]);
-			cache()->forever(self::REFRESH_TOKEN, $response['refresh_token']);
+			OauthToken::getEtsyToken()?->update([
+				'access_token'  => $response['access_token'],
+				'refresh_token' => $response['refresh_token'],
+				'expires_at'    => now()->addSeconds($response['expires_in']),
+			]);
 			return true;
 		} catch ( ConnectionException ) {
 			return false;
@@ -76,25 +81,16 @@ class EtsyAuthService
 		return self::requestNewToken([
 			'grant_type'    => 'refresh_token',
 			'client_id'     => config('services.etsy.api.key'),
-			'refresh_token' => cache(self::REFRESH_TOKEN),
+			'refresh_token' => OauthToken::getEtsyToken()->refresh_token,
 		]);
 	}
 
 	public static function getAccessToken():?string
 	{
-		if ( self::getCurrentTokenExpiresAt()?->isPast() ) {
+		if ( OauthToken::getEtsyToken()?->expires_at?->isPast() ) {
 			self::refreshToken();
 		}
-		return cache(self::ACCESS_TOKEN);
+		return OauthToken::getEtsyToken()->access_token;
 	}
 
-	public static function getCurrentTokenExpiresAt():?Carbon
-	{
-		return cache(self::ACCESS_TOKEN_EXPIRES_AT);
-	}
-
-	public static function getRefreshToken():?string
-	{
-		return cache(self::REFRESH_TOKEN);
-	}
 }

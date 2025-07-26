@@ -23,9 +23,12 @@ return new class extends Migration {
 			      ->cascadeOnUpdate()
 			      ->nullOnDelete();
 			$table->string('label');
-			$table->boolean('is_archived');
-			$table->json('meta')
-			      ->nullable();
+			$table->boolean('can_stock')
+			      ->default(true);
+			$table->string('variants_in_stock')
+			      ->default('{}');
+			$table->boolean('is_archived')
+			      ->default(false);
 			$table->datetimes();
 			$table->softDeletesDatetime();
 		});

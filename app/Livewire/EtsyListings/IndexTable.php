@@ -57,7 +57,7 @@ class IndexTable extends Component
 			->with(['scent:id,code', 'productType:id,code'])
 			->get(['id', 'label', 'scent_id', 'product_type_id'])
 			->reduce(fn(array $c, Product $product) => $c + [
-					$product->id => "$product->label [{$product->scent?->code} - {$product->productType?->code}]",
+					$product->id => "[{$product->productType?->code} - {$product->scent?->code}] $product->label",
 				], []);
 		$this->scent_options = Scent
 			::query()

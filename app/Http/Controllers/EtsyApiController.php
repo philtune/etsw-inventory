@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OauthToken;
 use App\Services\EtsyAuthService;
 use App\Services\EtsyListingService;
 use App\Services\EtsyReceiptService;
@@ -19,7 +20,7 @@ class EtsyApiController extends Controller
 			'state' => 'required',
 			'code'  => 'required|string', // This authorization code has a functional life of 1 hour
 		]);
-		if ( $request->state !== session('state') ) {
+		if ( $request->state !== OauthToken::getEtsyToken()?->state ) {
 			return redirect()->route('home')->with('error', 'Form expired. Please refresh the page and try again.');
 		}
 		EtsyAuthService::authCode($request->code);

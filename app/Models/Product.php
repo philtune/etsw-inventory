@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -15,14 +17,11 @@ class Product extends Model
 	use SoftDeletes;
 
 	protected $guarded = [];
-
-	protected function casts():array
-	{
-		return [
-			'is_archived' => 'boolean',
-			'meta'        => 'json',
-		];
-	}
+	protected $casts = [
+		'can_stock'         => 'boolean',
+		'variants_in_stock' => 'json',
+		'is_archived'       => 'boolean',
+	];
 
 	/**
 	 * @return BelongsTo<Scent,$this>
@@ -62,6 +61,22 @@ class Product extends Model
 	public function wholesaleOrderProducts():HasMany
 	{
 		return $this->hasMany(WholesaleOrderProduct::class);
+	}
+
+	/**
+	 * @return HasOne<ProductAggregate,$this>
+	 */
+	public function productAggregate():HasOne
+	{
+		return $this->hasOne(ProductAggregate::class);
+	}
+
+	/**
+	 * @return Attribute<string,never>
+	 */
+	public function title():Attribute
+	{
+		return Attribute::get(fn() => '[' . ( $this->productType?->code ?: '?' ) . '-' . ( $this->scent?->code ?: '?' ) . '] ' . $this->label)->shouldCache();
 	}
 
 }

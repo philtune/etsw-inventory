@@ -38,7 +38,10 @@ class WholesaleCustomerController extends Controller
 	public function update(Request $request, WholesaleCustomer $wholesaleCustomer):RedirectResponse
 	{
 		$wholesaleCustomer->update($request->validate([
-
+			'name'            => 'required|string|max:255',
+			'primary_address' => 'nullable|string|max:255',
+			'phone_numbers'   => 'nullable|string|max:255',
+			'notes'           => 'nullable|string|max:1025',
 		]));
 		return back()->with('status', 'Customer updated!');
 	}

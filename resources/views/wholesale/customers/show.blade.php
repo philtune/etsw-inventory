@@ -1,8 +1,17 @@
 <x-layouts.app page-title="Edit Customer: {{ $wholesaleCustomer->name }}">
-	<p>
-		<a href="{{ route('wholesale.dashboard') }}">Wholesale</a> &gt;
-		<a href="{{ route('wholesale-customers.index') }}">Customers</a>
-	</p>
+	<div class="l_cols --split">
+		<p>
+			<a href="{{ route('wholesale.dashboard') }}">Wholesale</a> &gt;
+			<a href="{{ route('wholesale-customers.index') }}">Customers</a>
+		</p>
+		<div class="l_cols --sm">
+			<a href="{{ route('wholesale-customers.orders.index', $wholesaleCustomer) }}">Orders</a> |
+			<form action="{{ route('wholesale-customers.orders.store', $wholesaleCustomer) }}" method="POST">
+				@csrf
+				<button type="submit" class="u_btn --sm">New Order</button>
+			</form>
+		</div>
+	</div>
 	<form action="{{ route('wholesale-customers.update', $wholesaleCustomer) }}" method="POST">
 		@csrf
 		@method('PATCH')
@@ -68,7 +77,9 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><button type="submit" class="u_btn">@svg('icon-check') Update</button></td>
+				<td>
+					<button type="submit" class="u_btn">@svg('icon-check') Update</button>
+				</td>
 			</tr>
 		</table>
 	</form>

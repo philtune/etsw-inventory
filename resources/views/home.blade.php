@@ -1,23 +1,23 @@
 <x-layouts.app page-title="Home">
 	<fieldset>
 		<legend class="l_cols --sm"><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/> Etsy</legend>
-		@if( $access_token )
+		@if( $etsyOauthToken?->access_token )
 			<table class="m_table w-auto">
 				<tr>
 					<th>access_token</th>
 					<td>
-						{{ $access_token }}
-						<small><a href="javascript:navigator.clipboard.writeText('{{ $access_token }}')">Copy</a></small>
+						{{ $etsyOauthToken->access_token }}
+						<small><a href="javascript:navigator.clipboard.writeText('{{ $etsyOauthToken->access_token }}')">Copy</a></small>
 					</td>
 				</tr>
 				<tr>
 					<th>expires_at</th>
-					<td>{{ $expires_at->diffForHumans(short:true) }} <small>({{ $expires_at->toString() }})</small></td>
+					<td>{{ $etsyOauthToken->expires_at->diffForHumans(short:true) }} <small>({{ $etsyOauthToken->expires_at->toString() }})</small></td>
 				</tr>
 				<tr>
 					<th>refresh_token</th>
 					<td>
-						{{ $refresh_token }}
+						{{ $etsyOauthToken->refresh_token }}
 					</td>
 				</tr>
 				<tr>
@@ -46,7 +46,7 @@
 				</tr>
 				<tr>
 					<th>API calls remaining today</th>
-					<td><strong>{{ number_format(cache(\App\Services\EtsyApplicationApi::CALLS_REMAINING_TODAY)[0]) }}</strong></td>
+					<td><strong>{{ number_format($etsyOauthToken->remaining_today) }}</strong></td>
 				</tr>
 			</table>
 		@else

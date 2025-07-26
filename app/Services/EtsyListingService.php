@@ -27,8 +27,8 @@ class EtsyListingService
 					[
 						'title'      => $row['title'],
 						'state_enum' => $row['state'],
-						'price'      => $row['price'],
-						'quantity'   => $row['quantity'],
+						//						'price'      => $row['price'],
+						//						'quantity'   => $row['quantity'],
 						'url'        => $row['url'],
 						'meta'       => $row,
 						'created_at' => Carbon::createFromTimestamp($row['original_creation_timestamp']),
@@ -105,7 +105,7 @@ class EtsyListingService
 	 */
 	public static function importAll():void
 	{
-		static::import('active');
+		static::import();
 		static::import('inactive');
 		static::import('sold_out');
 		static::import('expired');

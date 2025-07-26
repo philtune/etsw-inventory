@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EtsyApiController;
 use App\Http\Controllers\EtsyListingController;
+use App\Http\Controllers\EtsyTransactionController;
 
 Route::get('/etsy-api/api-redirect-url', [EtsyApiController::class, 'apiRedirectUrl'])
      ->name('etsy-api.api-redirect-url');
@@ -24,3 +25,6 @@ Route::get('/etsy-api/import-listings', [EtsyApiController::class, 'importListin
 
 Route::get('/etsy/listings', [EtsyListingController::class, 'index'])
      ->name('etsy.listings.index');
+
+Route::get('/etsy/transactions', [EtsyTransactionController::class, 'index'])
+     ->name('etsy.transactions.index');

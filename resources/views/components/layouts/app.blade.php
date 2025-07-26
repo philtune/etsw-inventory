@@ -20,7 +20,7 @@
 @include('components.layouts.nav')
 <div style="display:flex;gap:1rem;justify-content:space-between;align-items:center;">
 	<h1>{{ $pageTitle }}</h1>
-	<div>{{ $toolbar }}</div>
+	<div class="l_cols --md">{{ $toolbar }}</div>
 </div>
 @if ( session('status') )
 	<div style="border: 1px solid;border-radius: 4px;padding:6px;">

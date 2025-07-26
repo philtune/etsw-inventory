@@ -11,10 +11,22 @@
 		border-color: var(--clr-muted-highest);
 	}
 	&.single .ts-control {
-		background-image: none;
 		box-shadow: none;
+		padding-right: 1.35rem;
+		background-repeat: no-repeat !important;
+		background-size: 0.6rem !important;
+		background-position: right 0.5rem center !important;
+		@media (prefers-color-scheme: dark) {
+			background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+		}
+		@media (prefers-color-scheme: light) {
+			background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23222222' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+		}
 		.ts-dropdown.single {
 			border-color: var(--clr-muted-highest);
+		}
+		&:after {
+			content: normal;
 		}
 	}
 
@@ -36,7 +48,7 @@
 	}
 	.ts-control,
 	&.single.input-active .ts-control {
-		background: var(--content-bg);
+		background-color: var(--content-bg);
 	}
 	.plugin-dropdown_input.focus.dropdown-active .ts-control {
 		border-color: var(--clr-muted-highest);

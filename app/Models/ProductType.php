@@ -21,7 +21,7 @@ class ProductType extends Model
 	protected $guarded = [];
 
 	protected $casts = [
-		'meta' => 'json',
+		'variants' => 'json',
 	];
 
 	/**

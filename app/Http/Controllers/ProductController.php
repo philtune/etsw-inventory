@@ -3,52 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductType;
+use App\Models\Scent;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 	public function index()
 	{
-		return view('products.index');
+		return view('products.index', [
+			'product_type_options' => ProductType
+				::query()
+				->orderBy('code')
+				->get(['id', 'code', 'label'])
+				->reduce(fn(array $c, ProductType $productType) => $c + [
+						$productType->id => "$productType->code - $productType->label"
+					], []),
+			'scent_options'        => Scent
+				::query()
+				->orderBy('code')
+				->get(['id', 'code', 'label'])
+				->reduce(fn(array $c, Scent $scent) => $c + [
+						$scent->id => "$scent->code - $scent->label"
+					], []),
+		]);
 	}
 
 	public function store(Request $request)
 	{
-		$data = $request->validate([
-			'product_type_id' => ['nullable', 'exists:product_types'],
-			'scent_id'        => ['required', 'exists:scents'],
-			'label'           => ['required'],
-			'is_archived'     => ['boolean'],
-			'meta'            => ['required'],
-		]);
+		Product::create($request->validate([
+			'product_type_id' => 'required|exists:product_types,id',
+			'scent_id'        => 'required|exists:scents,id',
+			'label'           => 'nullable|string|max:255',
+		]));
 
-		return Product::create($data);
+		return back()->with('success', 'Product added!');
 	}
 
-	public function show(Product $product)
+	public function stock()
 	{
-		return $product;
-	}
-
-	public function update(Request $request, Product $product)
-	{
-		$data = $request->validate([
-			'product_type_id' => ['nullable', 'exists:product_types'],
-			'scent_id'        => ['required', 'exists:scents'],
-			'label'           => ['required'],
-			'is_archived'     => ['boolean'],
-			'meta'            => ['required'],
-		]);
-
-		$product->update($data);
-
-		return $product;
-	}
-
-	public function destroy(Product $product)
-	{
-		$product->delete();
-
-		return response()->json();
+		return view('products.stock');
 	}
 }

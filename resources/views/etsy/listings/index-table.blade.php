@@ -129,7 +129,7 @@
 								style="width:14rem"
 							/>
 						@else
-							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->scent->code ?? '?' }} - {{ $etsyListing->product?->productType->code ?? '?' }}</span>
+							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->productType->code ?? '?' }} - {{ $etsyListing->product?->scent->code ?? '?' }}</span>
 						@endif
 					</td>
 					{{--					<td @class(['t_highlight' => !$etsyListing->scent_id])>--}}
@@ -191,13 +191,13 @@
 					</td>
 					<td>
 						<div class="l_cols --sm">@svg('icon-sack-dollar', 'text-success') {{ $etsyListing->etsy_transactions_count }}</div>
-						<small>{{ round($etsyListing->etsy_transactions_count / $etsyListing->age) }}/mo</small>
+						<small>{{ round($etsyListing->etsy_transactions_count / ($etsyListing->age ?: 1)) }}/mo</small>
 					</td>
-					<td>
+					<td class="text-right">
 						${{ number_format($etsyListing->revenue, 2) }}
 					</td>
-					<td>
-						${{ number_format($etsyListing->revenue / $etsyListing->age, 2) }}/mo
+					<td class="text-right">
+						${{ number_format($etsyListing->revenue / ($etsyListing->age ?: 1), 2) }}/mo
 					</td>
 					<td class="nowrap">
 						<a href="javascript:navigator.clipboard.writeText('{{ $etsyListing->id }}')" title="{{ $etsyListing->id }}">#</a>

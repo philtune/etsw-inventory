@@ -23,7 +23,7 @@
 				<th>Phone Number(s)</th>
 				<th>Notes</th>
 				<th>Orders</th>
-				<th class="text-center w-1px"><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
+				<th class="w-1px"><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -36,6 +36,7 @@
 					<td>{{ $wholesaleCustomer->wholesale_orders_count }}</td>
 					<td style="display:flex;align-items:center;gap:0.25rem">
 						<a href="{{ route('wholesale-customers.show', $wholesaleCustomer) }}">View</a> |
+						<a href="{{ route('wholesale-customers.orders.index', $wholesaleCustomer) }}">Orders</a> |
 						<form action="{{ route('wholesale-customers.orders.store', $wholesaleCustomer) }}" method="POST">
 							@csrf
 							<button type="submit" class="u_btn --sm">New Order</button>

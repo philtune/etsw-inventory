@@ -22,7 +22,7 @@ class ScentController extends Controller
 					'etsyListings as unarchived_listings_count' => fn(Builder $query) => $query->where('etsy_listings.is_archived', false),
 					'etsyListings as archived_listings_count' => fn(Builder $query) => $query->where('etsy_listings.is_archived', true),
 				])
-				->withSum('etsy_transactions as revenue', DB::raw("etsy_transactions.price->>'$.amount' / etsy_transactions.price->>'$.divisor'"))
+				->withSum('etsyTransactions as revenue', DB::raw("etsy_transactions.price->>'$.amount' / etsy_transactions.price->>'$.divisor'"))
 				->get(),
 		]);
 	}

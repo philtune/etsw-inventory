@@ -2,8 +2,6 @@
 
 use App\Models\EtsyListing;
 use App\Models\Product;
-use App\Models\ProductType;
-use App\Models\Scent;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,8 +22,8 @@ return new class extends Migration {
 			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')
 			      ->default(false);
-			$table->json('price');
-			$table->unsignedSmallInteger('quantity');
+//			$table->json('price');
+//			$table->unsignedSmallInteger('quantity');
 			$table->string('url');
 			$table->json('meta');
 			$table->dateTime('created_at');

@@ -11,6 +11,8 @@ return new class extends Migration {
 		Schema::create('wholesale_orders', function (Blueprint $table) {
 			$table->uuid('id')
 			      ->primary();
+			$table->datetimes();
+			$table->softDeletesDatetime();
 			$table->foreignIdFor(WholesaleCustomer::class)
 			      ->nullable()
 			      ->constrained()
@@ -20,9 +22,8 @@ return new class extends Migration {
 			      ->nullable();
 			$table->date('ordered_at')
 			      ->useCurrent();
-
-			$table->datetimes();
-			$table->softDeletesDatetime();
+			$table->string('invoice_url')
+			      ->nullable();
 		});
 	}
 };

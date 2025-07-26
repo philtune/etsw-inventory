@@ -16,7 +16,7 @@ return new class extends Migration {
 			      ->unique();
 			$table->string('label')
 			      ->unique();
-			$table->json('meta')
+			$table->string('variants')
 			      ->nullable();
 			$table->datetimes();
 			$table->softDeletesDatetime();

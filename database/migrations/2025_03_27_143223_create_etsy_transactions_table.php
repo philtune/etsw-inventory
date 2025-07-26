@@ -20,6 +20,8 @@ return new class extends Migration {
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();
+			$table->string('variation')
+			      ->nullable();
 			$table->string('title')
 			      ->nullable();
 			$table->text('description')

@@ -26,11 +26,17 @@ Route::patch('/wholesale-customers/{wholesaleCustomer}', [WholesaleCustomerContr
 Route::get('/wholesale-orders', [WholesaleOrderController::class, 'index'])
      ->name('wholesale-orders.index');
 
+Route::post('/wholesale-orders', [WholesaleOrderController::class, 'store'])
+     ->name('wholesale-orders.store');
+
+Route::get('/wholesale-orders/{wholesaleOrder}', [WholesaleOrderController::class, 'show'])
+     ->name('wholesale-orders.show');
+
+Route::delete('/wholesale-orders/{wholesaleOrder}', [WholesaleOrderController::class, 'delete'])
+     ->name('wholesale-orders.delete');
+
 Route::get('/wholesale-customers/{wholesaleCustomer}/orders', [WholesaleOrderController::class, 'customerIndex'])
      ->name('wholesale-customers.orders.index');
 
 Route::post('/wholesale-customers/{wholesaleCustomer}/orders', [WholesaleOrderController::class, 'customerStore'])
      ->name('wholesale-customers.orders.store');
-
-Route::get('/wholesale-orders/{wholesaleOrder}', [WholesaleOrderController::class, 'show'])
-	->name('wholesale-orders.show');

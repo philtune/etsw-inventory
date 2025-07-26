@@ -20,37 +20,48 @@ class WholesaleOrderController extends Controller
 	public function customerIndex(?WholesaleCustomer $wholesaleCustomer):View
 	{
 		return view('wholesale.orders.index', [
-			'pageTitle'         => 'Wholesale Orders' . ( $wholesaleCustomer ? ' for ' . $wholesaleCustomer->name : '' ),
-			'wholesaleCustomer' => $wholesaleCustomer,
-			'wholesaleOrders'   => WholesaleOrder
+			'pageTitle'                  => 'Wholesale Orders' . ( $wholesaleCustomer ? ' for ' . $wholesaleCustomer->name : '' ),
+			'wholesaleCustomer'          => $wholesaleCustomer,
+			'wholesaleOrders'            => WholesaleOrder
 				::query()
 				->when(
-					!$wholesaleCustomer,
+					$wholesaleCustomer,
+					fn(Builder $query) => $query->where('wholesale_customer_id', $wholesaleCustomer->id),
 					fn(Builder $query) => $query->with('wholesaleCustomer')
 				)
 				->withCount('wholesaleOrderProducts')
+				->withSum('wholesaleOrderProducts', 'quantity')
 				->selectSub(WholesaleOrderProduct
 					::whereRaw('wholesale_orders.id = wholesale_order_products.wholesale_order_id')
 					->selectRaw('sum(price_per_unit * quantity)'),
 					'items_grand_total'
 				)
-				->orderBy('ordered_at')
+				->orderByDesc('ordered_at')
 				->get(),
+			'wholesale_customer_options' => WholesaleCustomer
+				::query()
+				->orderBy('name')
+				->withCount('wholesaleOrders')
+				->get(['id', 'name'])
+				->reduce(fn(array $c, WholesaleCustomer $wholesaleCustomer) => $c + [
+						$wholesaleCustomer->id => "$wholesaleCustomer->name ($wholesaleCustomer->wholesale_orders_count)"
+					], []),
 		]);
 	}
 
 	public function store(Request $request)
 	{
-		$data = $request->validate([
-			'customer' => ['required'],
+		$request->validate([
+			'wholesale_customer_id' => 'required|exists:wholesale_customers,id',
 		]);
-
-		return WholesaleOrder::create($data);
+		return $this->customerStore(WholesaleCustomer::find($request->wholesale_customer_id));
 	}
 
 	public function customerStore(WholesaleCustomer $wholesaleCustomer):RedirectResponse
 	{
-		$wholesaleOrder = $wholesaleCustomer->wholesaleOrders()->create();
+		$wholesaleOrder = $wholesaleCustomer->wholesaleOrders()->create([
+			'ordered_at' => now()
+		]);
 		return redirect()->route('wholesale-orders.show', $wholesaleOrder);
 	}
 
@@ -61,21 +72,12 @@ class WholesaleOrderController extends Controller
 		]);
 	}
 
-	public function update(Request $request, WholesaleOrder $wholesaleOrder)
-	{
-		$data = $request->validate([
-			'customer' => ['required'],
-		]);
-
-		$wholesaleOrder->update($data);
-
-		return $wholesaleOrder;
-	}
-
-	public function destroy(WholesaleOrder $wholesaleOrder)
+	public function delete(WholesaleOrder $wholesaleOrder)
 	{
 		$wholesaleOrder->delete();
 
-		return response()->json();
+		return redirect()
+			->route('wholesale-customers.orders.index', $wholesaleOrder->wholesale_customer_id)
+			->with('toast', 'Order deleted!');
 	}
 }

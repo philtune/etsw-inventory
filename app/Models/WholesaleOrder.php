@@ -17,10 +17,6 @@ class WholesaleOrder extends Model
 	protected $guarded = [];
 	protected $casts = [
 		'ordered_at'   => 'datetime',
-		'started_at'   => 'datetime',
-		'completed_at' => 'datetime',
-		'shipped_at'   => 'datetime',
-		'pif_at'       => 'datetime',
 	];
 
 	/**
@@ -47,7 +43,7 @@ class WholesaleOrder extends Model
 		return Attribute::get(function () {
 			return $this
 				->wholesaleOrderProducts()
-				->selectRaw('sum(price_per_unit * quantity) as items_grand_total')
+				->selectRaw('sum((price_per_unit * quantity) + total_adjustment) as items_grand_total')
 				->first()
 				->items_grand_total;
 		})->shouldCache();
