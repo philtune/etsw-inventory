@@ -20,11 +20,13 @@ class EtsyApplicationApi
 	protected static function send(Closure $callback):array
 	{
 		$etsyOauthToken = OauthToken::getEtsyToken();
-		if ( $etsyOauthToken?->remaining_today === 0 ) {
-			throw new TooManyRequestsHttpException(3600, 'Proxy tried too many times. Try again later.');
-		}
-		if ( $etsyOauthToken?->remaining_this_second === 0 ) {
-			sleep(1);
+		if ( $etsyOauthToken->last_used_at->isAfter(now()->subDay()) ) {
+			if ( $etsyOauthToken->remaining_today === 0 ) {
+				throw new TooManyRequestsHttpException(3600, 'Proxy tried too many times. Try again later.');
+			}
+			if ( $etsyOauthToken->remaining_this_second === 0 ) {
+				sleep(1);
+			}
 		}
 		$pendingRequest = Http
 			::baseUrl('https://openapi.etsy.com/v3/application')
@@ -36,6 +38,7 @@ class EtsyApplicationApi
 		$etsyOauthToken->update([
 			'remaining_today'       => $response->getHeader('X-Remaining-Today')[0],
 			'remaining_this_second' => $response->getHeader('X-Remaining-This-Second')[0],
+			'last_used_at'          => now()
 		]);
 		return $response->json();
 	}
@@ -65,6 +68,7 @@ class EtsyApplicationApi
 	}
 
 	/**
+	 * @see https://developers.etsy.com/documentation/reference/#operation/getShopReceipts
 	 * @throws ConnectionException
 	 */
 	public static function getReceipts(array $params = []):array
@@ -92,6 +96,7 @@ class EtsyApplicationApi
 	}
 
 	/**
+	 * @see https://developers.etsy.com/documentation/reference/#operation/getShopReceiptTransactionsByShop
 	 * @throws ConnectionException
 	 */
 	public static function getTransactions(array $params = []):array

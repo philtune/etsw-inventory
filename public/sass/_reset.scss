@@ -38,3 +38,19 @@ svg {
 table {
 	border-collapse: collapse;
 }
+
+code {
+	display: inline-block;
+	white-space: pre-wrap;
+	font-size: 0.8em;
+	background: var(--tint-low);
+	padding: 0.5rem;
+	border-radius: 0.25rem;
+}
+
+ul, ol, p, h1, h2, h3, h4, h5, h6, blockquote {
+	color: inherit;
+	padding: unset;
+	margin: unset;
+	font: inherit;
+}

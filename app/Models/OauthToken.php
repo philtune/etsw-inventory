@@ -12,7 +12,8 @@ class OauthToken extends Model
 	public $timestamps = false;
 	protected $guarded = [];
 	protected $casts = [
-		'expires_at' => 'datetime',
+		'expires_at'   => 'datetime',
+		'last_used_at' => 'datetime',
 	];
 	const CLIENT_ETSY = 'etsy';
 	const clients = [

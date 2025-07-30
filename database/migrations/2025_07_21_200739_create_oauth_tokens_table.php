@@ -25,6 +25,8 @@ return new class extends Migration {
 			      ->nullable();
 			$table->unsignedSmallInteger('remaining_this_second')
 			      ->nullable();
+			$table->dateTime('last_used_at')
+			      ->nullable();
 		});
 	}
 };

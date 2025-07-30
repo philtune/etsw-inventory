@@ -11,7 +11,7 @@ class ProductTypeSeeder extends Seeder
 	{
 		ProductType::factory()->createMany([
 			[
-				'section_id' => 19684707,
+				'etsy_section_id' => 19684707,
 				'code'       => 'CPS',
 				'label'      => 'Cold Processed Soap',
 				'variants'   => [
@@ -25,7 +25,7 @@ class ProductTypeSeeder extends Seeder
 				],
 			],
 			[
-				'section_id' => 36188927,
+				'etsy_section_id' => 36188927,
 				'code'       => 'SB',
 				'label'      => 'Shampoo Bar',
 				'variants'   => [
@@ -38,32 +38,32 @@ class ProductTypeSeeder extends Seeder
 				],
 			],
 			[
-				'section_id' => 36174672,
+				'etsy_section_id' => 36174672,
 				'code'       => 'CB',
 				'label'      => 'Conditioner Bar',
 			],
 			[
-				'section_id' => 39672549,
+				'etsy_section_id' => 39672549,
 				'code'       => 'RLS',
 				'label'      => 'Room & Linen Spray',
 			],
 			[
-				'section_id' => 32315602,
+				'etsy_section_id' => 32315602,
 				'code'       => 'SET',
 				'label'      => 'Shower Set - Soap | Shampoo | Conditioner',
 			],
 			[
-				'section_id' => 32315602,
+				'etsy_section_id' => 32315602,
 				'code'       => 'HCS',
 				'label'      => 'Haircare Set - Shampoo | Conditioner',
 			],
 			[
-				'section_id' => 32315602,
+				'etsy_section_id' => 32315602,
 				'code'       => 'BRS',
 				'label'      => 'Bathroom Set - Soap | Shave Cream | Beard Oil',
 			],
 			[
-				'section_id' => 27609224,
+				'etsy_section_id' => 27609224,
 				'code'       => 'WSS',
 				'label'      => 'Whipped Sugar Scrub',
 				'variants'   => [
@@ -76,27 +76,27 @@ class ProductTypeSeeder extends Seeder
 				]
 			],
 			[
-				'section_id' => 32315602,
+				'etsy_section_id' => 32315602,
 				'code'       => 'BUNDLE',
 				'label'      => 'Bundle',
 			],
 			[
-				'section_id' => 40348874,
+				'etsy_section_id' => 40348874,
 				'code'       => 'WM',
 				'label'      => 'Wax Melt',
 			],
 			[
-				'section_id' => 31236411,
+				'etsy_section_id' => 31236411,
 				'code'       => 'BO',
 				'label'      => 'Beard Oil',
 			],
 			[
-				'section_id' => 31236411,
+				'etsy_section_id' => 31236411,
 				'code'       => 'SC',
 				'label'      => 'Shave Cream',
 			],
 			[
-				'section_id' => 32330253,
+				'etsy_section_id' => 32330253,
 				'code'       => 'SALT',
 				'label'      => 'Bath Salts',
 			],
@@ -105,12 +105,12 @@ class ProductTypeSeeder extends Seeder
 				'label' => 'Bubble Bar',
 			],
 			[
-				'section_id' => 30330375,
+				'etsy_section_id' => 30330375,
 				'code'       => 'MASK',
 				'label'      => 'Foaming Clay Mask',
 			],
 			[
-				'section_id' => 32330253,
+				'etsy_section_id' => 32330253,
 				'code'       => 'BOMB',
 				'label'      => 'Bath Bomb',
 			],

@@ -1,3 +1,5 @@
+import {m_propSwitcher} from "./modules/m_propSwitcher.js";
+
 const register = init => {
 	document.addEventListener('DOMContentLoaded', () => {
 		init()
@@ -12,12 +14,12 @@ window.bindDOMElem = (selectors, callback) => {
 	})
 }
 
-( function(input) {
+;( function(input) {
 	Object.entries(input).forEach(([key, callback]) => {
 		bindDOMElem(`[data-${key}]`, callback)
 	})
 } )({
-
+	'prop-switcher': m_propSwitcher,
 })
 
 window.toast = (message, type = null, timeout = 5000) => {

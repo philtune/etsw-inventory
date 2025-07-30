@@ -10,16 +10,18 @@ return new class extends Migration {
 		Schema::create('product_types', function (Blueprint $table) {
 			$table->uuid('id')
 			      ->primary();
-			$table->unsignedInteger('section_id')
-			      ->nullable();
+			$table->datetimes();
+			$table->softDeletesDatetime();
+			$table->boolean('is_bundle')
+			      ->default(false);
 			$table->string('code', 16)
 			      ->unique();
 			$table->string('label')
 			      ->unique();
 			$table->string('variants')
 			      ->nullable();
-			$table->datetimes();
-			$table->softDeletesDatetime();
+			$table->unsignedInteger('etsy_section_id')
+			      ->nullable();
 		});
 	}
 

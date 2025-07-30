@@ -4,6 +4,7 @@
 	'default' => null,
 	'initial' => '-- SELECT --',
 ])
+@php($default = collect(Arr::wrap($default)))
 <select
 	name="{{ $name }}"
 	{{ $attributes->class('select') }}
@@ -13,7 +14,7 @@
 	@foreach( $options as $value => $label )
 		<option
 			value="{{ $value }}"
-			@selected($default === $value)
+			@selected($default->contains($value))
 		>{{ $label }}</option>
 	@endforeach
 </select>

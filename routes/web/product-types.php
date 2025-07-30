@@ -8,7 +8,7 @@ Route::get('/product-types', [ProductTypeController::class, 'index'])
 Route::post('/product-types', [ProductTypeController::class, 'store'])
      ->name('product-types.store');
 
-Route::patch('/product-types/{scent}', [ProductTypeController::class, 'update'])
+Route::patch('/product-types/{productType}', [ProductTypeController::class, 'update'])
      ->name('product-types.update');
 
 Route::delete('/product-types/{scent}', [ProductTypeController::class, 'delete'])

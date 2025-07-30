@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Database\Factories\ProductTypeFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,8 +23,17 @@ class ProductType extends Model
 	protected $guarded = [];
 
 	protected $casts = [
-		'variants' => 'json',
+		'variants'  => 'json',
+		'is_bundle' => 'boolean',
 	];
+
+	/**
+	 * @return Attribute<string,never>
+	 */
+	public function title():Attribute
+	{
+		return Attribute::get(fn() => "$this->code - $this->label")->shouldCache();
+	}
 
 	/**
 	 * @return HasMany<Product>
@@ -46,6 +57,32 @@ class ProductType extends Model
 	public function etsyTransactions():HasManyThrough
 	{
 		return $this->through('etsyListings')->has('etsyTransactions');
+	}
+
+	/**
+	 * @return BelongsToMany<ProductType,$this>
+	 */
+	public function parentProductType():BelongsToMany
+	{
+		return $this->belongsToMany(
+			ProductType::class,
+			'bundle_product_types',
+			'child_product_type_id',
+			'parent_product_type_id',
+		);
+	}
+
+	/**
+	 * @return BelongsToMany<ProductType,$this>
+	 */
+	public function childProductTypes():BelongsToMany
+	{
+		return $this->belongsToMany(
+			ProductType::class,
+			'bundle_product_types',
+			'parent_product_type_id',
+			'child_product_type_id',
+		);
 	}
 
 }
