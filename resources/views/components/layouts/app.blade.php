@@ -19,7 +19,7 @@
 <body class="l_body">
 @include('components.layouts.nav')
 <div style="display:flex;gap:1rem;justify-content:space-between;align-items:center;">
-	<h1>{{ $pageTitle }}</h1>
+	<h1 class="t_page_title">{{ $pageTitle }}</h1>
 	<div class="l_cols --md">{{ $toolbar }}</div>
 </div>
 @if ( session('status') )

@@ -3,9 +3,8 @@
 	'trigger',
     'uid' => 'id_' . uniqid(),
     'pushTo' => 'below-body',
-    'submit',
+    'submitBtn',
     'submitClass' => null,
-    'action',
 ])
 
 <button
@@ -32,27 +31,18 @@
 				<div class="l_cols --split --lg">
 					<h2 class="title">{{ $title }}</h2>
 				</div>
-				<form
-					method="POST"
-					action="{{ $action }}"
-					class="l_rows"
-				>
-					@csrf
-					@method('PATCH')
-					{{ $slot }}
-					<div class="l_cols --split">
-						<button
-							type="button"
-							class="u_btn --muted"
-							onclick="closeModal('{{ $uid }}')"
-						>@svg('icon-xmark')Close
-						</button>
-						<button
-							type="submit"
-							@class(['u_btn', $submitClass])
-						>{{ $submit }}</button>
-					</div>
-				</form>
+				{{ $slot }}
+				<div class="l_cols --split">
+					<button
+						type="button"
+						class="u_btn --muted"
+						onclick="closeModal('{{ $uid }}')"
+					>@svg('icon-xmark')Cancel</button>
+					<button
+						type="submit"
+						{{ $submitBtn->attributes->class(['u_btn', $submitClass]) }}
+					>{{ $submitBtn }}</button>
+				</div>
 			</div>
 		</div>
 	</div>

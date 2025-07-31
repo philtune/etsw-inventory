@@ -52,9 +52,16 @@ class ProductTypeController extends Controller
 		return back()->with('status', 'Product type updated!');
 	}
 
-	public function destroy(ProductType $productType):RedirectResponse
+	public function delete(ProductType $productType):RedirectResponse
 	{
 		$productType->delete();
 		return back()->with('status', 'Product type deleted!');
 	}
+
+	public function restore(ProductType $productType):RedirectResponse
+	{
+		$productType->restore();
+		return back()->with('status', 'Product type restored!');
+	}
+
 }

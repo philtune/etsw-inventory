@@ -1,5 +1,4 @@
 export const m_propSwitcher = _me => {
-	console.log(_me)
 	const orig_arg_str = _me.getAttribute('data-prop-switcher')
 	if ( orig_arg_str ) {
 		const rules = orig_arg_str.split('|')
@@ -26,7 +25,6 @@ export const m_propSwitcher = _me => {
 						_me.classList.toggle(values[control === 'checked' ? 0 : 1], should)
 				}
 			}
-			console.log(selector)
 			const triggers = document.querySelectorAll(selector.trim())
 			if ( control === 'change' ) {
 				triggers.forEach(_trigger => {

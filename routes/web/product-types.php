@@ -11,5 +11,9 @@ Route::post('/product-types', [ProductTypeController::class, 'store'])
 Route::patch('/product-types/{productType}', [ProductTypeController::class, 'update'])
      ->name('product-types.update');
 
-Route::delete('/product-types/{scent}', [ProductTypeController::class, 'delete'])
+Route::delete('/product-types/{productType}', [ProductTypeController::class, 'delete'])
      ->name('product-types.delete');
+
+Route::patch('/product-types/{productType}/restore', [ProductTypeController::class, 'restore'])
+     ->withTrashed()
+     ->name('product-types.restore');
