@@ -14,20 +14,14 @@
 >{{ $trigger }}</button>
 @push($pushTo)
 	<div class="m_modal" tabindex="0" id="{{ $uid }}">
-		<button
-			type="button"
-			class="m_modal-background"
-			onclick="closeModal('{{ $uid }}')"
-			title="close"
-		></button>
-		<div class="m_modal-inner__container">
+		<div class="m_modal-container">
 			<button
 				type="button"
-				class="m_modal-inner__container-background"
+				class="m_modal-container-background"
 				onclick="closeModal('{{ $uid }}')"
 				title="close"
 			></button>
-			<div class="m_modal-inner">
+			<div class="m_modal-container-card">
 				<div class="l_cols --split --lg">
 					<h2 class="title">{{ $title }}</h2>
 				</div>
@@ -35,7 +29,7 @@
 				<div class="l_cols --split">
 					<button
 						type="button"
-						class="u_btn --muted"
+						class="u_btn --danger --bare"
 						onclick="closeModal('{{ $uid }}')"
 					>@svg('icon-xmark')Cancel</button>
 					<button

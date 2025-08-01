@@ -10,7 +10,9 @@
 	{{ $attributes->class('select') }}
 	data-tomselect
 >
-	<option value="">{{ $initial }}</option>
+	@if ( $initial !== false )
+		<option value="">{{ $initial }}</option>
+	@endif
 	@foreach( $options as $value => $label )
 		<option
 			value="{{ $value }}"
@@ -23,14 +25,15 @@
 		document.addEventListener('DOMContentLoaded', () => {
 			const init = () => {
 				document.querySelectorAll('[data-tomselect]').forEach(_me => {
-					if ( !_me.tomselect ) {
-						new TomSelect(_me, {
-							maxOptions: null,
-							plugins: ['dropdown_input'],
-							allowEmptyOption: true,
-							refreshThrottle: 0
-						})
+					if ( _me.tomselect ) {
+						_me.tomselect.destroy()
 					}
+					new TomSelect(_me, {
+						maxOptions: null,
+						plugins: ['dropdown_input'],
+						allowEmptyOption: true,
+						refreshThrottle: 0
+					})
 				})
 			}
 			if ( typeof Livewire !== 'undefined' ) {

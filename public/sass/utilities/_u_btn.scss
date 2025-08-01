@@ -26,35 +26,57 @@
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
-	&:hover:not(:disabled), &:focus:not(:disabled) {
-		background-color: var(--btn-bg-hover);
-	}
 	--btn-bg: var(--clr-default-high);
 	--btn-txt: var(--clr-default-lowest);
 	--btn-bg-hover: var(--clr-default-highest);
+	--btn-txt-bare: var(--clr-default-highest);
+	--btn-txt-bare-hover: var(--clr-default-high);
 	&.--success {
 		--btn-bg: var(--clr-success-high);
 		--btn-txt: var(--clr-success-lowest);
 		--btn-bg-hover: var(--clr-success-highest);
+		--btn-txt-bare: var(--clr-success-highest);
+		--btn-txt-bare-hover: var(--clr-success-high);
 	}
 	&.--warning {
 		--btn-bg: var(--clr-warning-high);
 		--btn-txt: var(--clr-warning-lowest);
 		--btn-bg-hover: var(--clr-warning-highest);
+		--btn-txt-bare: var(--clr-warning-highest);
+		--btn-txt-bare-hover: var(--clr-warning-high);
 	}
 	&.--danger {
 		--btn-bg: var(--clr-danger-high);
 		--btn-txt: var(--clr-danger-btn-txt);
 		--btn-bg-hover: var(--clr-danger-highest);
+		--btn-txt-bare: var(--clr-danger-highest);
+		--btn-txt-bare-hover: var(--clr-danger-high);
 	}
 	&.--accent {
 		--btn-bg: var(--clr-accent-high);
 		--btn-txt: var(--clr-accent-lowest);
 		--btn-bg-hover: var(--clr-accent-highest);
+		--btn-txt-bare: var(--clr-accent-highest);
+		--btn-txt-bare-hover: var(--clr-accent-high);
 	}
 	&.--muted {
 		--btn-bg: var(--clr-muted-high);
 		--btn-txt: var(--clr-muted-low);
 		--btn-bg-hover: var(--clr-muted-highest);
+		--btn-txt-bare: var(--clr-muted-highest);
+		--btn-txt-bare-hover: var(--clr-muted-high);
+	}
+	&:not(.--bare) {
+		--btn-txt-hover: var(--btn-txt);
+	}
+	&.--bare {
+		--btn-bg: none;
+		--btn-bg-hover: none;
+		--btn-txt: var(--btn-txt-bare);
+		--btn-txt-hover: var(--btn-txt-bare-hover);
+	}
+	&:hover:not(:disabled), &:focus:not(:disabled) {
+		background-color: var(--btn-bg-hover);
+		color: var(--btn-txt-hover);
 	}
 }

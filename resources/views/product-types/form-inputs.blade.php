@@ -5,19 +5,6 @@
 ])
 <table class="m_table">
 	<tr>
-		<th><label for="{{ $uid }}_code">Code:</label></th>
-		<td>
-			<input
-				class="input"
-				name="code"
-				value="{{ $productType?->code }}"
-				maxlength="16"
-				id="{{ $uid }}_code"
-				style="width:5rem"
-			/>
-		</td>
-	</tr>
-	<tr>
 		<th><label for="{{ $uid }}_label">Label</label></th>
 		<td>
 			<input
@@ -27,6 +14,19 @@
 				maxlength="255"
 				id="{{ $uid }}_label"
 				style="width:25rem"
+			/>
+		</td>
+	</tr>
+	<tr>
+		<th><label for="{{ $uid }}_code">Code:</label></th>
+		<td>
+			<input
+				class="input"
+				name="code"
+				value="{{ $productType?->code }}"
+				maxlength="16"
+				id="{{ $uid }}_code"
+				style="width:5rem"
 			/>
 		</td>
 	</tr>
@@ -60,38 +60,10 @@
 	<tr>
 		<th>Variants</th>
 		<td>
-			<div class="l_rows --sm">
-				<label>
-					<input
-						type="text"
-						class="input"
-						name="variants[label]"
-						placeholder="Label"
-						value="{{ $productType?->variants->label ?? null }}"
-					/>
-				</label>
-				<div class="l_cols --sm">
-					<label>
-						<input
-							type="text"
-							class="input"
-							name="variants[options][0][key]"
-							placeholder="key"
-							style="width:5rem;"
-						/>
-					</label>
-					<label>
-						<input
-							type="text"
-							class="input"
-							name="variants[options][0][value]"
-							placeholder="value"
-							style="width:5rem;"
-						/>
-					</label>
-				</div>
-				<code>{{ json_encode($productType?->variants, JSON_PRETTY_PRINT) }}</code>
-			</div>
+			<livewire:product-types.variant-definition
+				:variants="$productType?->variants"
+				wire:key="{{ $productType?->id }}"
+			/>
 		</td>
 	</tr>
 </table>

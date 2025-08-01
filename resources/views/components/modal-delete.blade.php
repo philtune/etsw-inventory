@@ -14,9 +14,8 @@
 	:$pushTo
 >
 	<x-slot:trigger
-		class="--tt-right --danger"
-		data-tooltip="Delete {{ $modelName }}"
-	>@svg('icon-trash-xmark')</x-slot:trigger>
+		class="--danger --bare"
+	>@svg('icon-trash-xmark') Delete {{ $modelName }}</x-slot:trigger>
 	<form
 		method="POST"
 		action="{{ $action }}"

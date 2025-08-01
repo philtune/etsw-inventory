@@ -23,7 +23,7 @@ class ProductType extends Model
 	protected $guarded = [];
 
 	protected $casts = [
-		'variants'  => 'object',
+		'variants'  => 'array',
 		'is_bundle' => 'boolean',
 	];
 

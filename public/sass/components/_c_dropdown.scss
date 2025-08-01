@@ -1,0 +1,107 @@
+.c_dropdown {
+	position: relative;
+	display: inline-block;
+	&-proxy_trigger {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		cursor: pointer;
+		&:focus {
+			pointer-events: none;
+		}
+	}
+	&:before {
+		content: "";
+		border-left: 0.25rem solid var(--content-bg);
+		border-top: 0.375rem solid transparent;
+		border-bottom: 0.375rem solid transparent;
+		position: absolute;
+		z-index: 4;
+		left: 0;
+		top: 50%;
+		translate: 0 -50%;
+	}
+	.__trigger {
+		display: flex;
+		justify-content: flex-start;
+		padding: 0.5rem;
+		position: relative;
+	}
+	&:has(&-content:focus-within) &-proxy_trigger {
+		pointer-events: none;
+	}
+	&-content {
+		position: absolute;
+		box-shadow: var(--box-shadow-sm);
+		border-radius: 0.25rem;
+		background: var(--content-bg);
+		transition: opacity 150ms, transform 150ms;
+		z-index: 3;
+		padding: 0.25rem 0.15rem;
+	}
+	.u_btn {
+		width: 100%;
+		justify-content: start;
+	}
+	&-proxy_trigger:not(:focus) ~ &-content:not(:focus-within),
+	&:has(&-proxy_trigger:not(:focus) ~ &-content:not(:focus-within)):before {
+		pointer-events: none;
+		opacity: 0;
+	}
+
+	&.--top &-content {
+		bottom: 100%;
+		left: 50%;
+		translate: -50% 0;
+	}
+	&.--top-right &-content {
+		bottom: 100%;
+		left: 0;
+	}
+	&.--top-left &-content {
+		bottom: 100%;
+		right: 0;
+	}
+	&.--right-top &-content {
+		left: 100%;
+		top: 0;
+	}
+	&.--right &-content {
+		left: 100%;
+		top: 50%;
+		translate: 0 -50%;
+	}
+	&.--right-bottom &-content {
+		left: 100%;
+		bottom: 0;
+	}
+	&.--bottom-right &-content {
+		top: 100%;
+		left: 0;
+	}
+	&.--bottom &-content {
+		top: 100%;
+		left: 50%;
+		translate: -50% 0;
+	}
+	&.--bottom-left &-content {
+		top: 100%;
+		right: 0;
+	}
+	&.--left &-content {
+		right: 100%;
+		top: 50%;
+		translate: 0 -50%;
+	}
+	&.--left-bottom &-content {
+		right: 100%;
+		bottom: 0;
+	}
+	&.--bottom &-proxy_trigger:not(:focus) ~ &-content:not(:focus-within),
+	&.--bottom-right &-proxy_trigger:not(:focus) ~ &-content:not(:focus-within),
+	&.--bottom-left &-proxy_trigger:not(:focus) ~ &-content:not(:focus-within) {
+		transform: translateY(1rem);
+	}
+}
