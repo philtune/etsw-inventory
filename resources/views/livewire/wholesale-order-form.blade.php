@@ -75,7 +75,7 @@
 			<livewire:wholesale-order-product-form
 				:$wholesaleOrderProduct
 				:$product_options
-				:key="$wholesaleOrderProduct->id"
+				wire:key="{{ $wholesaleOrderProduct->id }}"
 				:is_last="$loop->last"
 			/>
 		@endforeach

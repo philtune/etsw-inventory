@@ -36,6 +36,14 @@ class Scent extends Model
 	}
 
 	/**
+	 * @return HasManyThrough<ProductAggregate,Product,$this>
+	 */
+	public function productAggregates():HasManyThrough
+	{
+		return $this->through('products')->has('productAggregate');
+	}
+
+	/**
 	 * @return HasManyThrough<EtsyTransaction,EtsyListing,$this>
 	 */
 	public function etsyTransactions():HasManyThrough

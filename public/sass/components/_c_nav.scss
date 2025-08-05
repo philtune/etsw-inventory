@@ -1,0 +1,19 @@
+.c_nav {
+	height: 100%;
+	padding: 1rem;
+	background: var(--contrast-bg);
+	color: var(--contrast-txt);
+	a {
+		color: inherit;
+		text-decoration: none;
+		font-size: 1rem;
+		font-weight: 500;
+		&:hover, &:focus {
+			color: var(--clr-default-lowest);
+		}
+	}
+	legend {
+		font-size: 1rem;
+		font-weight: 500;
+	}
+}

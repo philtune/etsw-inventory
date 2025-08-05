@@ -6,6 +6,7 @@ use App\Models\ProductType;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductTypeController extends Controller
 {
@@ -28,10 +29,20 @@ class ProductTypeController extends Controller
 	public function store(Request $request):RedirectResponse
 	{
 		ProductType::create($request->validate([
-			'code'  => 'nullable|string|max:16',
-			'label' => 'nullable|string|max:255',
+			'code'  => [
+				'nullable',
+				'string',
+				'max:16',
+				Rule::unique('product_types')->withoutTrashed()
+			],
+			'label' => [
+				'nullable',
+				'string',
+				'max:255',
+				Rule::unique('product_types')->withoutTrashed()
+			],
 		]));
-		return back()->with('status', 'Product type created!');
+		return back()->with('toast', 'Product type created!');
 	}
 
 	public function update(Request $request, ProductType $productType):RedirectResponse
@@ -70,19 +81,19 @@ class ProductTypeController extends Controller
 				'variants'  => 'nullable|array',
 			]));
 		$productType->childProductTypes()->sync($request->array('child_product_type_ids'));
-		return back()->with('status', 'Product type updated!');
+		return back()->with('toast', 'Product type updated!');
 	}
 
 	public function delete(ProductType $productType):RedirectResponse
 	{
 		$productType->delete();
-		return back()->with('status', 'Product type deleted!');
+		return back()->with('toast', 'Product type deleted!');
 	}
 
 	public function restore(ProductType $productType):RedirectResponse
 	{
 		$productType->restore();
-		return back()->with('status', 'Product type restored!');
+		return back()->with('toast', 'Product type restored!');
 	}
 
 }

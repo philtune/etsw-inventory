@@ -43,7 +43,7 @@ class WholesaleCustomerController extends Controller
 			'phone_numbers'   => 'nullable|string|max:255',
 			'notes'           => 'nullable|string|max:1025',
 		]));
-		return back()->with('status', 'Customer updated!');
+		return back()->with('toast', 'Customer updated!');
 	}
 
 	public function destroy(WholesaleCustomer $wholesaleCustomer)

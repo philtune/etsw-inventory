@@ -17,10 +17,13 @@ abstract class IndexTableComponent extends Component
 {
 	use WithPagination;
 	use Searchable;
+	use Sortable;
 
 	#[Url]
 	public int $perPage = 15;
 	public string $stack_id;
+	#[Url]
+	public bool $trashed = false;
 
 	/** @var array<Closure> $queryHandlers */
 	protected array $queryHandlers = [];
@@ -42,11 +45,14 @@ abstract class IndexTableComponent extends Component
 	{
 		$this->stack_id = 'id_' . uniqid();
 
-		$query = $this->query();
+		$query = $this
+			->query()
+			->when($this->trashed, fn(Builder $builder) => $builder->onlyTrashed());
 
 		foreach ( $this->queryHandlers as $queryHandler ) {
 			$queryHandler($query);
 		}
+
 		return $query->paginate($this->perPage);
 	}
 

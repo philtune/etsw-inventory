@@ -44,6 +44,14 @@ class ProductType extends Model
 	}
 
 	/**
+	 * @return HasManyThrough<ProductAggregate,Product,$this>
+	 */
+	public function productAggregates():HasManyThrough
+	{
+		return $this->through('products')->has('productAggregate');
+	}
+
+	/**
 	 * @return HasManyThrough<EtsyListing,Product,$this>
 	 */
 	public function etsyListings():HasManyThrough

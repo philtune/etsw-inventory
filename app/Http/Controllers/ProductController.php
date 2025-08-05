@@ -37,7 +37,7 @@ class ProductController extends Controller
 			'label'           => 'nullable|string|max:255',
 		]));
 
-		return back()->with('success', 'Product added!');
+		return back()->with('toast', 'Product added!');
 	}
 
 	public function stock()

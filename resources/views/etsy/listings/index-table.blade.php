@@ -106,13 +106,13 @@
 				{{--				<x-th.sortable label="Product Type" column="product_types.label"/>--}}
 				<x-th.sortable label="Title" column="etsy_listings.title"/>
 				<x-th.sortable label="State" column="etsy_listings.state_enum"/>
-				<x-th.sortable label="Views" column="views" :desc-first="true"/>
-				<x-th.sortable label="Favs" column="num_favorers" :desc-first="true"/>
+				<x-th.sortable label="Views" column="views" :desc-first/>
+				<x-th.sortable label="Favs" column="num_favorers" :desc-first/>
 				<x-th.sortable label="Ending" column="ending_at"/>
-				<x-th.sortable label="Age" column="age" :desc-first="true"/>
-				<x-th.sortable label="Sales" column="etsy_transactions_count" :desc-first="true"/>
-				<x-th.sortable label="Revenue" column="revenue" :desc-first="true"/>
-				<x-th.sortable label="Rev/mo" column="revenue_per_month" :desc-first="true"/>
+				<x-th.sortable label="Age" column="age" :desc-first/>
+				<x-th.sortable label="Sales" column="etsy_transactions_count" :desc-first/>
+				<x-th.sortable label="Revenue" column="revenue" :desc-first/>
+				<x-th.sortable label="Rev/mo" column="revenue_per_month" :desc-first/>
 				<th><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
 			</tr>
 			</thead>

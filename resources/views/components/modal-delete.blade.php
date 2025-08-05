@@ -1,10 +1,9 @@
 @props([
-    'uid' => 'id_' . uniqid(),
+    'uid' => 'delete_' . uniqid(),
 	'modelName',
     'pushTo' => 'below-body',
     'action',
     'method' => null,
-    'submit' => 'Submit',
     'text' => null,
     'canRestore' => null
 ])
@@ -25,7 +24,7 @@
 		@csrf
 		@method('DELETE')
 		@if( is_null($canRestore) )
-			{{ $slot }}
+			{!! $text ?: $slot !!}
 		@else
 			<p>
 				Are you sure you want to delete this {{ $modelName }}?

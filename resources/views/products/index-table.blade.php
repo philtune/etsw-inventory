@@ -1,7 +1,3 @@
-@props([
-	/** @var \Illuminate\Database\Eloquent\Collection<array-key,\App\Models\Product> $products */
-	'products',
-])
 <div class="l_rows">
 	@if ( $errors->any() )
 		<div>
@@ -14,7 +10,7 @@
 	@endif
 	<div class="l_cols --split">
 		<div>
-			{{ $products->links('pagination') }}
+			{{ $collection->links('pagination') }}
 		</div>
 		<div>
 			<input
@@ -26,7 +22,7 @@
 		</div>
 	</div>
 	<div class="m_table__container">
-		<table class="m_table w-auto">
+		<table class="m_table">
 			<thead>
 			<tr>
 				<x-th.sortable label="Type" column="product_types.label"/>
@@ -34,11 +30,11 @@
 				<x-th.sortable label="Label" column="products.label"/>
 				<x-th.sortable label="Archived" column="products.is_archived"/>
 				<x-th.sortable label="Stockable" column="products.can_stock"/>
-				<th><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
+				<x-th.actions/>
 			</tr>
 			</thead>
 			<tbody>
-			@foreach( $products as $product )
+			@foreach( $collection as $product )
 				<tr wire:key="{{ $product->id }}">
 					<td @class(['t_highlight' => !$product->product_type_id])>
 						<x-form.select
@@ -46,7 +42,7 @@
 							:options="$product_type_options"
 							:default="$product->product_type_id"
 							initial="-- PRODUCT TYPE --"
-							style="width:14rem"
+							style="width:10rem"
 						/>
 					</td>
 					<td @class(['t_highlight' => !$product->scent_id])>
@@ -55,7 +51,7 @@
 							:options="$scent_options"
 							:default="$product->scent_id"
 							initial="-- SCENT --"
-							style="width:14rem"
+							style="width:10rem"
 						/>
 					</td>
 					<td>
@@ -65,7 +61,7 @@
 								name="label"
 								value="{{ $product->label }}"
 								maxlength="255"
-								style="width:32rem"
+								style="width:24rem"
 								wire:change.blur="updateLabel('{{ $product->id }}', $event.target.value)"
 							/>
 						</label>
@@ -103,23 +99,24 @@
 							/>
 						</label>
 					</td>
-					<td>
+					<x-td.actions :last="$loop->last">
 						<a
-							class="u_btn --sm --tt-left"
+							class="u_btn --bare"
 							href="javascript:navigator.clipboard.writeText('{{ $product->id }}')"
-							data-tooltip="Copy {{ $product->id }}"
-						>#</a>
-						<button
-							type="button"
-							class="u_btn --danger --sm"
+							onclick="toast('Copied!', '--success')"
+						>@svg('icon-copy') Copy Product ID</a>
+						<x-modal-wire-delete
+							model-name="Product"
+							:can-restore="true"
+							:push-to="$stack_id"
 							wire:click="delete('{{ $product->id }}')"
-							data-tooltip="Delete"
-						>@svg('icon-trash-xmark')</button>
-					</td>
+						/>
+					</x-td.actions>
 				</tr>
 			@endforeach
 			</tbody>
 		</table>
 	</div>
-	{{ $products->links('pagination') }}
+	{{ $collection->links('pagination') }}
+	@stack($stack_id)
 </div>

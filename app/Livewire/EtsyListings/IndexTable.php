@@ -78,7 +78,6 @@ class IndexTable extends Component
 
 	public function render():View
 	{
-		$this->dispatch('render');
 		$this->initCollection();
 		return view('etsy.listings.index-table', [
 			'etsyListings'   => $this
@@ -87,6 +86,13 @@ class IndexTable extends Component
 			'active_count'   => $this->filteredQuery()->where('etsy_listings.is_archived', false)->count(),
 			'archived_count' => $this->filteredQuery()->where('etsy_listings.is_archived', true)->count(),
 		]);
+	}
+
+	protected function getCustomOrders():array
+	{
+		return [
+			'ended' => fn(Builder $query): Builder => $query->orderByRaw("etsy_listings.meta->>'$.ending_timestamp'")
+		];
 	}
 
 	private function initCollection():void

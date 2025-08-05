@@ -22,11 +22,11 @@ window.bindDOMElem = (selectors, callback) => {
 	'prop-switcher': m_propSwitcher,
 })
 
-window.toast = (message, type = null, timeout = 5000) => {
+window.toast = (message, flag = null, timeout = 5000) => {
 	const _toast = document.createElement('div')
 	_toast.classList.add('m_toast', 'u_alert')
-	if ( type ) {
-		_toast.classList.add(type)
+	if ( flag ) {
+		_toast.classList.add(flag)
 	}
 	_toast.innerHTML = ' ' + message
 	const _icon = document.createElement('i')
@@ -42,6 +42,6 @@ window.toast = (message, type = null, timeout = 5000) => {
 }
 document.addEventListener('DOMContentLoaded', () => {
 	if ( typeof Livewire !== 'undefined' ) {
-		Livewire.on('toast', ([msg, type = null, timeout = 5000]) => toast(msg, type, timeout))
+		Livewire.on('toast', ([msg, flag = null, timeout = 5000]) => toast(msg, flag, timeout))
 	}
 })

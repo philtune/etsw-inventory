@@ -1,10 +1,9 @@
 @props([
-    'title' => null,
-	'trigger',
-    'uid' => 'id_' . uniqid(),
-	'modelName',
-    'pushTo' => 'below-body',
     'action',
+	'modelName',
+    'title' => null,
+    'uid' => 'id_' . uniqid(),
+    'pushTo' => 'below-body',
     'submit' => null
 ])
 <x-modal-post

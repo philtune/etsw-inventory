@@ -6,7 +6,7 @@
 	<button
 		type="button"
 		class="__trigger"
-	>{{ $trigger }}</button>
+	>{!! $trigger !!}</button>
 	<div class="c_dropdown-proxy_trigger" tabindex="0"></div>
 	<div {{ $slot->attributes->class('c_dropdown-content') }} tabindex="0">
 		{{ $slot }}

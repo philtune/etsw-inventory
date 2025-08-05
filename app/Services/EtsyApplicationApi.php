@@ -20,7 +20,7 @@ class EtsyApplicationApi
 	protected static function send(Closure $callback):array
 	{
 		$etsyOauthToken = OauthToken::getEtsyToken();
-		if ( $etsyOauthToken->last_used_at->isAfter(now()->subDay()) ) {
+		if ( $etsyOauthToken->last_used_at?->isAfter(now()->subDay()) ) {
 			if ( $etsyOauthToken->remaining_today === 0 ) {
 				throw new TooManyRequestsHttpException(3600, 'Proxy tried too many times. Try again later.');
 			}

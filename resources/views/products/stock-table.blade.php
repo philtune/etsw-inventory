@@ -24,20 +24,20 @@
 			<th class="w-1px">Scent</th>
 			<x-th.sortable label="Product Label" column="products.label"/>
 			<th class="w-1px">Stock</th>
-			<x-th.sortable column="product_aggregates.etsy_transactions_qty" :desc-first="true">
+			<x-th.sortable column="product_aggregates.etsy_transactions_qty" :desc-first>
 				<x-slot:label><small>Sold:<br/>Etsy</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.etsy_revenue" :desc-first="true">
+			<x-th.sortable column="product_aggregates.etsy_revenue" :desc-first>
 				<x-slot:label><small>Revenue:<br/>Etsy</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.wholesale_order_products_qty" :desc-first="true">
+			<x-th.sortable column="product_aggregates.wholesale_order_products_qty" :desc-first>
 				<x-slot:label><small>Sold:<br/>Wholesale</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.wholesale_revenue" :desc-first="true">
+			<x-th.sortable column="product_aggregates.wholesale_revenue" :desc-first>
 				<x-slot:label><small>Revenue:<br/>Wholesale</small></x-slot:label>
 			</x-th.sortable>
 			<th><small class="l_cols --inline">Sold:<br/>TOTAL</small></th>
-			<x-th.sortable column="product_aggregates.total_revenue" :desc-first="true">
+			<x-th.sortable column="product_aggregates.total_revenue" :desc-first>
 				<x-slot:label><small>Revenue:<br/>TOTAL</small></x-slot:label>
 			</x-th.sortable>
 		</tr>

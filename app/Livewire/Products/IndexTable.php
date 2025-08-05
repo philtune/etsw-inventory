@@ -2,16 +2,20 @@
 
 namespace App\Livewire\Products;
 
+use App\Livewire\Concerns\IndexTableComponent;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
-use Livewire\Component;
 use Livewire\WithPagination;
 
-class IndexTable extends Component
+/**
+ * @extends IndexTableComponent<Product>
+ */
+class IndexTable extends IndexTableComponent
 {
 	use WithPagination;
 
@@ -23,33 +27,24 @@ class IndexTable extends Component
 	public bool $archived = false;
 	#[Url]
 	public int $perPage = 50;
-	#[Url]
-	public string $search = '';
-	#[Url]
 	public string $order_column = 'products.label';
-	#[Url]
 	public bool $order_desc = false;
+
+	protected function query():Builder
+	{
+		return Product
+			::query()
+			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
+			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
+			->select('products.*');
+	}
 
 	public function render():View
 	{
-		$this->dispatch('render');
+		/** @var LengthAwarePaginator<array-key,Product> $collection */
+		$collection = $this->collection();
 		return view('products.index-table', [
-			'products' => Product
-				::query()
-				->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
-				->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
-				->orderBy($this->order_column, $this->order_desc ? 'desc' : 'asc')
-				->withCount('etsyListings')
-				->when(
-					$this->search,
-					fn($query) => $query->where(fn(Builder $_query) => $_query
-						->where('products.label', 'like', "%$this->search%")
-						->orWhere('product_types.code', 'like', "%$this->search%")
-						->orWhere('product_types.label', 'like', "%$this->search%")
-						->orWhere('scents.code', 'like', "%$this->search%")
-						->orWhere('scents.label', 'like', "%$this->search%"))
-				)
-				->paginate($this->perPage, 'products.*'),
+			'collection' => $collection,
 		]);
 	}
 
@@ -57,17 +52,6 @@ class IndexTable extends Component
 	{
 		$this->reset(['scent_id', 'product_type_id', 'label']);
 		$this->dispatch('toast', 'Product added!');
-	}
-
-	public function orderBy(string $field, bool $desc_first = false):void
-	{
-		if ( $this->order_column === $field ) {
-			$this->order_desc = !$this->order_desc;
-		} else {
-			$this->order_desc = $desc_first;
-		}
-		$this->order_column = $field;
-		$this->resetPage();
 	}
 
 	public function updateProductType(string $product_id, ?string $product_type_id):void
@@ -78,22 +62,6 @@ class IndexTable extends Component
 		]);
 		Product::find($product_id)->update(['product_type_id' => $product_type_id]);
 		$this->dispatch('toast', 'Product type updated', '--success');
-	}
-
-	public function orderByKey(string $key, bool $desc_first = false):void
-	{
-		if ( $field = match ( $key ) {
-			'ended' => "etsy_listings.meta->>'$.ending_timestamp'",
-			default => null
-		} ) {
-			if ( $this->order_column === $field ) {
-				$this->order_desc = !$this->order_desc;
-			} else {
-				$this->order_desc = $desc_first;
-			}
-			$this->order_column = $field;
-		}
-		$this->resetPage();
 	}
 
 	public function updateScent(string $product_id, ?string $scent_id):void
@@ -164,8 +132,4 @@ class IndexTable extends Component
 		$this->dispatch('toast', 'Product deleted!', '--success');
 	}
 
-	public function updatedSearch():void
-	{
-		$this->resetPage();
-	}
 }

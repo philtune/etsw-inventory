@@ -3,7 +3,7 @@
 ])
 <div>
 	<div class="l_cols --split">
-		<div>{{ $collection->links('pagination') }}</div>
+		{{ $collection->links('pagination') }}
 		<div>
 			<input
 				type="search"
@@ -17,13 +17,14 @@
 		<table class="m_table">
 			<thead>
 			<tr>
-				<th>Label</th>
-				<th>Code</th>
+				<x-th.sortable label="Code" column="code"/>
+				<x-th.sortable label="Label" column="label"/>
 				<th>Variants</th>
 				<th>Bundle</th>
-				<th>Products</th>
-				<th>Etsy</th>
-				<x-th-actions/>
+				<x-th.sortable label="Products" column="products_count" desc-first/>
+				<x-th.sortable label="Etsy" column="etsy_listings_count" desc-first/>
+				<x-th.sortable label="Revenue" column="total_revenue" desc-first/>
+				<x-th.actions/>
 			</tr>
 			</thead>
 			<tbody>
@@ -52,28 +53,23 @@
 							href="{{ route('etsy.listings.index', ['product_type_id' => $productType->id]) }}"
 						><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:inline-block;vertical-align:middle" alt="Etsy"/> {{ $productType->etsy_listings_count }} listing(s)</a>
 					</td>
-					<td class="text-right" onclick="event.stopPropagation()" style="cursor:initial">
-						<x-dropdown :class="$loop->last ? '--left-bottom' : '--left'">
-							<x-slot:trigger>
-								@svg('icon-ellipsis-vertical')
-							</x-slot:trigger>
-
-							<x-modal-edit
-								model-name="Product Type"
-								:action="route('product-types.update', $productType)"
-								:$uid
-								:push-to="$stack_id"
-							>
-								@include('product-types.form-inputs')
-							</x-modal-edit>
-							<x-modal-delete
-								:action="route('product-types.delete', $productType)"
-								model-name="Product Type"
-								:can-restore="true"
-								:push-to="$stack_id"
-							/>
-						</x-dropdown>
-					</td>
+					<td class="text-right">${{ number_format($productType['total_revenue'], 2) }}</td>
+					<x-td.actions :last="$loop->last">
+						<x-modal-edit
+							model-name="Product Type"
+							:action="route('product-types.update', $productType)"
+							:$uid
+							:push-to="$stack_id"
+						>
+							@include('product-types.form-inputs')
+						</x-modal-edit>
+						<x-modal-delete
+							:action="route('product-types.delete', $productType)"
+							model-name="Product Type"
+							:can-restore="true"
+							:push-to="$stack_id"
+						/>
+					</x-td.actions>
 				</tr>
 			@endforeach
 			</tbody>

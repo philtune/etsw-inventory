@@ -25,14 +25,14 @@ class EtsyApiController extends Controller
 		}
 		EtsyAuthService::authCode($request->code);
 
-		return redirect()->route('home')->with('status', 'Access Token Generated.');
+		return redirect()->route('home')->with('toast', 'Access Token Generated.');
 	}
 
 	public function apiRefreshToken():RedirectResponse
 	{
 		EtsyAuthService::refreshToken();
 
-		return redirect()->route('home')->with('status', 'Access Token Refreshed.');
+		return redirect()->route('home')->with('toast', 'Access Token Refreshed.');
 	}
 
 	public function importAll():RedirectResponse
@@ -44,7 +44,7 @@ class EtsyApiController extends Controller
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
-		return back()->with('status', 'Everything imported!');
+		return back()->with('toast', 'Everything imported!');
 	}
 
 	public function importListings():RedirectResponse
@@ -54,7 +54,7 @@ class EtsyApiController extends Controller
 		} catch ( ConnectionException $th ) {
 			return back()->withErrors($th->getMessage());
 		}
-		return back()->with('status', 'Listings imported!');
+		return back()->with('toast', 'Listings imported!');
 	}
 
 	public function importReceipts()
@@ -64,7 +64,7 @@ class EtsyApiController extends Controller
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
-		return back()->with('status', 'Receipts imported!');
+		return back()->with('toast', 'Receipts imported!');
 	}
 
 	public function importTransactions()
@@ -74,7 +74,7 @@ class EtsyApiController extends Controller
 		} catch ( Throwable $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
-		return back()->with('status', 'Transactions imported!');
+		return back()->with('toast', 'Transactions imported!');
 	}
 
 }

@@ -1,7 +1,7 @@
 @props([
 	/** @var \App\Models\ProductType */
 	'productType' => null,
-	'uid' => 'id_' . uniqid(),
+	'uid' => 'create_' . uniqid(),
 ])
 <table class="m_table">
 	<tr>

@@ -10,12 +10,12 @@ return new class extends Migration {
 		Schema::create('scents', function (Blueprint $table) {
 			$table->uuid('id')
 			      ->primary();
-			$table->string('code', 8)
-			      ->unique();
-			$table->string('label')
-			      ->unique();
 			$table->datetimes();
 			$table->softDeletesDatetime();
+			$table->string('code', 16);
+			$table->string('label');
+			$table->unique(['code', 'deleted_at']);
+			$table->unique(['label', 'deleted_at']);
 		});
 	}
 

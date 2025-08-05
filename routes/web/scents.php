@@ -13,3 +13,11 @@ Route::patch('/scents/{scent}', [ScentController::class, 'update'])
 
 Route::delete('/scents/{scent}', [ScentController::class, 'delete'])
      ->name('scents.delete');
+
+Route::patch('/scents/{scent}/restore', [ScentController::class, 'restore'])
+     ->withTrashed()
+     ->name('scents.restore');
+
+Route::delete('/scents/{scent}/force-delete', [ScentController::class, 'forceDelete'])
+     ->withTrashed()
+     ->name('scents.force-delete');
