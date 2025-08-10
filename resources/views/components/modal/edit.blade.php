@@ -6,7 +6,7 @@
     'pushTo' => 'below-body',
     'submit' => null
 ])
-<x-modal-post
+<x-modal.post
 	:title="$title ?: 'Edit ' . $modelName"
 	:$uid
 	:$pushTo
@@ -17,5 +17,5 @@
 	<x-slot:trigger
 		class="--bare"
 	>@svg('icon-pencil') Edit {{ $modelName }}</x-slot:trigger>
-	{{ $slot }}
-</x-modal-post>
+	{!! $slot !!}
+</x-modal.post>

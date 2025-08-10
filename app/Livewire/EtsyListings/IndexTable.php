@@ -158,7 +158,7 @@ class IndexTable extends Component
 							->orderBy('revenue', $this->order_desc ? 'desc' : 'asc'),
 					)
 			)
-			->selectRaw("TIMESTAMPDIFF(MONTH, `etsy_listings`.`created_at`, NOW()) as age")
+			->selectRaw("TIMESTAMPDIFF(MONTH, `etsy_listings`.`created_at`, `etsy_listings`.`ending_at`) as age")
 			->get()
 			->when(
 				$this->order_column === 'revenue_per_month',

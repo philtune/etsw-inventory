@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductTypeRequest;
 use App\Models\ProductType;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -26,60 +27,26 @@ class ProductTypeController extends Controller
 		]);
 	}
 
-	public function store(Request $request):RedirectResponse
+	public function store(ProductTypeRequest $request):RedirectResponse
 	{
-		ProductType::create($request->validate([
-			'code'  => [
-				'nullable',
-				'string',
-				'max:16',
-				Rule::unique('product_types')->withoutTrashed()
-			],
-			'label' => [
-				'nullable',
-				'string',
-				'max:255',
-				Rule::unique('product_types')->withoutTrashed()
-			],
+		$productType = ProductType::create($request->only([
+			'code',
+			'label',
+			'is_bundle',
+			'variants'
 		]));
+		$productType->childProductTypes()->sync($request->array('child_product_type_ids'));
 		return back()->with('toast', 'Product type created!');
 	}
 
-	public function update(Request $request, ProductType $productType):RedirectResponse
+	public function update(ProductTypeRequest $request, ProductType $productType):RedirectResponse
 	{
-		$request->validate([
-			'variants'                 => 'nullable|array',
-			'variants.label'           => 'nullable|string|max:24',
-			'variants.options'         => 'nullable|array',
-			'variants.options.*.key'   => 'nullable|string|max:16',
-			'variants.options.*.value' => 'nullable|string|max:24',
-			'variants.default'         => 'nullable|string',
-		]);
-		$variants = $request->array('variants');
-		if ( empty($variants) ) {
-			$variants = null;
-		} else {
-			$variants['options'] = array_reduce(
-				array_filter($variants['options'], fn($option) => trim($option['key']) && trim($option['value'])),
-				fn(array $c, $option) => $c + [
-						trim($option['key']) => trim($option['value'])
-					],
-				[]
-			);
-		}
-		$request->merge(['variants' => $variants]);
-		$request->validate([
-			'child_product_type_ids'   => 'nullable|array',
-			'child_product_type_ids.*' => 'exists:product_types,id',
-		]);
-		$productType->update($request
-			->merge(['is_bundle' => $request->boolean('is_bundle')])
-			->validate([
-				'code'      => 'nullable|string|max:16',
-				'label'     => 'nullable|string|max:255',
-				'is_bundle' => 'boolean',
-				'variants'  => 'nullable|array',
-			]));
+		$productType->update($request->only([
+			'code',
+			'label',
+			'is_bundle',
+			'variants'
+		]));
 		$productType->childProductTypes()->sync($request->array('child_product_type_ids'));
 		return back()->with('toast', 'Product type updated!');
 	}

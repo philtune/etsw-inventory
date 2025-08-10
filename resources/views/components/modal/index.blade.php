@@ -1,17 +1,18 @@
 @props([
     'title',
-	'trigger',
+	'trigger' => null,
     'uid' => 'id_' . uniqid(),
     'pushTo' => 'below-body',
     'submitBtn',
-    'submitClass' => null,
 ])
 
-<button
-	type="button"
-	{{ $trigger->attributes->class(['u_btn']) }}
-	onclick="openModal('{{ $uid }}')"
->{{ $trigger }}</button>
+@if( $trigger )
+	<button
+		type="button"
+		{{ $trigger->attributes->class(['u_btn']) }}
+		onclick="openModal('{{ $uid }}')"
+	>{{ $trigger }}</button>
+@endif
 @push($pushTo)
 	<div class="m_modal" tabindex="0" id="{{ $uid }}">
 		<div class="m_modal-container">
@@ -31,10 +32,11 @@
 						type="button"
 						class="u_btn --danger --bare"
 						onclick="closeModal('{{ $uid }}')"
-					>@svg('icon-xmark')Cancel</button>
+					>@svg('icon-xmark')Cancel
+					</button>
 					<button
 						type="submit"
-						{{ $submitBtn->attributes->class(['u_btn', $submitClass]) }}
+						{{ $submitBtn->attributes->class('u_btn') }}
 					>{{ $submitBtn }}</button>
 				</div>
 			</div>

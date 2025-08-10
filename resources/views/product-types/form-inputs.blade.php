@@ -14,6 +14,7 @@
 				maxlength="255"
 				id="{{ $uid }}_label"
 				style="width:25rem"
+				required
 			/>
 		</td>
 	</tr>
@@ -27,6 +28,7 @@
 				maxlength="16"
 				id="{{ $uid }}_code"
 				style="width:5rem"
+				required
 			/>
 		</td>
 	</tr>
@@ -41,7 +43,7 @@
 					id="{{ $uid }}_is_bundle"
 				/>
 				<div
-					data-prop-switcher="hide-unless-checked,#{{ $uid }} input[name=is_bundle]"
+					data-prop-switcher="hide-unless-checked,#{{ $uid }}_is_bundle"
 					@style(['display:none'=>!$productType?->is_bundle])
 				>
 					Products:
@@ -62,7 +64,7 @@
 		<td>
 			<livewire:product-types.variant-definition
 				:variants="$productType?->variants"
-				wire:key="{{ $productType?->id }}"
+				wire:key="{{ $productType?->id }}_variant_definition"
 			/>
 		</td>
 	</tr>

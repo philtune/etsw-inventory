@@ -23,8 +23,9 @@
 @pushonce('below-body')
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
-			const init = () => {
-				document.querySelectorAll('[data-tomselect]').forEach(_me => {
+			const init = (_parent) => {
+				_parent = _parent || document
+				_parent.querySelectorAll('[data-tomselect]').forEach(_me => {
 					if ( _me.tomselect ) {
 						_me.tomselect.destroy()
 					}
@@ -37,7 +38,9 @@
 				})
 			}
 			if ( typeof Livewire !== 'undefined' ) {
-				Livewire.hook('morphed', init)
+				Livewire.hook('morphed', ({el}) => {
+					init(el)
+				})
 			}
 			init()
 		})

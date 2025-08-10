@@ -5,8 +5,7 @@
 	&__container {
 		max-width: calc(100% + 1.25rem);
 		overflow: auto;
-		padding: 1rem 0;
-		margin: -1rem -0.625rem;
+		margin: 0 -0.625rem;
 		@include scrollbar;
 	}
 	th, td {
@@ -16,6 +15,9 @@
 		}
 		&:last-child {
 			padding-inline-end: 0.625rem;
+		}
+		.input {
+			width: 100%;
 		}
 	}
 	> thead {
@@ -52,14 +54,27 @@
 			th {
 				font-weight: normal;
 				white-space: nowrap;
+				padding: 0.5rem 0.5rem;
+			}
+			td:has(.input) {
+				padding: 0;
+			}
+			.input {
+				//margin: -0.375rem;
 			}
 		}
-		table {
-			margin: -0.375rem;
-			width: calc(100% + 0.75rem);
-		}
-		.input {
-			margin: -0.375rem;
+	}
+	&.--stock {
+		> tbody {
+			th {
+				text-align: right;
+				width: 5rem;
+			}
+			td {
+				.input {
+					width: 4rem;
+				}
+			}
 		}
 	}
 }

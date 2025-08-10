@@ -18,7 +18,7 @@
 </head>
 <body class="l_body">
 <header class="l_body-nav">
-	@include('components.layouts.nav')
+	<x-layouts.nav/>
 </header>
 <main class="l_body-main">
 	<div style="display:flex;gap:1rem;justify-content:space-between;align-items:center;">

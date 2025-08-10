@@ -1,5 +1,6 @@
 @props([
-	'last' => false,
+	/** @var \LaravelIdea\BladeLoops\_BladeLoop */
+	'loop'
 ])
 <td
 	{{ $attributes->class(['text-right']) }}
@@ -7,7 +8,7 @@
 	style="cursor:initial"
 >
 	<x-dropdown
-		:class="$last ? '--left-bottom' : '--left'"
+		:class="$loop->last ? '--left-bottom' : ( $loop->first ? '--left-top' : '--left' )"
 		:trigger="e(svg('icon-ellipsis-vertical'))"
 	>
 		{!! $slot !!}

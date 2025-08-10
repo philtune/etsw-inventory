@@ -1,5 +1,5 @@
 @props([
-    'uid' => 'id_' . uniqid(),
+    'uid' => 'delete_' . uniqid(),
 	'modelName',
     'pushTo' => 'below-body',
     'text' => null,

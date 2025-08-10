@@ -14,36 +14,40 @@ fieldset {
 	text-align: center !important;
 }
 
+.text-bold {
+	font-weight: bold !important;
+}
+
 .text-success {
-	color: var(--clr-success-highest);
+	color: var(--clr-success-highest) !important;
 }
 
 .text-warning {
-	color: var(--clr-warning-highest);
+	color: var(--clr-warning-highest) !important;
 }
 
 .text-danger {
-	color: var(--clr-danger-highest);
+	color: var(--clr-danger-highest) !important;
 }
 
 .text-accent {
-	color: var(--clr-accent-highest);
+	color: var(--clr-accent-highest) !important;
 }
 
 .text-muted {
-	color: var(--clr-muted-high);
+	color: var(--clr-muted-high) !important;
 }
 
 .w-auto {
-	width: auto;
+	width: auto !important;
 }
 
 .w-100 {
-	width: 100%;
+	width: 100% !important;
 }
 
 .w-1px {
-	width: 1px;
+	width: 1px !important;
 }
 
 .nowrap {
@@ -52,4 +56,8 @@ fieldset {
 
 .text-right {
 	text-align: right !important;
+}
+
+.bg_highlight {
+	background: var(--highlight-low) !important;
 }

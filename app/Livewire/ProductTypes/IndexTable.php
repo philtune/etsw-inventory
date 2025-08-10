@@ -23,6 +23,7 @@ class IndexTable extends IndexTableComponent
 	];
 	#[Url]
 	public string $order_column = 'initial';
+
 	protected function getCustomOrders():array
 	{
 		return [

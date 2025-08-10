@@ -1,11 +1,9 @@
 <x-layouts.app>
 	<x-slot:toolbar>
-		<x-modal-create
+		<x-model.trigger.create
+			for="create_scent"
 			model-name="Scent"
-			:action="route('scents.store')"
-		>
-			@include('scents.form-inputs')
-		</x-modal-create>
+		/>
 	</x-slot:toolbar>
 	<livewire:scents.index-table/>
 </x-layouts.app>

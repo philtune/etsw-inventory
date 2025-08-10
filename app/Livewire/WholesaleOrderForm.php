@@ -85,7 +85,7 @@ class WholesaleOrderForm extends Component
 
 	public function updated():void
 	{
-		$this->dispatch('toast', 'Updated!');
+		$this->dispatch('toast', 'Updated!', '--success');
 	}
 
 	public function addProduct():void

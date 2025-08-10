@@ -7,7 +7,6 @@ use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -24,20 +23,16 @@ class IndexTable extends IndexTableComponent
 	#[Locked]
 	public array $scent_options;
 	#[Url]
-	public bool $archived = false;
-	#[Url]
 	public int $perPage = 50;
 	public string $order_column = 'products.label';
 	public bool $order_desc = false;
-
-	protected function query():Builder
-	{
-		return Product
-			::query()
-			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
-			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
-			->select('products.*');
-	}
+	#[Url]
+	public bool $show_archived = false;
+	protected array $searchColumns = [
+		'products.label',
+		'product_types.label',
+		'scents.label',
+	];
 
 	public function render():View
 	{
@@ -48,88 +43,71 @@ class IndexTable extends IndexTableComponent
 		]);
 	}
 
-	public function create():void
+	protected function query():Builder
 	{
-		$this->reset(['scent_id', 'product_type_id', 'label']);
-		$this->dispatch('toast', 'Product added!');
+		return Product
+			::query()
+			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
+			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
+			->select('products.*')
+			->when(
+				!$this->show_archived,
+				fn(Builder $query) => $query->where('is_archived', false)
+			);
 	}
 
-	public function updateProductType(string $product_id, ?string $product_type_id):void
+	private function rules():array
 	{
-		Validator::make(compact('product_id', 'product_type_id'), [
-			'product_id'      => 'required|exists:products,id',
+		return [
 			'product_type_id' => 'nullable|exists:product_types,id',
-		]);
-		Product::find($product_id)->update(['product_type_id' => $product_type_id]);
-		$this->dispatch('toast', 'Product type updated', '--success');
+			'scent_id'        => 'nullable|exists:scents,id',
+			'label'           => 'nullable|string|max:255',
+			'can_stock'       => 'boolean',
+		];
 	}
 
-	public function updateScent(string $product_id, ?string $scent_id):void
+	public function store(array $formData):void
 	{
-		$scent_id = $scent_id ?: null;
-		Validator::validate(compact('product_id', 'scent_id'), [
-			'product_id' => 'required|exists:products,id',
-			'scent_id'   => 'nullable|exists:scents,id',
-		]);
-		Product::find($product_id)->update(['scent_id' => $scent_id]);
-		$this->dispatch('toast', 'Scent updated', '--success');
+		Product::query()->create($this->validated($formData, $this->rules()));
+		$this->dispatch('toast', 'Product created!', '--success');
 	}
 
-	public function updateLabel(string $product_id, ?string $label):void
+	public function update(Product $product, array $formData):void
 	{
-		Validator::validate(compact('product_id', 'label'), [
-			'product_id' => 'required|exists:products,id',
-			'label'      => 'nullable|string|max:255',
-		]);
-		Product::find($product_id)->update(['label' => $label]);
-		$this->dispatch('toast', 'Label updated', '--success');
+		$product->update($this->validated($formData, $this->rules()));
+		$this->dispatch('toast', 'Product updated!', '--success');
 	}
 
-	public function archive(string $product_id):void
+	public function delete(Product $product):void
 	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		Product::find($product_id)->update(['is_archived' => true]);
+		$product->delete();
+		$this->dispatch('toast', 'Product deleted!', '--success');
+	}
+
+	public function restore(string $product_id):void
+	{
+		$product = Product::withTrashed()->findOrFail($product_id);
+		$product->restore();
+		$this->dispatch('toast', 'Product restored!', '--success');
+	}
+
+	public function forceDelete(string $product_id):void
+	{
+		$product = Product::withTrashed()->findOrFail($product_id);
+		$product->forceDelete();
+		$this->dispatch('toast', 'Product permanently deleted!', '--success');
+	}
+
+	public function archive(Product $product):void
+	{
+		$product->update(['is_archived' => true]);
 		$this->dispatch('toast', 'Product archived!', '--success');
 	}
 
-	public function unarchive(string $product_id):void
+	public function unarchive(Product $product):void
 	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		Product::find($product_id)->update(['is_archived' => false]);
+		$product->update(['is_archived' => false]);
 		$this->dispatch('toast', 'Product unarchived!', '--success');
-	}
-
-	public function toggleIsArchived(string $product_id):void
-	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		$product = Product::find($product_id);
-		$product->update(['is_archived' => !$product->is_archived]);
-		$this->dispatch('toast', 'Product updated!', '--success');
-	}
-
-	public function toggleCanStock(string $product_id):void
-	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		$product = Product::find($product_id);
-		$product->update(['can_stock' => !$product->can_stock]);
-		$this->dispatch('toast', 'Product updated!', '--success');
-	}
-
-	public function delete(string $product_id):void
-	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		Product::find($product_id)->delete();
-		$this->dispatch('toast', 'Product deleted!', '--success');
 	}
 
 }

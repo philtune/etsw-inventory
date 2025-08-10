@@ -13,6 +13,7 @@
 				value="{{ $scent?->code }}"
 				maxlength="16"
 				id="{{ $uid }}_code"
+				required
 			/>
 		</td>
 	</tr>
@@ -25,6 +26,7 @@
 				value="{{ $scent?->label }}"
 				maxlength="255"
 				id="{{ $uid }}_label"
+				required
 			/>
 		</td>
 	</tr>

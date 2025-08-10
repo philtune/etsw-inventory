@@ -29,17 +29,6 @@ class ProductController extends Controller
 		]);
 	}
 
-	public function store(Request $request)
-	{
-		Product::create($request->validate([
-			'product_type_id' => 'required|exists:product_types,id',
-			'scent_id'        => 'required|exists:scents,id',
-			'label'           => 'nullable|string|max:255',
-		]));
-
-		return back()->with('toast', 'Product added!');
-	}
-
 	public function stock()
 	{
 		return view('products.stock');

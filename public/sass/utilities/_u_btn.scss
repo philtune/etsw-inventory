@@ -74,6 +74,7 @@
 		--btn-bg-hover: none;
 		--btn-txt: var(--btn-txt-bare);
 		--btn-txt-hover: var(--btn-txt-bare-hover);
+		height: 2rem;
 	}
 	&:hover:not(:disabled), &:focus:not(:disabled) {
 		background-color: var(--btn-bg-hover);

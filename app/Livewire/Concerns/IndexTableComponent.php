@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -21,9 +22,15 @@ abstract class IndexTableComponent extends Component
 
 	#[Url]
 	public int $perPage = 15;
-	public string $stack_id;
 	#[Url]
 	public bool $trashed = false;
+
+	public function __construct(
+		public ?string $stack_id = null
+	)
+	{
+		$this->stack_id = $this->stack_id ?: 'id_' . uniqid();
+	}
 
 	/** @var array<Closure> $queryHandlers */
 	protected array $queryHandlers = [];
@@ -43,8 +50,6 @@ abstract class IndexTableComponent extends Component
 	 */
 	protected function collection():LengthAwarePaginator
 	{
-		$this->stack_id = 'id_' . uniqid();
-
 		$query = $this
 			->query()
 			->when($this->trashed, fn(Builder $builder) => $builder->onlyTrashed());
@@ -54,6 +59,26 @@ abstract class IndexTableComponent extends Component
 		}
 
 		return $query->paginate($this->perPage);
+	}
+
+	protected function validated(array $formData, array $rules, array $messages = [], array $attributes = [], array $booleans = []):array
+	{
+		$data = array_reduce(
+			array_keys($rules),
+			function (array $c, $key) use ($rules, $formData) {
+				if ( in_array($rules[$key], ['boolean', 'bool']) ) {
+					$formData[$key] = !!( $formData[$key] ?? false );
+				}
+				if ( array_key_exists($key, $formData) ) {
+					$value = $formData[$key];
+					$value = $value === '' ? null : $value;
+					return $c + [$key => $value];
+				}
+				return $c;
+			},
+			[]
+		);
+		return Validator::make($data, $rules, $messages, $attributes)->validate();
 	}
 
 }

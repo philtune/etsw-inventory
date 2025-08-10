@@ -1,6 +1,6 @@
 <x-layouts.app page-title="Home">
 	<fieldset>
-		<legend class="l_cols --sm"><img src="https://www.etsy.com/images/favicon.ico" style="width:1rem;height:1rem;display:block" alt="Etsy"/> Etsy</legend>
+		<legend class="l_cols --sm"><img src="{{ asset('img/etsy-favicon.ico') }}" style="width:1rem;height:1rem;display:block" alt="Etsy"/> Etsy</legend>
 		@if( $etsyOauthToken?->access_token )
 			<table class="m_table w-auto">
 				<tr>

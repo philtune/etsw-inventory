@@ -3,13 +3,19 @@
 	padding: 1rem;
 	background: var(--contrast-bg);
 	color: var(--contrast-txt);
-	a {
+	.nav_link {
 		color: inherit;
 		text-decoration: none;
 		font-size: 1rem;
 		font-weight: 500;
 		&:hover, &:focus {
 			color: var(--clr-default-lowest);
+		}
+		&.--active {
+			font-weight: 600;
+			&:before {
+				content: "> ";
+			}
 		}
 	}
 	legend {

@@ -16,7 +16,7 @@
 			</button>
 		</div>
 	</div>
-	<table class="m_table --sheet w-auto">
+	<table class="m_table --sheet">
 		<thead>
 		<tr>
 			<th>Etsy Listings</th>
@@ -24,20 +24,20 @@
 			<th class="w-1px">Scent</th>
 			<x-th.sortable label="Product Label" column="products.label"/>
 			<th class="w-1px">Stock</th>
-			<x-th.sortable column="product_aggregates.etsy_transactions_qty" :desc-first>
+			<x-th.sortable column="product_aggregates.etsy_transactions_qty" desc-first>
 				<x-slot:label><small>Sold:<br/>Etsy</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.etsy_revenue" :desc-first>
+			<x-th.sortable column="product_aggregates.etsy_revenue" desc-first>
 				<x-slot:label><small>Revenue:<br/>Etsy</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.wholesale_order_products_qty" :desc-first>
+			<x-th.sortable column="product_aggregates.wholesale_order_products_qty" desc-first>
 				<x-slot:label><small>Sold:<br/>Wholesale</small></x-slot:label>
 			</x-th.sortable>
-			<x-th.sortable column="product_aggregates.wholesale_revenue" :desc-first>
+			<x-th.sortable column="product_aggregates.wholesale_revenue" desc-first>
 				<x-slot:label><small>Revenue:<br/>Wholesale</small></x-slot:label>
 			</x-th.sortable>
 			<th><small class="l_cols --inline">Sold:<br/>TOTAL</small></th>
-			<x-th.sortable column="product_aggregates.total_revenue" :desc-first>
+			<x-th.sortable column="product_aggregates.total_revenue" desc-first>
 				<x-slot:label><small>Revenue:<br/>TOTAL</small></x-slot:label>
 			</x-th.sortable>
 		</tr>
@@ -57,21 +57,21 @@
 				<td>
 					<span data-tooltip="{{ $product->label }}">{{ Str::limit($product->label, 48) }}</span>
 				</td>
-				<td>
-					<table class="m_table --sheet w-100">
+				<td class="text-right">
+					<table class="m_table --stock">
 						<tbody>
 						@if( $product->can_stock )
 							@if( $product->productType?->variants )
 								@foreach( $product->productType->variants['options'] as $key => $label )
 									<tr>
 										<th>{{ $label }}</th>
-										<td style="width:5rem">
+										<td>
 											<input
 												type="number"
 												class="input"
+												id="{{ $product->id }}-{{ $key }}-stock"
 												value="{{ $product->variants_in_stock[$key] ?? 0 }}"
 												wire:change.blur="updateInStock('{{ $product->id }}', '{{ $key }}', $event.target.value)"
-												style="width:5rem"
 											/>
 										</td>
 									</tr>
@@ -79,13 +79,13 @@
 							@else
 								<tr>
 									<th>&nbsp;</th>
-									<td style="width:5rem">
+									<td>
 										<input
 											type="number"
 											class="input"
+											id="{{ $product->id }}-{{ $key }}-stock"
 											value="{{ $product->variants_in_stock['default'] ?? 0 }}"
 											wire:change.blur="updateInStock('{{ $product->id }}', 'default', $event.target.value)"
-											style="width:5rem"
 										/>
 									</td>
 								</tr>
@@ -93,7 +93,7 @@
 						@else
 							<tr>
 								<th>&nbsp;</th>
-								<td style="width:5rem"><em>N/A</em></td>
+								<td><em>N/A</em></td>
 							</tr>
 						@endif
 						</tbody>

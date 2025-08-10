@@ -95,6 +95,10 @@
 		top: 50%;
 		translate: 0 -50%;
 	}
+	&.--left-top &-content {
+		right: 100%;
+		top: 0;
+	}
 	&.--left-bottom &-content {
 		right: 100%;
 		bottom: 0;

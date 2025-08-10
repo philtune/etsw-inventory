@@ -106,20 +106,20 @@
 				{{--				<x-th.sortable label="Product Type" column="product_types.label"/>--}}
 				<x-th.sortable label="Title" column="etsy_listings.title"/>
 				<x-th.sortable label="State" column="etsy_listings.state_enum"/>
-				<x-th.sortable label="Views" column="views" :desc-first/>
-				<x-th.sortable label="Favs" column="num_favorers" :desc-first/>
+				<x-th.sortable label="Views" column="views" desc-first/>
+				<x-th.sortable label="Favs" column="num_favorers" desc-first/>
 				<x-th.sortable label="Ending" column="ending_at"/>
-				<x-th.sortable label="Age" column="age" :desc-first/>
-				<x-th.sortable label="Sales" column="etsy_transactions_count" :desc-first/>
-				<x-th.sortable label="Revenue" column="revenue" :desc-first/>
-				<x-th.sortable label="Rev/mo" column="revenue_per_month" :desc-first/>
+				<x-th.sortable label="Age" column="age" desc-first/>
+				<x-th.sortable label="Sales" column="etsy_transactions_count" desc-first/>
+				<x-th.sortable label="Revenue" column="revenue" desc-first/>
+				<x-th.sortable label="Rev/mo" column="revenue_per_month" desc-first/>
 				<th><span data-tooltip="Actions" class="--tt-left">@svg('icon-ellipsis-vertical')</span></th>
 			</tr>
 			</thead>
 			<tbody>
 			@foreach( $etsyListings as $etsyListing )
 				<tr wire:key="{{ $etsyListing->id }}">
-					<td @class(['t_highlight' => !$etsyListing->product_id])>
+					<td @class(['bg_highlight' => !$etsyListing->product_id])>
 						@if( $edit_mode )
 							<x-form.select
 								wire:change="updateProduct('{{ $etsyListing->id }}', $event.target.value)"
@@ -132,7 +132,7 @@
 							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->productType->code ?? '?' }} - {{ $etsyListing->product?->scent->code ?? '?' }}</span>
 						@endif
 					</td>
-					{{--					<td @class(['t_highlight' => !$etsyListing->scent_id])>--}}
+					{{--					<td @class(['bg_highlight' => !$etsyListing->scent_id])>--}}
 					{{--						@if( $edit_mode )--}}
 					{{--							<x-form.select--}}
 					{{--								wire:change="updateScent('{{ $etsyListing->id }}', $event.target.value)"--}}
@@ -152,7 +152,7 @@
 					{{--							@endif--}}
 					{{--						@endif--}}
 					{{--					</td>--}}
-					{{--					<td @class(['t_highlight' => !$etsyListing->product_type_id])>--}}
+					{{--					<td @class(['bg_highlight' => !$etsyListing->product_type_id])>--}}
 					{{--						@if( $edit_mode )--}}
 					{{--							<x-form.select--}}
 					{{--								wire:change="updateProductType('{{ $etsyListing->id }}', $event.target.value)"--}}
@@ -187,7 +187,10 @@
 						<small>{{ $etsyListing->ending_at->diffForHumans(short:true) }}</small>
 					</td>
 					<td>
-						{{ $etsyListing->age }} mos
+						@if( $etsyListing->age > 12 )
+							{{ floor($etsyListing->age / 12) }} yrs,<br/>
+						@endif
+						<small>{{ $etsyListing->age % 12 }} mos</small>
 					</td>
 					<td>
 						<div class="l_cols --sm">@svg('icon-sack-dollar', 'text-success') {{ $etsyListing->etsy_transactions_count }}</div>

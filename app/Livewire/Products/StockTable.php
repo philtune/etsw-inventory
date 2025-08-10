@@ -64,20 +64,17 @@ class StockTable extends Component
 		$this->resetPage();
 	}
 
-	public function updateInStock(string $product_id, string $key, string $value):void
+	public function updateInStock(Product $product, string $key, string $value):void
 	{
-		Validator::validate(compact('product_id'), [
-			'product_id' => 'required|exists:products,id',
-		]);
-		$product = Product::find($product_id);
 		Validator::validate(compact('key', 'value'), [
 			'key' => [
 				'required',
 				'string',
 				Rule::in(array_keys($product->productType->variants['options'])),
 			],
+			'value' => 'nullable|numeric|min:0'
 		]);
-		$product->update(['variants_in_stock' => array_merge($product->variants_in_stock, [$key => $value])]);
+		$product->update(['variants_in_stock' => array_merge($product->variants_in_stock, [$key => $value ?: 0])]);
 		$this->dispatch('toast', 'Product stock updated!', '--success');
 	}
 

@@ -7,7 +7,7 @@
     'action',
     'submit' => null
 ])
-<x-modal-post
+<x-modal.post
 	:title="$title ?: 'Add ' . $modelName"
 	:$uid
 	:$pushTo
@@ -16,4 +16,4 @@
 >
 	<x-slot:trigger>@svg('icon-plus') Add {{ $modelName }}</x-slot:trigger>
 	{{ $slot }}
-</x-modal-post>
+</x-modal.post>
