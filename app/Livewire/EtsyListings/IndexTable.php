@@ -3,10 +3,10 @@
 namespace App\Livewire\EtsyListings;
 
 use App\Models\EtsyListing;
+use App\Models\EtsyTransaction;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Scent;
-use App\Models\EtsyTransaction;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -91,7 +91,7 @@ class IndexTable extends Component
 	protected function getCustomOrders():array
 	{
 		return [
-			'ended' => fn(Builder $query): Builder => $query->orderByRaw("etsy_listings.meta->>'$.ending_timestamp'")
+			'ended' => fn(Builder $query):Builder => $query->orderByRaw("etsy_listings.meta->>'$.ending_timestamp'")
 		];
 	}
 
@@ -109,7 +109,6 @@ class IndexTable extends Component
 				'etsy_listings.ending_at',
 				'etsy_listings.state_enum',
 				'etsy_listings.is_archived',
-				'etsy_listings.listing_id',
 				DB::raw("`etsy_listings`.`meta`->>'$.views' AS `views`"),
 				DB::raw("`etsy_listings`.`meta`->>'$.num_favorers' AS `num_favorers`")
 			])
@@ -117,7 +116,7 @@ class IndexTable extends Component
 				EtsyTransaction
 					::query()
 					->selectRaw('count(*)')
-					->whereColumn('etsy_listings.listing_id', 'etsy_transactions.listing_id')
+					->whereColumn('etsy_transactions.etsy_listing_id', 'etsy_listings.id')
 					->when(
 						$this->sales_before,
 						fn($query) => $query->where('etsy_transactions.created_at', '<', Carbon::parse($this->sales_before)),
@@ -131,8 +130,8 @@ class IndexTable extends Component
 			->selectSub(
 				EtsyTransaction
 					::query()
-					->selectRaw("sum(price->>'$.amount' / price->>'$.divisor')")
-					->whereColumn('etsy_listings.listing_id', 'etsy_transactions.listing_id')
+					->selectRaw('sum(price)')
+					->whereColumn('etsy_transactions.etsy_listing_id', 'etsy_listings.id')
 					->when(
 						$this->sales_before,
 						fn($query) => $query->where('etsy_transactions.created_at', '<', Carbon::parse($this->sales_before)),
@@ -245,23 +244,22 @@ class IndexTable extends Component
 		$this->resetPage();
 	}
 
-	public function updateProduct(string $listing_id, ?string $product_id):void
+	public function updateProduct(EtsyListing $etsyListing, ?string $product_id):void
 	{
-		Validator::validate(compact('listing_id', 'product_id'), [
-			'listing_id' => 'required|exists:etsy_listings,id',
+		Validator::validate(compact('product_id'), [
 			'product_id' => 'nullable|exists:products,id',
 		]);
-		EtsyListing::where('id', $listing_id)->update(['product_id' => $product_id]);
+		$etsyListing->update(['product_id' => $product_id]);
 	}
 
-	public function archive(string $listing_id):void
+	public function archive(EtsyListing $etsyListing):void
 	{
-		EtsyListing::where('id', $listing_id)->update(['is_archived' => true]);
+		$etsyListing->update(['is_archived' => true]);
 	}
 
-	public function unarchive(string $listing_id):void
+	public function unarchive(EtsyListing $etsyListing):void
 	{
-		EtsyListing::where('id', $listing_id)->update(['is_archived' => false]);
+		$etsyListing->update(['is_archived' => false]);
 	}
 
 	public function allTime():void

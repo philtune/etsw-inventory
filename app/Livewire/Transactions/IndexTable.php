@@ -15,7 +15,14 @@ class IndexTable extends Component
 	{
 		return view('transactions.index-table', [
 			'etsyTransactions' => EtsyTransaction
-				::orderBy('created_at', 'desc')
+				::query()
+				->select('etsy_transactions.*')
+				->leftJoin('etsy_listings', 'etsy_listings.id', 'etsy_transactions.etsy_listing_id')
+				->leftJoin('products', 'products.id', 'etsy_listings.product_id')
+				->leftJoin('product_types', 'product_types.id', 'products.product_type_id')
+				->where('product_types.code', 'CPS')
+				->where('etsy_transactions.variations', 'not like', '[]')
+				->orderBy('created_at', 'desc')
 				->paginate(50)
 		]);
 	}

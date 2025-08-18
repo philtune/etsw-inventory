@@ -17,6 +17,7 @@
 		</label>
 	</x-slot:filters>
 	<x-slot:headers>
+		<th>&nbsp;</th>
 		<x-th.sortable label="Type" column="product_types.label"/>
 		<x-th.sortable label="Scent" column="scents.label"/>
 		<x-th.sortable label="Label" column="products.label"/>
@@ -30,6 +31,16 @@
 			:$loop
 			@class(['bg_highlight' => $product->is_archived])
 		>
+			<td onclick="event.stopPropagation()" style="cursor:initial" class="text-center">
+				@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->first() )
+					<a href="{{ route('etsy.listings.index', [
+								'product_type_id' => $product->product_type_id,
+								'scent_id' => $product->scent_id
+							]) }}"><img src="{{ $firstListing->thumbnail }}" alt="Thumbnail"/></a>
+				@else
+					<em>N/A</em>
+				@endif
+			</td>
 			<td @class(['bg_highlight' => !$product->product_type_id])>
 				{{ $product->productType?->label }}
 			</td>

@@ -18,7 +18,7 @@ class StockTable extends Component
 	use WithPagination;
 
 	#[Url]
-	public int $perPage = 50;
+	public int $perPage = 64;
 	#[Url]
 	public string $search = '';
 	#[Url]
@@ -70,7 +70,7 @@ class StockTable extends Component
 			'key' => [
 				'required',
 				'string',
-				Rule::in(array_keys($product->productType->variants['options'])),
+				Rule::in(array_keys($product->productType->variants['options'] ?? ['default' => []])),
 			],
 			'value' => 'nullable|numeric|min:0'
 		]);
@@ -91,7 +91,7 @@ class StockTable extends Component
 			->withSum('etsyTransactions as etsy_transactions_qty', 'quantity')
 			->withSum(
 				'etsyTransactions as etsy_revenue',
-				DB::raw("quantity * round(price->>'$.amount' / price->>'$.divisor', 2) - buyer_coupon")
+				DB::raw("quantity * price - shop_coupon")
 			)
 			->withSum('wholesaleOrderProducts as wholesale_order_products_qty', 'quantity')
 			->withSum(
@@ -100,9 +100,9 @@ class StockTable extends Component
 			)
 			->addSelect(DB::raw(<<<'EOF'
 coalesce((select
-	sum(quantity * round(price ->> '$.amount' / price ->> '$.divisor', 2) - buyer_coupon)
+	sum(quantity * price - shop_coupon)
 from `etsy_transactions`
-inner join `etsy_listings` on `etsy_listings`.`listing_id` = `etsy_transactions`.`listing_id`
+inner join `etsy_listings` on `etsy_listings`.`id` = `etsy_transactions`.`etsy_listing_id`
 where `products`.`id` = `etsy_listings`.`product_id`), 0)
 +
 coalesce((select

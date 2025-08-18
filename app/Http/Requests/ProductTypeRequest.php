@@ -14,7 +14,7 @@ class ProductTypeRequest extends FormRequest
 			'variants.label'           => 'nullable|string|max:24',
 			'variants.options'         => 'nullable|array',
 			'variants.options.*.key'   => 'nullable|string|max:16',
-			'variants.options.*.value' => 'nullable|string|max:24',
+			'variants.options.*.value' => 'nullable|string|max:128',
 			'variants.default'         => 'nullable|string',
 		]);
 		$variants = $this->array('variants');

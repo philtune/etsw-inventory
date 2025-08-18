@@ -10,9 +10,8 @@ return new class extends Migration {
 	public function up():void
 	{
 		Schema::create('etsy_listings', function (Blueprint $table) {
-			$table->uuid('id')
+			$table->unsignedBigInteger('id')
 			      ->primary();
-			$table->unsignedBigInteger('listing_id');
 			$table->foreignIdFor(Product::class)
 			      ->nullable()
 			      ->constrained()
@@ -22,8 +21,8 @@ return new class extends Migration {
 			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')
 			      ->default(false);
-//			$table->json('price');
-//			$table->unsignedSmallInteger('quantity');
+			//			$table->json('price');
+			//			$table->unsignedSmallInteger('quantity');
 			$table->string('url');
 			$table->json('meta');
 			$table->dateTime('created_at');

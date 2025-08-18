@@ -96,6 +96,20 @@ class EtsyApplicationApi
 	}
 
 	/**
+	 * @see https://developers.etsy.com/documentation/reference/#operation/getShopReceipt
+	 * @throws ConnectionException
+	 */
+	public static function getReceipt(string $receipt_id):array
+	{
+		return self::send(fn(PendingRequest $request) => $request
+			->withUrlParameters([
+				'shop_id' => config('services.etsy.shop_id'),
+				'receipt_id' => $receipt_id,
+			])
+			->get('/shops/{shop_id}/receipts/{receipt_id}'));
+	}
+
+	/**
 	 * @see https://developers.etsy.com/documentation/reference/#operation/getShopReceiptTransactionsByShop
 	 * @throws ConnectionException
 	 */

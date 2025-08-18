@@ -167,7 +167,7 @@
 					{{--					</td>--}}
 					<td>
 						<div class="l_cols">
-							<a href="https://www.etsy.com/your/shops/me/listing-editor/edit/{{ $etsyListing->listing_id }}" target="_blank"><img src="{{ $etsyListing->thumbnail }}" alt="Thumbnail"/></a>
+							<a href="https://www.etsy.com/your/shops/me/listing-editor/edit/{{ $etsyListing->id }}" target="_blank"><img src="{{ $etsyListing->thumbnail }}" alt="Thumbnail"/></a>
 							<div data-tooltip="{{ $etsyListing->title }}" class="--tt-lg">
 								{!! Str::limit($etsyListing->title, 48) !!}
 							</div>

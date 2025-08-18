@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Number;
 
 class EtsyListing extends Model
 {
-	use HasUuids;
 
 //	public $timestamps = false;
 	protected $guarded = [];
@@ -41,7 +41,7 @@ class EtsyListing extends Model
 
 	public function etsyTransactions():HasMany
 	{
-		return $this->hasMany(EtsyTransaction::class, 'listing_id', 'listing_id');
+		return $this->hasMany(EtsyTransaction::class, 'etsy_listing_id', 'id');
 	}
 
 	/**
@@ -50,14 +50,6 @@ class EtsyListing extends Model
 	public function product():BelongsTo
 	{
 		return $this->belongsTo(Product::class);
-	}
-
-	/**
-	 * @return BelongsTo<ProductType,$this>
-	 */
-	public function productType():BelongsTo
-	{
-		return $this->belongsTo(ProductType::class);
 	}
 
 	/**

@@ -11,15 +11,16 @@ class EtsyTransaction extends Model
 	public $timestamps = false;
 	protected $guarded = [];
 	protected $casts = [
-		'price'            => 'json',
-		'shipping_cost'    => 'json',
-		'variations'       => 'json',
-		'product_data'     => 'json',
-		'created_at'       => 'datetime',
-		'paid_at'          => 'datetime',
-		'shipped_at'       => 'datetime',
-		'expected_ship_at' => 'datetime',
-		'variation'        => 'json',
+		'created_at' => 'datetime',
+		'variation'  => 'json',
+		'price'      => 'json',
+		//		'shipping_cost'    => 'json',
+		'variations' => 'json',
+		//		'product_data'     => 'json',
+		//		'paid_at'          => 'datetime',
+		//		'shipped_at'       => 'datetime',
+		//		'expected_ship_at' => 'datetime',
+		'meta'       => 'json',
 	];
 
 	/**
@@ -32,7 +33,7 @@ class EtsyTransaction extends Model
 
 	public function etsyListing():BelongsTo
 	{
-		return $this->belongsTo(EtsyListing::class, 'listing_id', 'listing_id');
+		return $this->belongsTo(EtsyListing::class, 'etsy_listing_id', 'id');
 	}
 
 	/**
@@ -48,7 +49,7 @@ class EtsyTransaction extends Model
 	 */
 	public function adjustments():Attribute
 	{
-		return Attribute::get(fn() => number_format($this->buyer_coupon, 2))->shouldCache();
+		return Attribute::get(fn() => number_format($this->shop_coupon, 2))->shouldCache();
 	}
 
 	/**
@@ -56,7 +57,23 @@ class EtsyTransaction extends Model
 	 */
 	public function total():Attribute
 	{
-		return Attribute::get(fn() => number_format($this->quantity * $this->price['amount'] / $this->price['divisor'] - $this->buyer_coupon, 2))->shouldCache();
+		return Attribute::get(fn() => number_format($this->quantity * $this->price['amount'] / $this->price['divisor'] - $this->shop_coupon, 2))->shouldCache();
+	}
+
+	public static function getVariation(?string $etsy_listing_id, string $variations):?string
+	{
+		if ( $etsy_listing_id && $etsyListing = EtsyListing::find($etsy_listing_id) ) {
+			$variants = $etsyListing->product?->productType?->variants ?: [];
+			foreach ( ( $variants['options'] ?? [] ) as $key => $alias_csv ) {
+				foreach ( explode(',', $alias_csv) as $alias ) {
+					if ( str_contains($variations, '"formatted_value":"' . $alias . '"') ) {
+						return $key;
+					}
+				}
+			}
+			return $variants['default'] ?? null;
+		}
+		return null;
 	}
 
 }

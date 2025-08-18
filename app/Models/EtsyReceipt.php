@@ -10,7 +10,8 @@ class EtsyReceipt extends Model
 	public $timestamps = false;
 	protected $guarded = [];
 	protected $casts = [
-		'grandtotal'          => 'json',
+		'created_at'          => 'datetime',
+		'updated_at'          => 'datetime',
 		'subtotal'            => 'json',
 		'total_price'         => 'json',
 		'total_shipping_cost' => 'json',
@@ -20,12 +21,11 @@ class EtsyReceipt extends Model
 		'gift_wrap_price'     => 'json',
 		'shipments'           => 'json',
 		'refunds'             => 'json',
-		'created_at'          => 'datetime',
-		'updated_at'          => 'datetime',
+		'meta'                => 'json',
 	];
 
-	const TYPE_ETSY_COM = 0;
-	const TYPE_PATTERN_SHOP = 1;
+	//	const TYPE_ETSY_COM = 0;
+	//	const TYPE_PATTERN_SHOP = 1;
 
 	/**
 	 * @return HasMany<EtsyTransaction,$this>

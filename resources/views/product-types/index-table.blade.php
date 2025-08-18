@@ -25,7 +25,7 @@
 			<td>
 				@if( $productType->variants )
 					{{ $productType->variants['label'] ?? '[Unlabelled]' }}:<br/>
-					{!! collect($productType->variants['options'] ?? [])->implode(fn($option, $f) => ( ($productType->variants['default'] ?? null) == $f ? e(svg('icon-check')) . ' ' : '' ) . $option, '<br/>') !!}
+					{!! collect($productType->variants['options'] ?? [])->implode(fn($option, $f) => ( ($productType->variants['default'] ?? null) == $f ? e(svg('icon-check')) . ' ' : '' ) . $f, '<br/>') !!}
 				@endif
 			</td>
 			<td>

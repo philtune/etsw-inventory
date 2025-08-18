@@ -50,6 +50,7 @@ class IndexTable extends IndexTableComponent
 			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
 			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
 			->select('products.*')
+			->with('etsyListings')
 			->when(
 				!$this->show_archived,
 				fn(Builder $query) => $query->where('is_archived', false)

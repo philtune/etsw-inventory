@@ -16,9 +16,6 @@ Route::get('/etsy-api/import-all', [EtsyApiController::class, 'importAll'])
 Route::get('/etsy-api/import-receipts', [EtsyApiController::class, 'importReceipts'])
      ->name('etsy-api.import-receipts');
 
-Route::get('/etsy-api/import-transactions', [EtsyApiController::class, 'importTransactions'])
-     ->name('etsy-api.import-transactions');
-
 Route::get('/etsy-api/import-listings', [EtsyApiController::class, 'importListings'])
      ->name('etsy-api.import-listings');
 

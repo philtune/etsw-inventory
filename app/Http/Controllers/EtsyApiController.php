@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EtsyReceipt;
 use App\Models\OauthToken;
 use App\Services\EtsyAuthService;
 use App\Services\EtsyListingService;
@@ -40,8 +41,7 @@ class EtsyApiController extends Controller
 		try {
 			EtsyListingService::importAll();
 			EtsyReceiptService::import();
-			EtsyTransactionService::import();
-		} catch ( Throwable $th ) {
+		} catch ( ConnectionException $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
 		return back()->with('toast', 'Everything imported!');
@@ -61,20 +61,10 @@ class EtsyApiController extends Controller
 	{
 		try {
 			EtsyReceiptService::import();
-		} catch ( Throwable $th ) {
+		} catch ( ConnectionException $th ) {
 			return back()->withErrors('Error: ' . $th->getMessage());
 		}
 		return back()->with('toast', 'Receipts imported!');
-	}
-
-	public function importTransactions()
-	{
-		try {
-			EtsyTransactionService::import();
-		} catch ( Throwable $th ) {
-			return back()->withErrors('Error: ' . $th->getMessage());
-		}
-		return back()->with('toast', 'Transactions imported!');
 	}
 
 }

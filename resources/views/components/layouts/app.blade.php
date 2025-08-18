@@ -31,15 +31,18 @@
 		</div>
 	@endif
 	@if ( $errors->any() )
-		@push('below-body')
-			<script>
-				document.addEventListener('DOMContentLoaded', () => {
-					@foreach ( $errors->all() as $error )
-					toast('{!! $error !!}', '--danger', 10_000)
-					@endforeach
-				})
-			</script>
-		@endpush
+		@foreach ( $errors->all() as $error )
+			<div class="u_alert --danger">@svg('icon-triangle-exclamation') {!! $error !!}</div>
+		@endforeach
+{{--		@push('below-body')--}}
+{{--			<script>--}}
+{{--				document.addEventListener('DOMContentLoaded', () => {--}}
+{{--					@foreach ( $errors->all() as $error )--}}
+{{--					toast('{!! $error !!}', '--danger', 10_000)--}}
+{{--					@endforeach--}}
+{{--				})--}}
+{{--			</script>--}}
+{{--		@endpush--}}
 	@endif
 	@if( session('toast') )
 		@push('below-body')

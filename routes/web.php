@@ -15,3 +15,5 @@ Route::group([], [
 	base_path('/routes/web/etsy.php'),
 	base_path('/routes/web/wholesale.php'),
 ]);
+
+Route::view('test-map', 'test-map');

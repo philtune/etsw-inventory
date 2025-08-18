@@ -16,15 +16,12 @@ class HomeController extends Controller
 		return view('home', [
 			'etsyOauthToken'     => $etsyOauthToken,
 			'listing_count'      => EtsyListing::count(),
-			'listing_latest'     => EtsyListing::latest()->first()->created_at->setTimezone('America/New_York'),
+			'listing_latest'     => EtsyListing::latest()->first()?->created_at->setTimezone('America/New_York'),
 			'receipt_count'      => EtsyReceipt::count(),
-			'receipt_latest'     => EtsyReceipt::latest()->first()->created_at->setTimezone('America/New_York'),
+			'receipt_latest'     => EtsyReceipt::latest()->first()?->created_at->setTimezone('America/New_York'),
 			'transaction_count'  => EtsyTransaction::count(),
-			'transaction_latest' => EtsyTransaction::latest()->first()->created_at->setTimezone('America/New_York'),
-			'revenue_to_date'    => EtsyReceipt
-				::selectRaw("sum(json_extract(grandtotal, '\$.amount'))/100 as revenue")
-				->first()
-				->revenue
+			'transaction_latest' => EtsyTransaction::latest()->first()?->created_at->setTimezone('America/New_York'),
+			'revenue_to_date'    => EtsyReceipt::sum('subtotal')
 		]);
 	}
 
