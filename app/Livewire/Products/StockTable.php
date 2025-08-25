@@ -4,6 +4,7 @@ namespace App\Livewire\Products;
 
 use App\Models\Product;
 use App\Models\ProductAggregate;
+use App\Services\EtsyListingService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +75,7 @@ class StockTable extends Component
 			],
 			'value' => 'nullable|numeric|min:0'
 		]);
-		$product->update(['variants_in_stock' => array_merge($product->variants_in_stock, [$key => $value ?: 0])]);
+		$product->update(['stock' => array_merge($product->stock, [$key => $value ?: 0])]);
 		$this->dispatch('toast', 'Product stock updated!', '--success');
 	}
 
@@ -114,6 +115,7 @@ as total_revenue
 EOF
 			))
 			->where('products.is_archived', false)
+			->where('products.can_stock')
 			->get();
 		$aggregates->each(function (Product $product) {
 			ProductAggregate
@@ -123,4 +125,5 @@ EOF
 		});
 		$this->dispatch('toast', 'Aggregates updated!', '--success');
 	}
+
 }

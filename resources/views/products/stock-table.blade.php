@@ -2,18 +2,18 @@
 	<div class="l_cols --split">
 		<div>{{ $products->links('pagination') }}</div>
 		<div class="l_cols --md">
-			<input
-				type="search"
-				wire:model.live.debounce="search"
-				placeholder="Search"
-				class="input"
-			/>
 			<button
 				type="button"
 				wire:click="updateAggregates"
 				class="u_btn --warning --sm">
 				@svg('icon-rotate') Update Aggregates
 			</button>
+			<input
+				type="search"
+				wire:model.live.debounce="search"
+				placeholder="Search"
+				class="input"
+			/>
 		</div>
 	</div>
 	<div class="m_table__container">
@@ -25,7 +25,7 @@
 				<th class="w-1px">Scent</th>
 				<x-th.sortable label="Product Label" column="products.label"/>
 				<th class="w-1px">Stock</th>
-				<th><small>Etsy Stock</small></th>
+				<th><small>Etsy<br/>Stock</small></th>
 				<x-th.sortable column="product_aggregates.etsy_transactions_qty" desc-first>
 					<x-slot:label><small>Sold:<br/>Etsy</small></x-slot:label>
 				</x-th.sortable>
@@ -46,9 +46,10 @@
 			</thead>
 			<tbody>
 			@foreach( $products as $product )
+				@php($firstListing = $product->etsyListings->sortByDesc('created_at')->first())
 				<tr>
 					<td class="text-center">
-						@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->first() )
+						@if( $firstListing )
 							<a href="{{ route('etsy.listings.index', [
 								'product_type_id' => $product->product_type_id,
 								'scent_id' => $product->scent_id
@@ -67,7 +68,7 @@
 							<tbody>
 							@if( $product->can_stock )
 								@if( $product->productType?->variants )
-									@foreach( $product->productType->variants['options'] as $key => $label )
+									@foreach( array_keys($product->productType->variants['options']) as $key )
 										<tr>
 											<th>{{ $key }}</th>
 											<td>
@@ -75,7 +76,7 @@
 													type="number"
 													class="input"
 													id="{{ $product->id }}-{{ $key }}-stock"
-													value="{{ $product->variants_in_stock[$key] ?? 0 }}"
+													value="{{ $product->stock[$key] ?? 0 }}"
 													wire:change.blur="updateInStock('{{ $product->id }}', '{{ $key }}', $event.target.value)"
 												/>
 											</td>
@@ -89,7 +90,7 @@
 												type="number"
 												class="input"
 												id="{{ $product->id }}-{{ $key }}-stock"
-												value="{{ $product->variants_in_stock['default'] ?? 0 }}"
+												value="{{ $product->stock['default'] ?? 0 }}"
 												wire:change.blur="updateInStock('{{ $product->id }}', 'default', $event.target.value)"
 											/>
 										</td>
@@ -104,7 +105,34 @@
 							</tbody>
 						</table>
 					</td>
-					<td>Hi</td>
+					<td class="text-right">
+						<table class="m_table --stock">
+							<tbody>
+							@if( $product->can_stock && $firstListing && $product->productType?->variants )
+								@foreach( $product->productType->variants['options'] as $key => $aliases )
+									@php($etsy_inventory = $firstListing->variant_in_stock($aliases) ?? 0)
+									@php($product_stock = $product->stock[$key] ?? 0)
+									<tr>
+										<td>
+											<output
+												@class([
+													'output',
+													'bg-success' => $etsy_inventory == $product_stock,
+													'bg-warning' => $etsy_inventory < $product_stock,
+													'bg-danger' => $etsy_inventory > $product_stock,
+												])
+											>{{ $etsy_inventory }}</output>
+										</td>
+									</tr>
+								@endforeach
+							@else
+								<tr>
+									<td>{!! $firstListing->variants_in_stock['default'] ?? '<em>?N/A</em>' !!}</td>
+								</tr>
+							@endif
+							</tbody>
+						</table>
+					</td>
 					<td class="text-center">{{ $product->productAggregate?->etsy_transactions_qty ?: 0 }}</td>
 					<td class="text-right">${{ number_format($product->productAggregate?->etsy_revenue, 2) }}</td>
 					<td class="text-center">{{ $product->productAggregate?->wholesale_order_products_qty ?: 0 }}</td>

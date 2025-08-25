@@ -68,6 +68,17 @@ class EtsyApplicationApi
 	}
 
 	/**
+	 * @throws ConnectionException
+	 */
+	public static function getListingsByIds(array $listing_ids, array $params = []):array
+	{
+		return self::send(fn(PendingRequest $request) => $request
+			->get('/listings/batch', [
+				'listing_ids' => $listing_ids,
+			] + $params));
+	}
+
+	/**
 	 * @see https://developers.etsy.com/documentation/reference/#operation/getShopReceipts
 	 * @throws ConnectionException
 	 */
@@ -103,7 +114,7 @@ class EtsyApplicationApi
 	{
 		return self::send(fn(PendingRequest $request) => $request
 			->withUrlParameters([
-				'shop_id' => config('services.etsy.shop_id'),
+				'shop_id'    => config('services.etsy.shop_id'),
 				'receipt_id' => $receipt_id,
 			])
 			->get('/shops/{shop_id}/receipts/{receipt_id}'));

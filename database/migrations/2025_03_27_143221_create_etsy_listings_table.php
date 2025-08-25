@@ -24,6 +24,8 @@ return new class extends Migration {
 			//			$table->json('price');
 			//			$table->unsignedSmallInteger('quantity');
 			$table->string('url');
+			$table->string('thumbnail')
+			      ->nullable();
 			$table->json('meta');
 			$table->dateTime('created_at');
 			$table->dateTime('updated_at');

@@ -25,7 +25,7 @@ return new class extends Migration {
 			$table->string('label');
 			$table->boolean('can_stock')
 			      ->default(true);
-			$table->string('variants_in_stock')
+			$table->string('stock')
 			      ->default('{}');
 			$table->boolean('is_archived')
 			      ->default(false);

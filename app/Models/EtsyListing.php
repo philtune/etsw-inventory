@@ -3,22 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Number;
 
 class EtsyListing extends Model
 {
 
-//	public $timestamps = false;
+	//	public $timestamps = false;
 	protected $guarded = [];
 	protected $casts = [
-		'price'     => 'json',
-		'meta'      => 'json',
-		'ending_at' => 'datetime',
+		'price'             => 'json',
+		'meta'              => 'json',
+		'ending_at'         => 'datetime',
+		'variants_in_stock' => 'json',
 		//		'creation_at'          => 'datetime',
 		//		'created_at'           => 'datetime',
 		//		'original_creation_at' => 'datetime',
@@ -103,19 +102,29 @@ class EtsyListing extends Model
 		return Attribute::get(fn() => Number::currency($this->price['amount'] / $this->price['divisor'], $this->price['currency_code']))->shouldCache();
 	}
 
-	/**
-	 * @return Attribute<string,never>
-	 */
-	public function thumbnail():Attribute
-	{
-		return Attribute::get(fn() => $this->meta['images'][0]['url_75x75'] ?? '')->shouldCache();
-	}
+	//	/**
+	//	 * @return Attribute<string,never>
+	//	 */
+	//	public function thumbnail():Attribute
+	//	{
+	//		return Attribute::get(fn() => $this->meta['images'][0]['url_75x75'] ?? '')->shouldCache();
+	//	}
 
-//	/**
-//	 * @return Attribute<int,never>
-//	 */
-//	public function age():Attribute
-//	{
-//		return Attribute::get(fn() => $this->created_at->monthsUntil(now())->count())->shouldCache();
-//	}
+	//	/**
+	//	 * @return Attribute<int,never>
+	//	 */
+	//	public function age():Attribute
+	//	{
+	//		return Attribute::get(fn() => $this->created_at->monthsUntil(now())->count())->shouldCache();
+	//	}
+
+	public function variant_in_stock(string $aliases)
+	{
+		foreach ( explode(',', $aliases) as $alias ) {
+			if ( array_key_exists($alias, $this->variants_in_stock) ) {
+				return $this->variants_in_stock[$alias];
+			}
+		}
+		return null;
+	}
 }

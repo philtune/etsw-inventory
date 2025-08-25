@@ -43,17 +43,29 @@ a {
 }
 
 input.input,
-select.select {
+select.select,
+output.output {
 	height: 2.25rem;
 }
 
 input.input,
 select.select,
-textarea.textarea {
+textarea.textarea,
+output.output {
 	padding: 0.4rem 0.5rem;
+}
+
+input.input,
+select.select,
+textarea.textarea,
+{
 	border: 1px solid var(--clr-muted-highest);
 	border-radius: 0.25rem;
 	background-color: var(--content-bg);
+}
+
+output.output {
+	display: inline-block;
 }
 
 input.input.--shy:not(:focus):placeholder-shown,

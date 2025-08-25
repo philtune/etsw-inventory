@@ -105,6 +105,7 @@ class IndexTable extends Component
 				'etsy_listings.id',
 				'etsy_listings.product_id',
 				'etsy_listings.title',
+				'etsy_listings.thumbnail',
 				'etsy_listings.meta',
 				'etsy_listings.ending_at',
 				'etsy_listings.state_enum',

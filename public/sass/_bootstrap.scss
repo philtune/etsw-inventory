@@ -38,6 +38,26 @@ fieldset {
 	color: var(--clr-muted-high) !important;
 }
 
+.bg-success {
+	background-color: var(--clr-success-lowest) !important;
+}
+
+.bg-warning {
+	background-color: var(--clr-warning-lowest) !important;
+}
+
+.bg-danger {
+	background-color: var(--clr-danger-lowest) !important;
+}
+
+.bg-accent {
+	background-color: var(--clr-accent-lowest) !important;
+}
+
+.bg-muted {
+	background-color: var(--clr-muted-lowest) !important;
+}
+
 .w-auto {
 	width: auto !important;
 }

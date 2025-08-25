@@ -3,6 +3,7 @@
 use App\Http\Controllers\EtsyApiController;
 use App\Http\Controllers\EtsyListingController;
 use App\Http\Controllers\EtsyTransactionController;
+use App\Services\EtsyListingService;
 
 Route::get('/etsy-api/api-redirect-url', [EtsyApiController::class, 'apiRedirectUrl'])
      ->name('etsy-api.api-redirect-url');
@@ -18,6 +19,12 @@ Route::get('/etsy-api/import-receipts', [EtsyApiController::class, 'importReceip
 
 Route::get('/etsy-api/import-listings', [EtsyApiController::class, 'importListings'])
      ->name('etsy-api.import-listings');
+
+Route::get('/etsy-api/import-inventory', function () {
+	EtsyListingService::importInventory();
+	return back()->with('toast', 'Etsy inventory updated!');
+})
+     ->name('etsy-api.import-inventory');
 
 
 Route::get('/etsy/listings', [EtsyListingController::class, 'index'])

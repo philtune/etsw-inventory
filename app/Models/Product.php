@@ -18,9 +18,9 @@ class Product extends Model
 
 	protected $guarded = [];
 	protected $casts = [
-		'can_stock'         => 'boolean',
-		'variants_in_stock' => 'json',
-		'is_archived'       => 'boolean',
+		'can_stock'   => 'boolean',
+		'stock'       => 'json',
+		'is_archived' => 'boolean',
 	];
 
 	/**

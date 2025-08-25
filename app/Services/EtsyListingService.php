@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\EtsyListing;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Collection;
 
 class EtsyListingService
 {
@@ -32,9 +34,29 @@ class EtsyListingService
 	/**
 	 * @throws ConnectionException
 	 */
+	public static function importInventory():void
+	{
+		EtsyListing
+			::query()
+			->whereHas('product', callback: fn(Builder $query) => $query->where('is_archived', 0))
+			->pluck('id')
+			->chunk(100)
+			->each(function (Collection $listing_ids) {
+				$response = EtsyApplicationApi::getListingsByIds($listing_ids->toArray(), [
+					'includes' => 'Inventory,Images',
+				]);
+				foreach ( $response['results'] as $row ) {
+					EtsyListing::where('id', $row['listing_id'])->update(self::map($row));
+				}
+			});
+	}
+
+	/**
+	 * @throws ConnectionException
+	 */
 	public static function importAll():void
 	{
-		static::import();
+		static::import('active');
 		static::import('inactive');
 		static::import('sold_out');
 		static::import('expired');
@@ -64,9 +86,10 @@ class EtsyListingService
 				initial: []
 			),
 			'url'               => $row['url'],
+			'thumbnail'         => $row['images'][0]['url_75x75'] ?? null,
 			'meta'              => $row,
 			'created_at'        => Carbon::createFromTimestamp($row['original_creation_timestamp']),
-			'updated_at'        => Carbon::createFromTimestamp($row['updated_timestamp']),
+			//			'updated_at'        => Carbon::createFromTimestamp($row['updated_timestamp']),
 			'ending_at'         => Carbon::createFromTimestamp($row['ending_timestamp']),
 			//							[
 			//							'id'                     => $row['listing_id'],
