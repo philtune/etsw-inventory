@@ -21,7 +21,7 @@
 		<x-th.sortable label="Type" column="product_types.label"/>
 		<x-th.sortable label="Scent" column="scents.label"/>
 		<x-th.sortable label="Label" column="products.label"/>
-		<x-th.sortable label="Stockable" column="products.can_stock"/>
+		<x-th.sortable label="Bundle" column="products.is_bundle"/>
 	</x-slot:headers>
 	@foreach( $collection as $product )
 		<x-index-table-row
@@ -34,9 +34,9 @@
 			<td onclick="event.stopPropagation()" style="cursor:initial" class="text-center">
 				@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->first() )
 					<a href="{{ route('etsy.listings.index', [
-								'product_type_id' => $product->product_type_id,
-								'scent_id' => $product->scent_id
-							]) }}"><img src="{{ $firstListing->thumbnail }}" alt="Thumbnail"/></a>
+						'product_type_id' => $product->product_type_id,
+						'scent_id' => $product->scent_id
+					]) }}"><img src="{{ $firstListing->thumbnail }}" alt="Thumbnail"/></a>
 				@else
 					<em>N/A</em>
 				@endif
@@ -53,7 +53,7 @@
 				@endif
 				{{ $product->label }}
 			</td>
-			<x-td.boolean :default="$product->can_stock"/>
+			<x-td.boolean :default="$product->is_bundle"/>
 			<x-slot:editWireModal>
 				@include('products.form-inputs')
 			</x-slot:editWireModal>

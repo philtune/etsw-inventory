@@ -12,6 +12,10 @@ return new class extends Migration {
 		Schema::create('products', function (Blueprint $table) {
 			$table->uuid('id')
 			      ->primary();
+			$table->datetimes();
+			$table->softDeletesDatetime();
+			$table->boolean('is_bundle')
+			      ->default(false);
 			$table->foreignIdFor(ProductType::class)
 			      ->nullable()
 			      ->constrained()
@@ -29,8 +33,6 @@ return new class extends Migration {
 			      ->default('{}');
 			$table->boolean('is_archived')
 			      ->default(false);
-			$table->datetimes();
-			$table->softDeletesDatetime();
 		});
 	}
 

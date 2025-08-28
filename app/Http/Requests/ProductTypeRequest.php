@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Validator;
 
 class ProductTypeRequest extends FormRequest
 {
@@ -33,17 +34,26 @@ class ProductTypeRequest extends FormRequest
 			'variants'  => $variants,
 			'is_bundle' => $this->boolean('is_bundle')
 		]);
+		$this->validate([
+			'child_product_type_ids'   => 'nullable|array',
+			'child_product_type_ids.*' => 'string',
+		]);
+		$child_product_type_ids = array_reduce($this->array('child_product_type_ids'), fn(array $c, $str) => $c + [
+				explode('|', $str)[0] => [
+					'variant' => explode('|', $str)[1]
+				]
+			], []);
+		Validator::validate(['ids' => array_keys($child_product_type_ids)], ['ids.*' => 'exists:product_types,id',]);
+		$this->merge(['child_product_type_ids' => $child_product_type_ids]);
 	}
 
 	public function rules():array
 	{
 		return [
-			'code'                     => 'nullable|string|max:16',
-			'label'                    => 'nullable|string|max:255',
-			'is_bundle'                => 'boolean',
-			'variants'                 => 'nullable|array',
-			'child_product_type_ids'   => 'nullable|array',
-			'child_product_type_ids.*' => 'exists:product_types,id',
+			'code'      => 'nullable|string|max:16',
+			'label'     => 'nullable|string|max:255',
+			'is_bundle' => 'boolean',
+			'variants'  => 'nullable|array',
 		];
 	}
 

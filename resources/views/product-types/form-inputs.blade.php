@@ -46,14 +46,14 @@
 					data-prop-switcher="hide-unless-checked,#{{ $uid }}_is_bundle"
 					@style(['display:none'=>!$productType?->is_bundle])
 				>
-					Products:
+					Product Types:
 					<x-form.select
 						name="child_product_type_ids[]"
 						:options="$child_product_type_options"
 						:default="$productType?->childProductTypes()->pluck('id')->toArray()"
 						style="width:20rem"
 						multiple
-						id="{{ $uid }}_products"
+						id="{{ $uid }}_product_types"
 					/>
 				</div>
 			</div>

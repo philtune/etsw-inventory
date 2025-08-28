@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -21,6 +22,7 @@ class Product extends Model
 		'can_stock'   => 'boolean',
 		'stock'       => 'json',
 		'is_archived' => 'boolean',
+		'is_bundle'   => 'boolean',
 	];
 
 	/**
@@ -37,6 +39,32 @@ class Product extends Model
 	public function productType():BelongsTo
 	{
 		return $this->belongsTo(ProductType::class);
+	}
+
+	/**
+	 * @return BelongsToMany<Product,$this>
+	 */
+	public function parentProduct():BelongsToMany
+	{
+		return $this->belongsToMany(
+			Product::class,
+			'bundle_products',
+			'child_product_id',
+			'parent_product_id',
+		);
+	}
+
+	/**
+	 * @return BelongsToMany<Product,$this>
+	 */
+	public function childProducts():BelongsToMany
+	{
+		return $this->belongsToMany(
+			Product::class,
+			'bundle_products',
+			'parent_product_id',
+			'child_product_id',
+		);
 	}
 
 	/**

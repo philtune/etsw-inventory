@@ -42,6 +42,33 @@
 		</td>
 	</tr>
 	<tr>
+		<th><label for="{{ $uid }}_is_bundle">Is Bundle?</label></th>
+		<td>
+			<div class="l_cols">
+				<input
+					type="checkbox"
+					name="is_bundle"
+					@checked($product?->is_bundle)
+					id="{{ $uid }}_is_bundle"
+				/>
+				<div
+					data-prop-switcher="hide-unless-checked,#{{ $uid }}_is_bundle"
+					@style(['display:none'=>!$product?->is_bundle])
+				>
+					Products:
+					<x-form.select
+						name="child_product_ids[]"
+						:options="$child_product_options"
+						:default="$product ? $bundle_products->where('parent_product_id', $product->id)->map(fn(object $row) => $row->child_product_id . '|' . $row->variant)->toArray() : []"
+						style="width:20rem"
+						multiple
+						id="{{ $uid }}_products"
+					/>
+				</div>
+			</div>
+		</td>
+	</tr>
+	<tr>
 		<th><label for="{{ $uid }}_can_stock">Stockable</label></th>
 		<td>
 			<input

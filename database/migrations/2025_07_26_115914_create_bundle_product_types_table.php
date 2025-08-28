@@ -17,7 +17,9 @@ return new class extends Migration {
 			      ->constrained('product_types')
 			      ->cascadeOnUpdate()
 			      ->cascadeOnDelete();
-			$table->unique(['parent_product_type_id', 'child_product_type_id'], 'parent_child');
+			$table->string('variant', 64)
+			      ->nullable();
+			$table->unique(['parent_product_type_id', 'child_product_type_id', 'variant'], 'parent_child');
 		});
 	}
 

@@ -18,6 +18,8 @@ class IndexTable extends IndexTableComponent
 {
 	use WithPagination;
 
+
+	public array $child_product_options;
 	#[Locked]
 	public array $product_type_options;
 	#[Locked]
@@ -34,12 +36,29 @@ class IndexTable extends IndexTableComponent
 		'scents.label',
 	];
 
+	public function mount():void
+	{
+		$this->child_product_options = Product
+			::query()
+			->orderBy('label')
+			->where('is_bundle', false)
+			->with(['productType', 'scent'])
+			->get()
+			->reduce(fn(array $c, Product $product) => $c + array_reduce(array_keys($product->productType->variants['options'] ?? ['default' => '']), fn($_c, $key) => $_c + [
+						$product->id . '|' . $key => $product->title . ' (' . $key . ')'
+					], []), []);
+	}
+
 	public function render():View
 	{
 		/** @var LengthAwarePaginator<array-key,Product> $collection */
 		$collection = $this->collection();
 		return view('products.index-table', [
 			'collection' => $collection,
+			'bundle_products' => \DB
+				::table('bundle_products')
+				->whereIn('parent_product_id', $collection->pluck('id'))
+				->get()
 		]);
 	}
 
@@ -50,7 +69,7 @@ class IndexTable extends IndexTableComponent
 			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
 			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
 			->select('products.*')
-			->with('etsyListings')
+			->with(['etsyListings', 'productType', 'scent'])
 			->when(
 				!$this->show_archived,
 				fn(Builder $query) => $query->where('is_archived', false)
@@ -64,18 +83,30 @@ class IndexTable extends IndexTableComponent
 			'scent_id'        => 'nullable|exists:scents,id',
 			'label'           => 'nullable|string|max:255',
 			'can_stock'       => 'boolean',
+			'is_bundle'       => 'boolean',
 		];
 	}
 
 	public function store(array $formData):void
 	{
-		Product::query()->create($this->validated($formData, $this->rules()));
+		Product::query()->create(static::validated($formData, $this->rules()));
 		$this->dispatch('toast', 'Product created!', '--success');
 	}
 
 	public function update(Product $product, array $formData):void
 	{
-		$product->update($this->validated($formData, $this->rules()));
+		static::validated($formData, [
+			'child_product_ids'   => 'nullable|array',
+			'child_product_ids.*' => 'string',
+		]);
+		$child_product_ids = array_reduce($formData['child_product_ids'], fn(array $c, $str) => $c + [
+				explode('|', $str)[0] => [
+					'variant' => explode('|', $str)[1]
+				]
+			], []);
+		static::validated(['ids' => array_keys($child_product_ids)], ['ids.*' => 'exists:products,id',]);
+		$product->update(static::validated($formData, $this->rules()));
+		$product->childProducts()->sync($child_product_ids);
 		$this->dispatch('toast', 'Product updated!', '--success');
 	}
 

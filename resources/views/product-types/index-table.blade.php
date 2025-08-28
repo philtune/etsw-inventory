@@ -30,7 +30,7 @@
 			</td>
 			<td>
 				@if( $productType->is_bundle)
-					{!! $productType->childProductTypes()->pluck('id')->implode(fn($id) => $child_product_type_options[$id], '<br/>') !!}
+					{!! $productType->childProductTypes()->get(['id', 'variant'])->implode(fn(\App\Models\ProductType $childProductType) => $child_product_type_options[$childProductType->id.'|'.$childProductType->variant] ?? '??', '<br/>') !!}
 				@endif
 			</td>
 			<td>

@@ -61,13 +61,13 @@ class IndexTable extends IndexTableComponent
 
 	public function store(array $formData):void
 	{
-		Scent::query()->create($this->validated($formData, $this->rules()));
+		Scent::query()->create(static::validated($formData, $this->rules()));
 		$this->dispatch('toast', 'Scent created!', '--success');
 	}
 
 	public function update(Scent $scent, array $formData):void
 	{
-		$scent->update($this->validated($formData, $this->rules($scent)));
+		$scent->update(static::validated($formData, $this->rules($scent)));
 		$this->dispatch('toast', 'Scent updated!', '--success');
 	}
 
