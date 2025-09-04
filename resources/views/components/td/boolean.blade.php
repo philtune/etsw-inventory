@@ -1,7 +1,8 @@
 @props([
 	/** @var boolean */
-	'default'
+	'default',
+	'yesOnly' => false,
 ])
 <td class="text-center">
-	<x-boolean :$default/>
+	<x-boolean :$default :$yesOnly/>
 </td>

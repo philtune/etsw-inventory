@@ -18,10 +18,10 @@
 	</x-slot:filters>
 	<x-slot:headers>
 		<th>&nbsp;</th>
+		<x-th.sortable label="Label" column="products.label"/>
+		<x-th.sortable label="Bundle" column="products.is_bundle" desc-first/>
 		<x-th.sortable label="Type" column="product_types.label"/>
 		<x-th.sortable label="Scent" column="scents.label"/>
-		<x-th.sortable label="Label" column="products.label"/>
-		<x-th.sortable label="Bundle" column="products.is_bundle"/>
 	</x-slot:headers>
 	@foreach( $collection as $product )
 		<x-index-table-row
@@ -32,7 +32,7 @@
 			@class(['bg_highlight' => $product->is_archived])
 		>
 			<td onclick="event.stopPropagation()" style="cursor:initial" class="text-center">
-				@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->first() )
+				@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->sortBy('is_archived')->first() )
 					<a href="{{ route('etsy.listings.index', [
 						'product_type_id' => $product->product_type_id,
 						'scent_id' => $product->scent_id
@@ -41,19 +41,26 @@
 					<em>N/A</em>
 				@endif
 			</td>
-			<td @class(['bg_highlight' => !$product->product_type_id])>
-				{{ $product->productType?->label }}
-			</td>
-			<td @class(['bg_highlight' => !$product->scent_id])>
-				{{ $product->scent?->label }}
-			</td>
 			<td>
 				@if($product->is_archived)
 					<span class="--tt-right" data-tooltip="Archived">@svg('icon-box-archive', 'text-warning')</span>
 				@endif
 				{{ $product->label }}
 			</td>
-			<x-td.boolean :default="$product->is_bundle"/>
+			<x-td.boolean :default="$product->is_bundle" yes-only/>
+			@if( $product->is_bundle )
+				<td colspan="2">
+					<strong>Bundle</strong><br/>
+					{!! $product->childProducts->implode(fn(\App\Models\Product $product) => $product->title . ' (' . $product->pivot->variant . ')', '<br/>') !!}
+				</td>
+			@else
+				<td @class(['bg_highlight' => !$product->product_type_id])>
+					{{ $product->productType?->label }}
+				</td>
+				<td @class(['bg_highlight' => !$product->scent_id])>
+					{{ $product->scent?->label }}
+				</td>
+			@endif
 			<x-slot:editWireModal>
 				@include('products.form-inputs')
 			</x-slot:editWireModal>

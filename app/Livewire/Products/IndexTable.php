@@ -6,6 +6,7 @@ use App\Livewire\Concerns\IndexTableComponent;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
@@ -38,6 +39,11 @@ class IndexTable extends IndexTableComponent
 
 	public function mount():void
 	{
+		$this->calculate_options();
+	}
+
+	public function calculate_options():void
+	{
 		$this->child_product_options = Product
 			::query()
 			->orderBy('label')
@@ -45,7 +51,7 @@ class IndexTable extends IndexTableComponent
 			->with(['productType', 'scent'])
 			->get()
 			->reduce(fn(array $c, Product $product) => $c + array_reduce(array_keys($product->productType->variants['options'] ?? ['default' => '']), fn($_c, $key) => $_c + [
-						$product->id . '|' . $key => $product->title . ' (' . $key . ')'
+						$product->id . '|' . $key => ( $product->is_archived ? '[ARCHIVED] ' : '' ) . $product->title . ' (' . $key . ')',
 					], []), []);
 	}
 
@@ -54,7 +60,7 @@ class IndexTable extends IndexTableComponent
 		/** @var LengthAwarePaginator<array-key,Product> $collection */
 		$collection = $this->collection();
 		return view('products.index-table', [
-			'collection' => $collection,
+			'collection'      => $collection,
 			'bundle_products' => \DB
 				::table('bundle_products')
 				->whereIn('parent_product_id', $collection->pluck('id'))
@@ -69,7 +75,14 @@ class IndexTable extends IndexTableComponent
 			->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
 			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
 			->select('products.*')
-			->with(['etsyListings', 'productType', 'scent'])
+			->with([
+				'etsyListings',
+				'productType',
+				'scent',
+				'childProducts' => fn(BelongsToMany $query) => $query
+					->with(['productType', 'scent'])
+					->withPivot('variant')
+			])
 			->when(
 				!$this->show_archived,
 				fn(Builder $query) => $query->where('is_archived', false)
@@ -90,6 +103,7 @@ class IndexTable extends IndexTableComponent
 	public function store(array $formData):void
 	{
 		Product::query()->create(static::validated($formData, $this->rules()));
+		$this->calculate_options();
 		$this->dispatch('toast', 'Product created!', '--success');
 	}
 
@@ -99,7 +113,7 @@ class IndexTable extends IndexTableComponent
 			'child_product_ids'   => 'nullable|array',
 			'child_product_ids.*' => 'string',
 		]);
-		$child_product_ids = array_reduce($formData['child_product_ids'], fn(array $c, $str) => $c + [
+		$child_product_ids = array_reduce($formData['child_product_ids'] ?? [], fn(array $c, $str) => $c + [
 				explode('|', $str)[0] => [
 					'variant' => explode('|', $str)[1]
 				]
@@ -107,6 +121,7 @@ class IndexTable extends IndexTableComponent
 		static::validated(['ids' => array_keys($child_product_ids)], ['ids.*' => 'exists:products,id',]);
 		$product->update(static::validated($formData, $this->rules()));
 		$product->childProducts()->sync($child_product_ids);
+		$this->calculate_options();
 		$this->dispatch('toast', 'Product updated!', '--success');
 	}
 

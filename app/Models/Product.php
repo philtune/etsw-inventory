@@ -25,6 +25,22 @@ class Product extends Model
 		'is_bundle'   => 'boolean',
 	];
 
+	protected static function booted():void
+	{
+		static::creating(function(self $self) {
+			if ( $self->is_bundle ) {
+				$self->product_type_id = null;
+				$self->scent_id = null;
+			}
+		});
+		static::updating(function(self $self) {
+			if ( $self->is_bundle ) {
+				$self->product_type_id = null;
+				$self->scent_id = null;
+			}
+		});
+	}
+
 	/**
 	 * @return BelongsTo<Scent,$this>
 	 */
