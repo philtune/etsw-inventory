@@ -74,15 +74,4 @@
 			/>
 		</td>
 	</tr>
-	<tr>
-		<th><label for="{{ $uid }}_can_stock">Stockable</label></th>
-		<td>
-			<input
-				type="checkbox"
-				name="can_stock"
-				@checked($product?->can_stock)
-				id="{{ $uid }}_can_stock"
-			/>
-		</td>
-	</tr>
 </table>

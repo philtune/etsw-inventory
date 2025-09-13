@@ -19,8 +19,7 @@ class Product extends Model
 
 	protected $guarded = [];
 	protected $casts = [
-		'can_stock'   => 'boolean',
-		'stock'       => 'json',
+		'stock'       => 'integer',
 		'is_archived' => 'boolean',
 		'is_bundle'   => 'boolean',
 	];
@@ -37,6 +36,11 @@ class Product extends Model
 			if ( $self->is_bundle ) {
 				$self->product_type_id = null;
 				$self->scent_id = null;
+			}
+			if ( $self->isDirty('product_type_id') ) {
+				$self
+					->variantStock()
+					->each(fn(ProductVariantStock $productVariantStock) => $productVariantStock->delete());
 			}
 		});
 	}
@@ -113,6 +117,23 @@ class Product extends Model
 	public function productAggregate():HasOne
 	{
 		return $this->hasOne(ProductAggregate::class);
+	}
+
+	/**
+	 * @return HasMany<ProductVariantStock,$this>
+	 */
+	public function variantStock():HasMany
+	{
+		return $this->hasMany(ProductVariantStock::class);
+	}
+
+	public function getVariantStock(ProductTypeVariant $productTypeVariant):int
+	{
+		return $this
+			->variantStock()
+			->where('product_type_variant_id', $productTypeVariant->id)
+			->first('stock')
+			?->stock ?: 0;
 	}
 
 	/**

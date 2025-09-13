@@ -44,6 +44,7 @@ table {
 code {
 	display: inline-block;
 	white-space: pre-wrap;
+	word-break: break-word;
 	font-size: 0.8em;
 	background: var(--tint-low);
 	padding: 0.5rem;

@@ -66,32 +66,32 @@
 					<td class="text-right">
 						<table class="m_table --stock">
 							<tbody>
-							@if( $product->can_stock )
-								@if( $product->productType?->variants )
-									@foreach( array_keys($product->productType->variants['options']) as $key )
+							@if( !$product->is_bundle )
+								@if( $product->productType?->variants->isNotEmpty() )
+									@foreach( $product->productType->variants as $productTypeVariant )
 										<tr>
-											<th>{{ $key }}</th>
+											<th>{{ $productTypeVariant->label }}</th>
 											<td>
 												<input
 													type="number"
 													class="input"
-													id="{{ $product->id }}-{{ $key }}-stock"
-													value="{{ $product->stock[$key] ?? 0 }}"
-													wire:change.blur="updateInStock('{{ $product->id }}', '{{ $key }}', $event.target.value)"
+													id="{{ uniqid() }}-stock"
+													value="{{ $product->getVariantStock($productTypeVariant) }}"
+													wire:change.live.debounce="updateVariantStock('{{ $product->id }}', '{{ $productTypeVariant->id }}', $event.target.value)"
 												/>
 											</td>
 										</tr>
 									@endforeach
 								@else
 									<tr>
-										<th><small><em>Default</em></small></th>
+										<th></th>
 										<td>
 											<input
 												type="number"
 												class="input"
-												id="{{ $product->id }}-{{ $key }}-stock"
-												value="{{ $product->stock['default'] ?? 0 }}"
-												wire:change.blur="updateInStock('{{ $product->id }}', 'default', $event.target.value)"
+												id="{{ $product->id }}-default-stock"
+												value="{{ $product->stock }}"
+												wire:change.live.debounce="updateDefaultStock('{{ $product->id }}', $event.target.value)"
 											/>
 										</td>
 									</tr>
@@ -108,10 +108,10 @@
 					<td class="text-right">
 						<table class="m_table --stock">
 							<tbody>
-							@if( $product->can_stock && $firstListing && $product->productType?->variants )
-								@foreach( $product->productType->variants['options'] as $key => $aliases )
-									@php($etsy_inventory = $firstListing->variant_in_stock($aliases) ?? 0)
-									@php($product_stock = $product->stock[$key] ?? 0)
+							@if( !$product->is_bundle && $firstListing && $product->productType?->variants->isNotEmpty() )
+								@foreach( $product->productType->variants as $productTypeVariant )
+									@php($etsy_inventory = $firstListing->variant_in_stock($productTypeVariant->aliases) ?? 0)
+									@php($product_stock = $product->getVariantStock($productTypeVariant))
 									<tr>
 										<td>
 											<output
@@ -127,7 +127,20 @@
 								@endforeach
 							@else
 								<tr>
-									<td>{!! $firstListing->variants_in_stock['default'] ?? '<em>?N/A</em>' !!}</td>
+									<td>
+										@if( is_null($etsy_inventory = $firstListing->variants_in_stock['default'] ?? null) )
+											<em>?N/A</em>
+										@else
+											<output
+												@class([
+													'output',
+													'bg-success' => $etsy_inventory == $product->stock,
+													'bg-warning' => $etsy_inventory < $product->stock,
+													'bg-danger' => $etsy_inventory > $product->stock,
+												])
+											>{!! $etsy_inventory !!}</output>
+										@endif
+									</td>
 								</tr>
 							@endif
 							</tbody>
@@ -136,7 +149,7 @@
 					<td class="text-center">{{ $product->productAggregate?->etsy_transactions_qty ?: 0 }}</td>
 					<td class="text-right">${{ number_format($product->productAggregate?->etsy_revenue, 2) }}</td>
 					<td class="text-center">{{ $product->productAggregate?->wholesale_order_products_qty ?: 0 }}</td>
-					<td class="text-right">${{ number_format($product->productAggregate?->wholesale_revenue, 2) }}</td>
+					<td class="text-right">${{ number_format($product->productAggregate?->wholesale_revenue ?: 0, 2) }}</td>
 					<td class="text-center"><strong>{{ ($product->productAggregate?->etsy_transactions_qty ?: 0) + ($product->productAggregate?->wholesale_order_products_qty ?: 0) }}</strong></td>
 					<td class="text-right"><strong>${{ number_format($product->productAggregate?->total_revenue, 2) }}</strong></td>
 				</tr>

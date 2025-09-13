@@ -55,9 +55,9 @@ class IndexTable extends Component
 			::query()
 			->orderBy('label')
 			->with(['scent:id,code', 'productType:id,code'])
-			->get(['id', 'label', 'scent_id', 'product_type_id'])
+			->get(['id', 'label', 'scent_id', 'product_type_id', 'is_bundle'])
 			->reduce(fn(array $c, Product $product) => $c + [
-					$product->id => "[{$product->productType?->code} - {$product->scent?->code}] $product->label",
+					$product->id => ( $product->is_bundle ? '[BUNDLE]' : '[' . ( $product->productType?->code ?: '??' ) . '-' . ( $product->scent?->code ?: '??' ) .']') . ' ' . $product->label,
 				], []);
 		$this->scent_options = Scent
 			::query()
@@ -159,6 +159,9 @@ class IndexTable extends Component
 					)
 			)
 			->selectRaw("TIMESTAMPDIFF(MONTH, `etsy_listings`.`created_at`, `etsy_listings`.`ending_at`) as age")
+			->with([
+				'product' => fn($query) => $query->with(['productType:id,code', 'scent:id,code'])
+			])
 			->get()
 			->when(
 				$this->order_column === 'revenue_per_month',

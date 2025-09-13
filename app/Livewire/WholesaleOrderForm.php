@@ -94,7 +94,7 @@ class WholesaleOrderForm extends Component
 		$wholesaleOrder->wholesaleOrderProducts()->create([
 			'position' => $wholesaleOrder->wholesaleOrderProducts()->max('position') + 1,
 		]);
-		$this->dispatch('toast', 'Updated!');
+		$this->dispatch('toast', 'Updated!', '--success');
 	}
 
 	public function copyProduct(string $wholesale_order_product_id):void
@@ -108,7 +108,7 @@ class WholesaleOrderForm extends Component
 				'position' => $wholesaleOrder->wholesaleOrderProducts()->max('position') + 1,
 			])
 			->save();
-		$this->dispatch('toast', 'Row copied!');
+		$this->dispatch('toast', 'Row copied!', '--success');
 	}
 
 	public function moveUpProduct(string $wholesale_order_product_id):void
@@ -128,7 +128,7 @@ class WholesaleOrderForm extends Component
 			$wholesaleOrderProducts
 				->each(fn($wholesaleOrderProduct, $position) => $wholesaleOrderProduct->update(['position' => $position]));
 		}
-		$this->dispatch('toast', 'Updated!');
+		$this->dispatch('toast', 'Updated!', '--success');
 	}
 
 	public function moveDownProduct(string $wholesale_order_product_id):void
@@ -148,7 +148,7 @@ class WholesaleOrderForm extends Component
 			$wholesaleOrderProducts
 				->each(fn($wholesaleOrderProduct, $position) => $wholesaleOrderProduct->update(['position' => $position]));
 		}
-		$this->dispatch('toast', 'Updated!');
+		$this->dispatch('toast', 'Updated!', '--success');
 	}
 
 	public function deleteProduct(string $wholesale_order_product_id):void
@@ -157,7 +157,7 @@ class WholesaleOrderForm extends Component
 			::where('id', $wholesale_order_product_id)
 			->where('wholesale_order_id', $this->wholesale_order_id)
 			->delete();
-		$this->dispatch('toast', 'Row deleted!');
+		$this->dispatch('toast', 'Row deleted!', '--success');
 	}
 
 }

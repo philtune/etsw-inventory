@@ -32,40 +32,11 @@
 			/>
 		</td>
 	</tr>
-	<tr>
-		<th><label for="{{ $uid }}_is_bundle">Is Bundle?</label></th>
-		<td>
-			<div class="l_cols">
-				<input
-					type="checkbox"
-					name="is_bundle"
-					@checked($productType?->is_bundle)
-					id="{{ $uid }}_is_bundle"
-				/>
-				<div
-					data-prop-switcher="hide-unless-checked,#{{ $uid }}_is_bundle"
-					@style(['display:none'=>!$productType?->is_bundle])
-				>
-					Product Types:
-					<x-form.select
-						name="child_product_type_ids[]"
-						:options="$child_product_type_options"
-						:default="$productType?->childProductTypes()->pluck('id')->toArray()"
-						style="width:20rem"
-						multiple
-						id="{{ $uid }}_product_types"
-					/>
-				</div>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<th>Variants</th>
-		<td>
-			<livewire:product-types.variant-definition
-				:variants="$productType?->variants"
-				wire:key="{{ $productType?->id }}_variant_definition"
-			/>
-		</td>
-	</tr>
 </table>
+
+<h3 style="font-weight:bold; text-align: center; font-size: 1rem">Variants</h3>
+
+<livewire:product-types.variant-definition
+	:$productType
+	wire:key="{{ $productType?->id }}_variant_definition"
+/>

@@ -41,7 +41,7 @@ class EtsyTransaction extends Model
 	 */
 	public function subtotal():Attribute
 	{
-		return Attribute::get(fn() => number_format($this->quantity * $this->price['amount'] / $this->price['divisor'], 2))->shouldCache();
+		return Attribute::get(fn() => number_format($this->quantity * $this->price, 2))->shouldCache();
 	}
 
 	/**
@@ -57,21 +57,20 @@ class EtsyTransaction extends Model
 	 */
 	public function total():Attribute
 	{
-		return Attribute::get(fn() => number_format($this->quantity * $this->price['amount'] / $this->price['divisor'] - $this->shop_coupon, 2))->shouldCache();
+		return Attribute::get(fn() => number_format($this->quantity * $this->price - $this->shop_coupon, 2))->shouldCache();
 	}
 
 	public static function getVariation(?string $etsy_listing_id, string $variations):?string
 	{
 		if ( $etsy_listing_id && $etsyListing = EtsyListing::find($etsy_listing_id) ) {
-			$variants = $etsyListing->product?->productType?->variants ?: [];
-			foreach ( ( $variants['options'] ?? [] ) as $key => $alias_csv ) {
-				foreach ( explode(',', $alias_csv) as $alias ) {
+			foreach ( ( $etsyListing->product?->productType?->variants ?: [] ) as $productTypeVariant ) {
+				foreach ( explode(',', $productTypeVariant->aliases) as $alias ) {
 					if ( str_contains($variations, '"formatted_value":"' . $alias . '"') ) {
-						return $key;
+						return $productTypeVariant->label;
 					}
 				}
 			}
-			return $variants['default'] ?? null;
+			return $etsyListing->product?->productType?->defaultVariant?->label;
 		}
 		return null;
 	}

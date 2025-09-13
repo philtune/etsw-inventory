@@ -50,9 +50,15 @@ class IndexTable extends IndexTableComponent
 			->where('is_bundle', false)
 			->with(['productType', 'scent'])
 			->get()
-			->reduce(fn(array $c, Product $product) => $c + array_reduce(array_keys($product->productType->variants['options'] ?? ['default' => '']), fn($_c, $key) => $_c + [
-						$product->id . '|' . $key => ( $product->is_archived ? '[ARCHIVED] ' : '' ) . $product->title . ' (' . $key . ')',
-					], []), []);
+			->reduce(function (array $c, Product $product) {
+				return $c + array_reduce(
+						array: $product->productType?->variants?->pluck('label')->toArray() ?: ['default'],
+						callback: fn($_c, $key) => $_c + [
+								$product->id . '|' . $key => ( $product->is_archived ? '[ARCHIVED] ' : '' ) . $product->title . ' (' . $key . ')',
+							],
+						initial: []
+					);
+			}, []);
 	}
 
 	public function render():View
@@ -95,7 +101,6 @@ class IndexTable extends IndexTableComponent
 			'product_type_id' => 'nullable|exists:product_types,id',
 			'scent_id'        => 'nullable|exists:scents,id',
 			'label'           => 'nullable|string|max:255',
-			'can_stock'       => 'boolean',
 			'is_bundle'       => 'boolean',
 		];
 	}

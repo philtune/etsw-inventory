@@ -30,7 +30,7 @@ class Nav extends Component
 
 					[
 						'href'   => route('product-types.index'),
-						'label'  => 'Types',
+						'label'  => 'Product Types',
 						'active' => request()->routeIs('product-types.*'),
 					],
 					[

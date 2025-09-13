@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductType extends Model
@@ -21,11 +22,6 @@ class ProductType extends Model
 	use HasFactory;
 
 	protected $guarded = [];
-
-	protected $casts = [
-		'variants'  => 'array',
-		'is_bundle' => 'boolean',
-	];
 
 	/**
 	 * @return Attribute<string,never>
@@ -68,29 +64,19 @@ class ProductType extends Model
 	}
 
 	/**
-	 * @return BelongsToMany<ProductType,$this>
+	 * @return HasMany<ProductTypeVariant,$this>
 	 */
-	public function parentProductType():BelongsToMany
+	public function variants():HasMany
 	{
-		return $this->belongsToMany(
-			ProductType::class,
-			'bundle_product_types',
-			'child_product_type_id',
-			'parent_product_type_id',
-		);
+		return $this->hasMany(ProductTypeVariant::class);
 	}
 
 	/**
-	 * @return BelongsToMany<ProductType,$this>
+	 * @return BelongsTo<ProductTypeVariant,$this>
 	 */
-	public function childProductTypes():BelongsToMany
+	public function defaultVariant():BelongsTo
 	{
-		return $this->belongsToMany(
-			ProductType::class,
-			'bundle_product_types',
-			'parent_product_type_id',
-			'child_product_type_id',
-		);
+		return $this->belongsTo(ProductTypeVariant::class, 'product_type_variant_id');
 	}
 
 }

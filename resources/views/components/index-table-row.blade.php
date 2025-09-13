@@ -13,8 +13,12 @@
 @php($edit_uid = 'edit_' . $model->id)
 <tr
 	wire:key="{{ $model->id }}"
-	onclick="openModal('{{ $edit_uid }}')"
-	{{ $attributes->style(['cursor:pointer']) }}
+	@if( !$canRestore || !$model->deleted_at )
+		onclick="openModal('{{ $edit_uid }}')"
+		{{ $attributes->style(['cursor:pointer']) }}
+	@else
+		{{ $attributes }}
+	@endif
 >
 	{!! $slot !!}
 	<x-td.actions :$loop>

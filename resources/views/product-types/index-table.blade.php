@@ -1,9 +1,17 @@
 <x-layouts.index-table :$stack_id :$collection>
+	<x-slot:before>
+		<x-modal.wire.create
+			:push-to="$stack_id"
+			model-name="Product Type"
+			uid="create_product_type"
+		>
+			@include('product-types.form-inputs')
+		</x-modal.wire.create>
+	</x-slot:before>
 	<x-slot:headers>
 		<x-th.sortable label="Code" column="code"/>
 		<x-th.sortable label="Label" column="label"/>
 		<th>Variants</th>
-		<th>Bundle</th>
 		<x-th.sortable label="Products" column="products_count" desc-first/>
 		<x-th.sortable label="Etsy" column="etsy_listings_count" desc-first/>
 		<x-th.sortable label="Revenue" column="total_revenue" desc-first/>
@@ -15,22 +23,15 @@
 			:$stack_id
 			:$loop
 		>
-			<x-slot:editModal
-				:action="route('product-types.update', $productType)"
-			>
+			<x-slot:editWireModal>
 				@include('product-types.form-inputs')
-			</x-slot:editModal>
+			</x-slot:editWireModal>
 			<td>{{ $productType->label }}</td>
 			<td>{{ $productType->code }}</td>
 			<td>
-				@if( $productType->variants )
-					{{ $productType->variants['label'] ?? '[Unlabelled]' }}:<br/>
-					{!! collect($productType->variants['options'] ?? [])->implode(fn($option, $f) => ( ($productType->variants['default'] ?? null) == $f ? e(svg('icon-check')) . ' ' : '' ) . $f, '<br/>') !!}
-				@endif
-			</td>
-			<td>
-				@if( $productType->is_bundle)
-					{!! $productType->childProductTypes()->get(['id', 'variant'])->implode(fn(\App\Models\ProductType $childProductType) => $child_product_type_options[$childProductType->id.'|'.$childProductType->variant] ?? '??', '<br/>') !!}
+				@if( $productType->variant_label || $productType->variants->isNotEmpty() )
+					{{ $productType->variant_label ?: '[Unlabelled]' }}:<br/>
+					{!! $productType->variants->implode(fn(\App\Models\ProductTypeVariant $productTypeVariant) => ($productTypeVariant->id === $productType->defaultVariant->id ? e(svg('icon-check')) . ' ' : '' ) . $productTypeVariant->label, '<br/>') !!}
 				@endif
 			</td>
 			<td>

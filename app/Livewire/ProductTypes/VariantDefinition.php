@@ -2,41 +2,46 @@
 
 namespace App\Livewire\ProductTypes;
 
+use App\Models\ProductType;
+use App\Models\ProductTypeVariant;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class VariantDefinition extends Component
 {
+	public ?string $product_type_id = null;
 	public bool $has_variants;
-	public string $label = '';
-	public array $options = [['key' => '', 'value' => '']];
-	public string $default = '';
+	public ?string $label;
+	public array $options = [['label' => '', 'aliases' => '']];
+	public ?string $default;
 
-	public function mount(?array $variants):void
+	public function mount($productType):void
 	{
-		$this->has_variants = (bool) $variants;
-		if ( $variants ) {
-			$this->label = $variants['label'];
-			$this->options = collect($variants['options'])
-				->reduce(fn(array $c, $value, $key) => array_merge($c, [[
-					'key'   => $key,
-					'value' => $value
-				]]), []);
-			$this->default = $variants['default'];
+		/** @var ?ProductType $productType */
+		$this->product_type_id = $productType?->id;
+		$this->label = $productType?->variant_label;
+		$this->has_variants = (bool) $productType?->variants->isNotEmpty();
+		if ( $productType ) {
+			$this->options = $productType->variants
+				?->reduce(fn(array $c, ProductTypeVariant $productTypeVariant) => $c + [
+						$productTypeVariant->id => [
+							'label'   => $productTypeVariant->label,
+							'aliases' => $productTypeVariant->aliases,
+						]
+					], []);
+			$this->default = $productType->defaultVariant?->id;
 		}
 	}
 
 	public function render():View
 	{
 		return view('product-types.variant-definition', [
-			'option_options' => array_reduce(
-				array_filter(
-					$this->options,
-					fn($option) => $option['key'],
-				),
-				fn(array $c, $option) => $c + [$option['key'] => $option['key']],
-				[]
-			)
+			'option_options'                  => collect($this->options)
+				->filter(fn($option) => $option['label'])
+				->reduce(
+					fn(array $c, $option, $i) => $c + [$i => $option['label']],
+					[]
+				)
 		]);
 	}
 
@@ -49,8 +54,8 @@ class VariantDefinition extends Component
 	public function addOption():void
 	{
 		$this->options[] = [
-			'key'   => '',
-			'value' => '',
+			'label'   => '',
+			'aliases' => '',
 		];
 	}
 

@@ -14,6 +14,7 @@ return new class extends Migration {
 			      ->primary();
 			$table->datetimes();
 			$table->softDeletesDatetime();
+			$table->string('label');
 			$table->boolean('is_bundle')
 			      ->default(false);
 			$table->foreignIdFor(ProductType::class)
@@ -26,11 +27,8 @@ return new class extends Migration {
 			      ->constrained()
 			      ->cascadeOnUpdate()
 			      ->nullOnDelete();
-			$table->string('label');
-			$table->boolean('can_stock')
-			      ->default(true);
-			$table->string('stock')
-			      ->default('{}');
+			$table->unsignedSmallInteger('stock')
+			      ->default(0);
 			$table->boolean('is_archived')
 			      ->default(false);
 		});

@@ -3,7 +3,7 @@
 	'trigger' => null,
     'uid' => 'id_' . uniqid(),
     'pushTo' => 'below-body',
-    'submitBtn',
+    'submitBtn' => null,
 ])
 
 @if( $trigger )
@@ -34,10 +34,12 @@
 						onclick="closeModal('{{ $uid }}')"
 					>@svg('icon-xmark')Cancel
 					</button>
+					@if( $submitBtn )
 					<button
 						type="submit"
 						{{ $submitBtn->attributes->class('u_btn') }}
 					>{{ $submitBtn }}</button>
+					@endif
 				</div>
 			</div>
 		</div>

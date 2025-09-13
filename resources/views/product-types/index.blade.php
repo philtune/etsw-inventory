@@ -1,11 +1,9 @@
 <x-layouts.app>
 	<x-slot:toolbar>
-		<x-modal.create
+		<x-model.trigger.create
+			for="create_product_type"
 			model-name="Product Type"
-			:action="route('product-types.store')"
-		>
-			@include('product-types.form-inputs')
-		</x-modal.create>
+		/>
 	</x-slot:toolbar>
-	<livewire:product-types.index-table :$child_product_type_options/>
+	<livewire:product-types.index-table/>
 </x-layouts.app>

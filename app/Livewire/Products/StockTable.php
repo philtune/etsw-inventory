@@ -4,7 +4,7 @@ namespace App\Livewire\Products;
 
 use App\Models\Product;
 use App\Models\ProductAggregate;
-use App\Services\EtsyListingService;
+use App\Models\ProductTypeVariant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +33,13 @@ class StockTable extends Component
 			'products' => Product
 				::query()
 				->select('products.*')
-				->with(['productAggregate', 'productType', 'scent', 'etsyListings'])
+				->with([
+					'productAggregate',
+					'productType',
+					'scent',
+					'etsyListings',
+					'childProducts'
+				])
 				->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
 				->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
 				->leftJoin('product_aggregates', 'products.id', '=', 'product_aggregates.product_id')
@@ -65,17 +71,18 @@ class StockTable extends Component
 		$this->resetPage();
 	}
 
-	public function updateInStock(Product $product, string $key, string $value):void
+	public function updateVariantStock(Product $product, ProductTypeVariant $productTypeVariant, int $stock):void
 	{
-		Validator::validate(compact('key', 'value'), [
-			'key' => [
-				'required',
-				'string',
-				Rule::in(array_keys($product->productType->variants['options'] ?? ['default' => []])),
-			],
-			'value' => 'nullable|numeric|min:0'
-		]);
-		$product->update(['stock' => array_merge($product->stock, [$key => $value ?: 0])]);
+		$product->variantStock()->updateOrCreate(
+			['product_type_variant_id' => $productTypeVariant->id],
+			['stock' => $stock]
+		);
+		$this->dispatch('toast', 'Product stock updated!', '--success');
+	}
+
+	public function updateDefaultStock(Product $product, int $stock):void
+	{
+		$product->update(['stock' => $stock]);
 		$this->dispatch('toast', 'Product stock updated!', '--success');
 	}
 
@@ -115,7 +122,7 @@ as total_revenue
 EOF
 			))
 			->where('products.is_archived', false)
-			->where('products.can_stock')
+			->where('products.is_bundle', false)
 			->get();
 		$aggregates->each(function (Product $product) {
 			ProductAggregate

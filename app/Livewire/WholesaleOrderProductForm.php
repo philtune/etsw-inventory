@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\ProductTypeVariant;
 use App\Models\WholesaleOrderProduct;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Locked;
@@ -40,7 +41,13 @@ class WholesaleOrderProductForm extends Component
 		$wholesaleOrderProduct = WholesaleOrderProduct::find($this->wholesale_order_product_id);
 		return view('livewire.wholesale-order-product-form', [
 			'wholesaleOrderProduct' => $wholesaleOrderProduct,
-			'variants' => $wholesaleOrderProduct->product?->productType->variants,
+			'variant_options'       => $wholesaleOrderProduct
+				->product
+				?->productType
+				->variants
+				->reduce(fn(array $c, ProductTypeVariant $productTypeVariant) => $c + [
+						$productTypeVariant->label => $productTypeVariant->aliases,
+					], []),
 		]);
 	}
 
@@ -85,7 +92,7 @@ class WholesaleOrderProductForm extends Component
 
 	public function updated():void
 	{
-		$this->dispatch('toast', 'Updated!');
+		$this->dispatch('toast', 'Updated!', '--success');
 	}
 
 	public function moveUp():void

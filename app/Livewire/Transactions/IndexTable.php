@@ -23,7 +23,14 @@ class IndexTable extends Component
 				->where('product_types.code', 'CPS')
 				->where('etsy_transactions.variations', 'not like', '[]')
 				->orderBy('created_at', 'desc')
-				->paginate(50)
+				->with([
+					'etsyListing' => fn($query) => $query->with([
+						'product' => fn($query) => $query->with(
+							'productType'
+						)
+					])
+				])
+				->paginate(100)
 		]);
 	}
 }

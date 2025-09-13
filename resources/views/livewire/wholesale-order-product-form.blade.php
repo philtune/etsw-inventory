@@ -30,15 +30,15 @@
 		/>
 	</td>
 	<td>
-		@if( $variants )
+		@if( $variant_options )
 			<div class="nowrap">
-				<small><strong>{{ $variants['label'] }}:</strong></small>
+				<small><strong>{{ $wholesaleOrderProduct->product?->productType->variant_label }}:</strong></small>
 				<select
 					wire:model.change="variation"
 					class="select --shy"
 					style="width:6rem"
 				>
-					@foreach( $variants['options'] as $value => $label )
+					@foreach( $variant_options as $value => $label )
 						<option value="{{ $value }}">{{ $label }}</option>
 					@endforeach
 				</select>

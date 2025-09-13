@@ -1,0 +1,32 @@
+<?php
+
+use App\Models\Product;
+use App\Models\ProductTypeVariant;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+	public function up():void
+	{
+		Schema::create('product_variants_stock', function (Blueprint $table) {
+			$table->uuid('id')
+			      ->primary();
+			$table->foreignIdFor(Product::class)
+			      ->constrained()
+			      ->cascadeOnUpdate()
+			      ->cascadeOnDelete();
+			$table->foreignIdFor(ProductTypeVariant::class)
+			      ->constrained()
+			      ->cascadeOnUpdate()
+			      ->cascadeOnDelete();
+			$table->unsignedSmallInteger('stock')
+			      ->default(0);
+		});
+	}
+
+	public function down():void
+	{
+		Schema::dropIfExists('product_variants_stock');
+	}
+};

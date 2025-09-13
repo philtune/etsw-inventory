@@ -61,7 +61,7 @@ abstract class IndexTableComponent extends Component
 		return $query->paginate($this->perPage);
 	}
 
-	protected static function validated(array $formData, array $rules, array $messages = [], array $attributes = [], array $booleans = []):array
+	protected static function validated(array $formData, array $rules, array $messages = [], array $attributes = []):array
 	{
 		$data = array_reduce(
 			array_keys($rules),

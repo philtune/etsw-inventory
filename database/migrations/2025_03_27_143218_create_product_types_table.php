@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProductTypeVariant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +13,15 @@ return new class extends Migration {
 			      ->primary();
 			$table->datetimes();
 			$table->softDeletesDatetime();
-			$table->boolean('is_bundle')
-			      ->default(false);
-			$table->string('code', 16);
 			$table->string('label');
-			$table->string('variants')
+			$table->string('code', 16);
+			$table->string('variant_label', 16)
 			      ->nullable();
+			$table->foreignIdFor(ProductTypeVariant::class)
+			      ->nullable()
+			      ->constrained()
+			      ->cascadeOnUpdate()
+			      ->nullOnDelete();
 			$table->unsignedInteger('etsy_section_id')
 			      ->nullable();
 			$table->unique(['code', 'deleted_at']);
