@@ -12,9 +12,7 @@ return new class extends Migration {
 			$table->uuid('id')
 			      ->primary();
 			$table->foreignIdFor(Product::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->cascadeConstrained();
 			$table->unsignedTinyInteger('etsy_listings_count')
 			      ->nullable();
 			$table->unsignedMediumInteger('etsy_transactions_qty')

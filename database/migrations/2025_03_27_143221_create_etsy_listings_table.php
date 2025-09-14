@@ -13,10 +13,7 @@ return new class extends Migration {
 			$table->unsignedBigInteger('id')
 			      ->primary();
 			$table->foreignIdFor(Product::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->nullConstrained();
 			$table->string('title');
 			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')

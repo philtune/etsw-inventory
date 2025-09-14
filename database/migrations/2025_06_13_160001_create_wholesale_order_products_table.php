@@ -14,14 +14,9 @@ return new class extends Migration {
 			      ->primary();
 
 			$table->foreignIdFor(WholesaleOrder::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->cascadeConstrained();
 			$table->foreignIdFor(Product::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
+			      ->nullConstrained();
 			$table->json('variation')
 			      ->nullable();
 			$table->unsignedMediumInteger('quantity')

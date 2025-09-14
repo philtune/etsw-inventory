@@ -38,7 +38,10 @@ class StockTable extends Component
 					'productType',
 					'scent',
 					'etsyListings',
-					'childProducts'
+					'bundleItems' => [
+						'childProduct' => ['variantStocks:id,stock'],
+						'productTypeVariant'
+					]
 				])
 				->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
 				->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
@@ -73,7 +76,7 @@ class StockTable extends Component
 
 	public function updateVariantStock(Product $product, ProductTypeVariant $productTypeVariant, int $stock):void
 	{
-		$product->variantStock()->updateOrCreate(
+		$product->variantStocks()->updateOrCreate(
 			['product_type_variant_id' => $productTypeVariant->id],
 			['stock' => $stock]
 		);
@@ -106,29 +109,29 @@ class StockTable extends Component
 				'wholesaleOrderProducts as wholesale_revenue',
 				DB::raw('quantity * price_per_unit')
 			)
-			->addSelect(DB::raw(<<<'EOF'
+			->addSelect(DB::raw(<<<EOT
 coalesce((select
 	sum(quantity * price - shop_coupon)
-from `etsy_transactions`
-inner join `etsy_listings` on `etsy_listings`.`id` = `etsy_transactions`.`etsy_listing_id`
-where `products`.`id` = `etsy_listings`.`product_id`), 0)
-+
-coalesce((select
+	from `etsy_transactions`
+	inner join `etsy_listings` on `etsy_listings`.`id` = `etsy_transactions`.`etsy_listing_id`
+	where `products`.`id` = `etsy_listings`.`product_id`), 0)
++ coalesce((select
 	sum(quantity * price_per_unit)
-from `wholesale_order_products`
-where `products`.`id` = `wholesale_order_products`.`product_id`
+	from `wholesale_order_products`
+	where `products`.`id` = `wholesale_order_products`.`product_id`
 	and `wholesale_order_products`.`deleted_at` is null), 0)
 as total_revenue
-EOF
+EOT
 			))
 			->where('products.is_archived', false)
-			->where('products.is_bundle', false)
+//			->where('products.is_bundle', false)
 			->get();
-		$aggregates->each(function (Product $product) {
+//		dd($aggregates->where('is_bundle', true)->toArray());
+		$aggregates->each(function (Product $row) {
 			ProductAggregate
 				::updateOrCreate([
-					'product_id' => $product->product_id,
-				], $product->toArray());
+					'product_id' => $row->product_id,
+				], $row->toArray());
 		});
 		$this->dispatch('toast', 'Aggregates updated!', '--success');
 	}

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -26,20 +25,20 @@ class Product extends Model
 
 	protected static function booted():void
 	{
-		static::creating(function(self $self) {
+		static::creating(function (self $self) {
 			if ( $self->is_bundle ) {
 				$self->product_type_id = null;
 				$self->scent_id = null;
 			}
 		});
-		static::updating(function(self $self) {
+		static::updating(function (self $self) {
 			if ( $self->is_bundle ) {
 				$self->product_type_id = null;
 				$self->scent_id = null;
 			}
 			if ( $self->isDirty('product_type_id') ) {
 				$self
-					->variantStock()
+					->variantStocks()
 					->each(fn(ProductVariantStock $productVariantStock) => $productVariantStock->delete());
 			}
 		});
@@ -62,30 +61,20 @@ class Product extends Model
 	}
 
 	/**
-	 * @return BelongsToMany<Product,$this>
+	 * @return HasMany<ProductBundleItem,$this>
 	 */
-	public function parentProduct():BelongsToMany
+	public function bundleItems():HasMany
 	{
-		return $this->belongsToMany(
-			Product::class,
-			'bundle_products',
-			'child_product_id',
-			'parent_product_id',
-		);
+		return $this->hasMany(ProductBundleItem::class);
 	}
 
-	/**
-	 * @return BelongsToMany<Product,$this>
-	 */
-	public function childProducts():BelongsToMany
-	{
-		return $this->belongsToMany(
-			Product::class,
-			'bundle_products',
-			'parent_product_id',
-			'child_product_id',
-		);
-	}
+	//	/**
+	//	 * @return HasMany<ProductBundleItem,$this>
+	//	 */
+	//	public function bundleParentItems():HasMany
+	//	{
+	//		return $this->hasMany(ProductBundleItem::class, 'child_product_id');
+	//	}
 
 	/**
 	 * @return HasMany<EtsyListing,$this>
@@ -122,7 +111,7 @@ class Product extends Model
 	/**
 	 * @return HasMany<ProductVariantStock,$this>
 	 */
-	public function variantStock():HasMany
+	public function variantStocks():HasMany
 	{
 		return $this->hasMany(ProductVariantStock::class);
 	}
@@ -130,10 +119,26 @@ class Product extends Model
 	public function getVariantStock(ProductTypeVariant $productTypeVariant):int
 	{
 		return $this
-			->variantStock()
+			->variantStocks()
 			->where('product_type_variant_id', $productTypeVariant->id)
 			->first('stock')
 			?->stock ?: 0;
+	}
+
+	/**
+	 * @return Attribute<int,never>
+	 */
+	public function bundleStock():Attribute
+	{
+		return Attribute::get(
+			fn() => $this->is_bundle ?
+				$this
+					->bundleItems
+					->min(fn(ProductBundleItem $productBundleItem) => $productBundleItem
+						->childProduct
+						->getVariantStock($productBundleItem->productTypeVariant)) :
+				null
+		)->shouldCache();
 	}
 
 	/**

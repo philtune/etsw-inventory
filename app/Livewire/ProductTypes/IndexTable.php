@@ -22,7 +22,9 @@ class IndexTable extends IndexTableComponent
 		'code'
 	];
 	#[Url]
-	public string $order_column = 'initial';
+	public string $order_column = 'total_revenue';
+	#[Url]
+	public bool $order_desc = true;
 
 	protected function getCustomOrders():array
 	{
@@ -59,8 +61,9 @@ class IndexTable extends IndexTableComponent
 		]);
 		foreach ( ( $formData['variants'] ?? [] ) as $key => $config ) {
 			$productTypeVariant = $productType->variants()->create([
-				'label'   => $config['label'],
-				'aliases' => $config['aliases'],
+				'label'       => $config['label'],
+				'aliases'     => $config['aliases'],
+				'is_archived' => $config['is_archived'],
 			]);
 			if ( $formData['variant_default'] == $key ) {
 				$productType->update([
@@ -87,15 +90,17 @@ class IndexTable extends IndexTableComponent
 				$productTypeVariant = $productType
 					->variants()
 					->create([
-						'label'      => $config['label'],
-						'aliases'    => $config['aliases'],
+						'label'       => $config['label'],
+						'aliases'     => $config['aliases'],
+						'is_archived' => !empty($config['is_archived']),
 					]);
 			} else {
 				$productTypeVariant = ProductTypeVariant::find($key);
 				$productTypeVariant
 					->update([
-						'label'      => $config['label'],
-						'aliases'    => $config['aliases'],
+						'label'       => $config['label'],
+						'aliases'     => $config['aliases'],
+						'is_archived' => !empty($config['is_archived']),
 					]);
 			}
 			if ( $formData['variant_default'] == $key ) {

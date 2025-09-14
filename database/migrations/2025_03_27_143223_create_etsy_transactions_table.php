@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\EtsyListing;
 use App\Models\EtsyReceipt;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,10 +14,8 @@ return new class extends Migration {
 			      ->primary();
 			$table->dateTime('created_at');
 			$table->foreignIdFor(EtsyReceipt::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
-			$table->foreignIdFor(\App\Models\EtsyListing::class)
+			      ->cascadeConstrained();
+			$table->foreignIdFor(EtsyListing::class)
 			      ->nullable();
 			$table->string('variation', 64)
 			      ->nullable();

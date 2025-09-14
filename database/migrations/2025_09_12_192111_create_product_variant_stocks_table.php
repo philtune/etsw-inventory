@@ -13,13 +13,9 @@ return new class extends Migration {
 			$table->uuid('id')
 			      ->primary();
 			$table->foreignIdFor(Product::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->cascadeConstrained();
 			$table->foreignIdFor(ProductTypeVariant::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->cascadeConstrained();
 			$table->unsignedSmallInteger('stock')
 			      ->default(0);
 		});

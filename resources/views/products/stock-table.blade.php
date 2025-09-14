@@ -47,7 +47,7 @@
 			<tbody>
 			@foreach( $products as $product )
 				@php($firstListing = $product->etsyListings->sortByDesc('created_at')->first())
-				<tr>
+				<tr wire:key="product_{{ $product->id }}">
 					<td class="text-center">
 						@if( $firstListing )
 							<a href="{{ route('etsy.listings.index', [
@@ -68,8 +68,8 @@
 							<tbody>
 							@if( !$product->is_bundle )
 								@if( $product->productType?->variants->isNotEmpty() )
-									@foreach( $product->productType->variants as $productTypeVariant )
-										<tr>
+									@foreach( $product->productType->variants->where('is_archived', false) as $productTypeVariant )
+										<tr wire:ignore>
 											<th>{{ $productTypeVariant->label }}</th>
 											<td>
 												<input
@@ -78,12 +78,13 @@
 													id="{{ uniqid() }}-stock"
 													value="{{ $product->getVariantStock($productTypeVariant) }}"
 													wire:change.live.debounce="updateVariantStock('{{ $product->id }}', '{{ $productTypeVariant->id }}', $event.target.value)"
+													onclick="this.select()"
 												/>
 											</td>
 										</tr>
 									@endforeach
 								@else
-									<tr>
+									<tr wire:ignore>
 										<th></th>
 										<td>
 											<input
@@ -99,7 +100,9 @@
 							@else
 								<tr>
 									<th>&nbsp;</th>
-									<td><em>N/A</em></td>
+									<td>
+										{!! $product->bundle_stock ?? '<em>N/A</em>' !!}
+									</td>
 								</tr>
 							@endif
 							</tbody>
@@ -109,7 +112,7 @@
 						<table class="m_table --stock">
 							<tbody>
 							@if( !$product->is_bundle && $firstListing && $product->productType?->variants->isNotEmpty() )
-								@foreach( $product->productType->variants as $productTypeVariant )
+								@foreach( $product->productType->variants->where('is_archived', false) as $productTypeVariant )
 									@php($etsy_inventory = $firstListing->variant_in_stock($productTypeVariant->aliases) ?? 0)
 									@php($product_stock = $product->getVariantStock($productTypeVariant))
 									<tr>

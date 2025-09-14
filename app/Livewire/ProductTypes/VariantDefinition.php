@@ -12,7 +12,7 @@ class VariantDefinition extends Component
 	public ?string $product_type_id = null;
 	public bool $has_variants;
 	public ?string $label;
-	public array $options = [['label' => '', 'aliases' => '']];
+	public array $options = [['label' => '', 'aliases' => '', 'is_archived' => false]];
 	public ?string $default;
 
 	public function mount($productType):void
@@ -25,8 +25,9 @@ class VariantDefinition extends Component
 			$this->options = $productType->variants
 				?->reduce(fn(array $c, ProductTypeVariant $productTypeVariant) => $c + [
 						$productTypeVariant->id => [
-							'label'   => $productTypeVariant->label,
-							'aliases' => $productTypeVariant->aliases,
+							'label'       => $productTypeVariant->label,
+							'aliases'     => $productTypeVariant->aliases,
+							'is_archived' => $productTypeVariant->is_archived,
 						]
 					], []);
 			$this->default = $productType->defaultVariant?->id;
@@ -36,7 +37,7 @@ class VariantDefinition extends Component
 	public function render():View
 	{
 		return view('product-types.variant-definition', [
-			'option_options'                  => collect($this->options)
+			'option_options' => collect($this->options)
 				->filter(fn($option) => $option['label'])
 				->reduce(
 					fn(array $c, $option, $i) => $c + [$i => $option['label']],
@@ -54,8 +55,9 @@ class VariantDefinition extends Component
 	public function addOption():void
 	{
 		$this->options[] = [
-			'label'   => '',
-			'aliases' => '',
+			'label'       => '',
+			'aliases'     => '',
+			'is_archived' => false,
 		];
 	}
 

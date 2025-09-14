@@ -18,10 +18,7 @@ return new class extends Migration {
 			$table->string('variant_label', 16)
 			      ->nullable();
 			$table->foreignIdFor(ProductTypeVariant::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
+			      ->nullConstrained();
 			$table->unsignedInteger('etsy_section_id')
 			      ->nullable();
 			$table->unique(['code', 'deleted_at']);

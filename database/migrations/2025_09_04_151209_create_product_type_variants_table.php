@@ -12,11 +12,11 @@ return new class extends Migration {
 			$table->uuid('id')
 			      ->primary();
 			$table->foreignIdFor(ProductType::class)
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->cascadeOnDelete();
+			      ->cascadeConstrained();
 			$table->string('label');
 			$table->string('aliases');
+			$table->boolean('is_archived')
+			      ->default(false);
 		});
 	}
 

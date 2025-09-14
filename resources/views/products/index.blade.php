@@ -5,8 +5,5 @@
 			model-name="Product"
 		/>
 	</x-slot:toolbar>
-	<livewire:products.index-table
-		:$product_type_options
-		:$scent_options
-	/>
+	<livewire:products.index-table/>
 </x-layouts.app>

@@ -29,6 +29,7 @@
 						<tr>
 							<th>Key</th>
 							<th>Aliases</th>
+							<th>Archived</th>
 							<x-th.actions/>
 						</tr>
 						</thead>
@@ -62,6 +63,15 @@
 									</label>
 								</td>
 								<td>
+									<label>
+										<input
+											type="checkbox"
+											name="variants[{{ $i }}][is_archived]"
+											wire:model.live.debounce="options.{{ $i }}.is_archived"
+										/>
+									</label>
+								</td>
+								<td>
 									<button
 										type="button"
 										class="u_btn --danger --sm --bare"
@@ -71,7 +81,7 @@
 							</tr>
 						@endforeach
 						<tr>
-							<td colspan="3">
+							<td colspan="4">
 								<button
 									type="button"
 									class="u_btn --sm --bare"

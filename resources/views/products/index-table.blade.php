@@ -51,7 +51,7 @@
 			@if( $product->is_bundle )
 				<td colspan="2">
 					<strong>Bundle</strong><br/>
-					{!! $product->childProducts->implode(fn(\App\Models\Product $product) => $product->title . ' (' . $product->pivot->variant . ')', '<br/>') !!}
+					{!! $product->bundleItems->implode(fn(\App\Models\ProductBundleItem $productBundleItem) => $productBundleItem->childProduct?->label . ' (' . ( $productBundleItem->productTypeVariant?->label ?: 'default' ) . ')', '<br/>') !!}
 				</td>
 			@else
 				<td @class(['bg_highlight' => !$product->product_type_id])>

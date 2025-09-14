@@ -4,9 +4,11 @@ namespace App\Livewire\Products;
 
 use App\Livewire\Concerns\IndexTableComponent;
 use App\Models\Product;
+use App\Models\ProductType;
+use App\Models\ProductTypeVariant;
+use App\Models\Scent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
@@ -40,24 +42,40 @@ class IndexTable extends IndexTableComponent
 	public function mount():void
 	{
 		$this->calculate_options();
+		$this->product_type_options = ProductType
+			::query()
+			->orderBy('code')
+			->get(['id', 'code', 'label'])
+			->reduce(fn(array $c, ProductType $productType) => $c + [
+					$productType->id => "$productType->code - $productType->label"
+				], []);
+		$this->scent_options = Scent
+			::query()
+			->orderBy('code')
+			->get(['id', 'code', 'label'])
+			->reduce(fn(array $c, Scent $scent) => $c + [
+					$scent->id => "$scent->code - $scent->label"
+				], []);
 	}
 
 	public function calculate_options():void
 	{
 		$this->child_product_options = Product
 			::query()
+			->orderBy('is_archived')
 			->orderBy('label')
 			->where('is_bundle', false)
-			->with(['productType', 'scent'])
+			->with(['productType:id,code', 'scent:id,code'])
 			->get()
-			->reduce(function (array $c, Product $product) {
-				return $c + array_reduce(
-						array: $product->productType?->variants?->pluck('label')->toArray() ?: ['default'],
-						callback: fn($_c, $key) => $_c + [
-								$product->id . '|' . $key => ( $product->is_archived ? '[ARCHIVED] ' : '' ) . $product->title . ' (' . $key . ')',
-							],
-						initial: []
-					);
+			->reduce(function (array $c, Product $childProduct) {
+				return ( $productTypeVariants = $childProduct->productType?->variants )?->isNotEmpty() ?
+					$c + $productTypeVariants
+						->reduce(fn(array $_c, ProductTypeVariant $productTypeVariant) => $_c + [
+								$childProduct->id . '|' . $productTypeVariant->id => ( $childProduct->is_archived ? '[ARCHIVED] ' : '' ) . $childProduct->title . ' (' . $productTypeVariant->label . ')',
+							], []) :
+					$c + [
+						$childProduct->id . '|' => ( $childProduct->is_archived ? '[ARCHIVED] ' : '' ) . $childProduct->title . ' (default)',
+					];
 			}, []);
 	}
 
@@ -66,11 +84,7 @@ class IndexTable extends IndexTableComponent
 		/** @var LengthAwarePaginator<array-key,Product> $collection */
 		$collection = $this->collection();
 		return view('products.index-table', [
-			'collection'      => $collection,
-			'bundle_products' => \DB
-				::table('bundle_products')
-				->whereIn('parent_product_id', $collection->pluck('id'))
-				->get()
+			'collection' => $collection
 		]);
 	}
 
@@ -85,9 +99,7 @@ class IndexTable extends IndexTableComponent
 				'etsyListings',
 				'productType',
 				'scent',
-				'childProducts' => fn(BelongsToMany $query) => $query
-					->with(['productType', 'scent'])
-					->withPivot('variant')
+				'bundleItems' => ['productTypeVariant', 'childProduct']
 			])
 			->when(
 				!$this->show_archived,
@@ -114,18 +126,31 @@ class IndexTable extends IndexTableComponent
 
 	public function update(Product $product, array $formData):void
 	{
+		$product->update(static::validated($formData, $this->rules()));
+
 		static::validated($formData, [
 			'child_product_ids'   => 'nullable|array',
 			'child_product_ids.*' => 'string',
 		]);
-		$child_product_ids = array_reduce($formData['child_product_ids'] ?? [], fn(array $c, $str) => $c + [
-				explode('|', $str)[0] => [
-					'variant' => explode('|', $str)[1]
-				]
-			], []);
-		static::validated(['ids' => array_keys($child_product_ids)], ['ids.*' => 'exists:products,id',]);
-		$product->update(static::validated($formData, $this->rules()));
-		$product->childProducts()->sync($child_product_ids);
+		$child_product_ids = array_reduce(
+			array: $formData['child_product_ids'] ?? [],
+			callback: fn(array $c, $str) => $c + [
+					explode('|', $str)[0] => [
+						'product_type_variant_id' => explode('|', $str)[1]
+					]
+				],
+			initial: []
+		);
+		static::validated([
+			'product_ids'              => array_keys($child_product_ids),
+			'product_type_variant_ids' => array_column($child_product_ids, 'product_type_variant_id'),
+		], [
+			'product_ids.*'              => 'exists:products,id',
+			'product_type_variant_ids.*' => 'exists:product_types_variants,id',
+		]);
+		$product
+			->bundleItems()
+			->syncUsing($child_product_ids, 'child_product_id');
 		$this->calculate_options();
 		$this->dispatch('toast', 'Product updated!', '--success');
 	}

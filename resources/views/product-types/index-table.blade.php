@@ -30,8 +30,19 @@
 			<td>{{ $productType->code }}</td>
 			<td>
 				@if( $productType->variant_label || $productType->variants->isNotEmpty() )
-					{{ $productType->variant_label ?: '[Unlabelled]' }}:<br/>
-					{!! $productType->variants->implode(fn(\App\Models\ProductTypeVariant $productTypeVariant) => ($productTypeVariant->id === $productType->defaultVariant->id ? e(svg('icon-check')) . ' ' : '' ) . $productTypeVariant->label, '<br/>') !!}
+					<div>{{ $productType->variant_label ?: '[Unlabelled]' }}:</div>
+					@foreach( $productType->variants as $productTypeVariant )
+						@if( $productTypeVariant->is_archived )
+							<div class="--tt-left" data-tooltip="archived"><span class="opacity-50">{{ $productTypeVariant->label }}</span></div>
+						@else
+							<div>
+								@if( $productTypeVariant->id === $productType->defaultVariant->id )
+									@svg('icon-check')
+								@endif
+								{{ $productTypeVariant->label }}
+							</div>
+						@endif
+					@endforeach
 				@endif
 			</td>
 			<td>

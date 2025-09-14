@@ -14,10 +14,7 @@ return new class extends Migration {
 			$table->datetimes();
 			$table->softDeletesDatetime();
 			$table->foreignIdFor(WholesaleCustomer::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
+			      ->nullConstrained();
 			$table->string('notes', 1024)
 			      ->nullable();
 			$table->date('ordered_at')

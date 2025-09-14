@@ -18,15 +18,9 @@ return new class extends Migration {
 			$table->boolean('is_bundle')
 			      ->default(false);
 			$table->foreignIdFor(ProductType::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
+			      ->nullConstrained();
 			$table->foreignIdFor(Scent::class)
-			      ->nullable()
-			      ->constrained()
-			      ->cascadeOnUpdate()
-			      ->nullOnDelete();
+			      ->nullConstrained();
 			$table->unsignedSmallInteger('stock')
 			      ->default(0);
 			$table->boolean('is_archived')
