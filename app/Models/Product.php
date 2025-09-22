@@ -18,9 +18,10 @@ class Product extends Model
 
 	protected $guarded = [];
 	protected $casts = [
-		'stock'       => 'integer',
-		'is_archived' => 'boolean',
-		'is_bundle'   => 'boolean',
+		'stock'            => 'integer',
+		'is_archived'      => 'boolean',
+		'is_bundle'        => 'boolean',
+		'stock_updated_at' => 'datetime',
 	];
 
 	protected static function booted():void
@@ -116,12 +117,18 @@ class Product extends Model
 		return $this->hasMany(ProductVariantStock::class);
 	}
 
-	public function getVariantStock(ProductTypeVariant $productTypeVariant):int
+	public function getVariantStock(ProductTypeVariant $productTypeVariant):?ProductVariantStock
 	{
 		return $this
-			->variantStocks()
+			->variantStocks
 			->where('product_type_variant_id', $productTypeVariant->id)
-			->first('stock')
+			->first();
+	}
+
+	public function getVariantStockCount(ProductTypeVariant $productTypeVariant):int
+	{
+		return $this
+			->getVariantStock($productTypeVariant)
 			?->stock ?: 0;
 	}
 
@@ -136,7 +143,7 @@ class Product extends Model
 					->bundleItems
 					->min(fn(ProductBundleItem $productBundleItem) => $productBundleItem
 						->childProduct
-						->getVariantStock($productBundleItem->productTypeVariant)) :
+						->getVariantStockCount($productBundleItem->productTypeVariant)) :
 				null
 		)->shouldCache();
 	}

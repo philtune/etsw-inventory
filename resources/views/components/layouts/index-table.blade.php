@@ -15,7 +15,7 @@
 			{!! $filters !!}
 			<input
 				type="search"
-				wire:model.live.debounce="search"
+				wire:model.live="search"
 				placeholder="Search"
 				class="input"
 			/>

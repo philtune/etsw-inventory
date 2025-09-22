@@ -18,6 +18,8 @@ return new class extends Migration {
 			      ->cascadeConstrained();
 			$table->unsignedSmallInteger('stock')
 			      ->default(0);
+			$table->dateTime('stock_updated_at')
+			      ->nullable();
 		});
 	}
 

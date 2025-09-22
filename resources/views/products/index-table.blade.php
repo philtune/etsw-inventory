@@ -32,7 +32,7 @@
 			@class(['bg_highlight' => $product->is_archived])
 		>
 			<td onclick="event.stopPropagation()" style="cursor:initial" class="text-center">
-				@if( $firstListing = $product->etsyListings->sortByDesc('created_at')->sortBy('is_archived')->first() )
+				@if( $firstListing = $product->etsyListings->first() )
 					<a href="{{ route('etsy.listings.index', [
 						'product_type_id' => $product->product_type_id,
 						'scent_id' => $product->scent_id

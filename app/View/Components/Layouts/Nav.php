@@ -48,6 +48,11 @@ class Nav extends Component
 						'label'  => 'Manage Stock',
 						'active' => request()->routeIs('products.stock'),
 					],
+					[
+						'href'   => route('products.stock2'),
+						'label'  => 'Manage Stock 2',
+						'active' => request()->routeIs('products.stock2'),
+					],
 				],
 			],
 			[

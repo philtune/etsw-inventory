@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Products;
 
+use App\Models\EtsyListing;
 use App\Models\Product;
 use App\Models\ProductAggregate;
 use App\Models\ProductTypeVariant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -37,9 +37,11 @@ class StockTable extends Component
 					'productAggregate',
 					'productType',
 					'scent',
-					'etsyListings',
-					'bundleItems' => [
-						'childProduct' => ['variantStocks:id,stock'],
+					'etsyListings' => fn(HasMany $query) => $query
+						->orderBy('is_archived')
+						->orderBy('state_enum'),
+					'bundleItems'  => [
+						'childProduct' => ['variantStocks'],
 						'productTypeVariant'
 					]
 				])
@@ -78,15 +80,47 @@ class StockTable extends Component
 	{
 		$product->variantStocks()->updateOrCreate(
 			['product_type_variant_id' => $productTypeVariant->id],
-			['stock' => $stock]
+			[
+				'stock'            => $stock,
+				'stock_updated_at' => now(),
+			]
 		);
 		$this->dispatch('toast', 'Product stock updated!', '--success');
 	}
 
+	public function markVariantStockUpdated(Product $product, ProductTypeVariant $productTypeVariant):void
+	{
+		$product->variantStocks()->updateOrCreate(
+			['product_type_variant_id' => $productTypeVariant->id],
+			['stock_updated_at' => now(),]
+		);
+	}
+
+	public function undoMarkVariantStockUpdated(Product $product, ProductTypeVariant $productTypeVariant):void
+	{
+		$product->variantStocks()->updateOrCreate(
+			['product_type_variant_id' => $productTypeVariant->id],
+			['stock_updated_at' => now()->subDays(10),]
+		);
+	}
+
 	public function updateDefaultStock(Product $product, int $stock):void
 	{
-		$product->update(['stock' => $stock]);
+		$product->update([
+			'stock'            => $stock,
+			'stock_updated_at' => now(),
+		]);
 		$this->dispatch('toast', 'Product stock updated!', '--success');
+	}
+
+	public function markDefaultStockUpdated(Product $product):void
+	{
+		$product->update(['stock_updated_at' => now()]);
+	}
+
+	public function undoMarkDefaultStockUpdated(Product $product):void
+	{
+		$product->update(['stock_updated_at' => now()->subDays(10)]);
 	}
 
 	public function updatedSearch():void
@@ -124,9 +158,9 @@ as total_revenue
 EOT
 			))
 			->where('products.is_archived', false)
-//			->where('products.is_bundle', false)
+			//			->where('products.is_bundle', false)
 			->get();
-//		dd($aggregates->where('is_bundle', true)->toArray());
+		//		dd($aggregates->where('is_bundle', true)->toArray());
 		$aggregates->each(function (Product $row) {
 			ProductAggregate
 				::updateOrCreate([

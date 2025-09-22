@@ -9,6 +9,7 @@ use App\Models\ProductTypeVariant;
 use App\Models\Scent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
@@ -96,10 +97,18 @@ class IndexTable extends IndexTableComponent
 			->leftJoin('scents', 'products.scent_id', '=', 'scents.id')
 			->select('products.*')
 			->with([
-				'etsyListings',
-				'productType',
+				'etsyListings' => fn(HasMany $query) => $query
+					->orderBy('is_archived')
+					->orderBy('state_enum'),
+				'productType'  => [
+					'variants' => fn(HasMany $query) => $query->where('is_archived', false)
+				],
 				'scent',
-				'bundleItems' => ['productTypeVariant', 'childProduct']
+				'bundleItems'  => [
+					'productTypeVariant',
+					'childProduct'
+				],
+				'variantStocks'
 			])
 			->when(
 				!$this->show_archived,
@@ -114,6 +123,7 @@ class IndexTable extends IndexTableComponent
 			'scent_id'        => 'nullable|exists:scents,id',
 			'label'           => 'nullable|string|max:255',
 			'is_bundle'       => 'boolean',
+			'notes'           => 'nullable|string|max:1024',
 		];
 	}
 

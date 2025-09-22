@@ -57,7 +57,7 @@ return new class extends Migration {
 			//			      ->nullable();
 			//			$table->float('buyer_coupon')
 			//			      ->default(0);
-			$table->float('shop_coupon')
+			$table->decimal('shop_coupon')
 			      ->default(0);
 			//			$table->dateTime('paid_at')
 			//			      ->nullable();

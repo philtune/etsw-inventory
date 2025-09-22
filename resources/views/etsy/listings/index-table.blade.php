@@ -101,9 +101,8 @@
 		<table class="m_table">
 			<thead>
 			<tr>
+				<th>#</th>
 				<x-th.sortable label="Product" column="products.label"/>
-				{{--				<x-th.sortable label="Scent" column="scents.label"/>--}}
-				{{--				<x-th.sortable label="Product Type" column="product_types.label"/>--}}
 				<x-th.sortable label="Title" column="etsy_listings.title"/>
 				<x-th.sortable label="State" column="etsy_listings.state_enum"/>
 				<x-th.sortable label="Views" column="views" desc-first/>
@@ -117,8 +116,9 @@
 			</tr>
 			</thead>
 			<tbody>
-			@foreach( $etsyListings as $etsyListing )
+			@foreach( $etsyListings as $i => $etsyListing )
 				<tr wire:key="{{ $etsyListing->id }}">
+					<td>{{ $i + 1 }}</td>
 					<td @class(['bg_highlight' => !$etsyListing->product_id])>
 						@if( $edit_mode )
 							<x-form.select
@@ -129,42 +129,17 @@
 								style="width:14rem"
 							/>
 						@else
-							<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->productType->code ?? '?' }} - {{ $etsyListing->product?->scent->code ?? '?' }}</span>
+							@if( $etsyListing->product?->is_bundle )
+								@foreach( $etsyListing->product->bundleItems as $productBundleItem )
+									<div>
+										{{ $productBundleItem->childProduct->productType->code ?? '?'  }} - {{ $productBundleItem->childProduct->scent->code ?? '?' }}
+									</div>
+								@endforeach
+							@else
+								<span data-tooltip="{{ $etsyListing->product?->label ?: '[Undefined]' }}" class="--tt-right --tt-lg">{{ $etsyListing->product?->productType->code ?? '?' }} - {{ $etsyListing->product?->scent->code ?? '?' }}</span>
+							@endif
 						@endif
 					</td>
-					{{--					<td @class(['bg_highlight' => !$etsyListing->scent_id])>--}}
-					{{--						@if( $edit_mode )--}}
-					{{--							<x-form.select--}}
-					{{--								wire:change="updateScent('{{ $etsyListing->id }}', $event.target.value)"--}}
-					{{--								:options="$scent_options"--}}
-					{{--								:default="$etsyListing->scent_id"--}}
-					{{--								initial="-- SCENT --"--}}
-					{{--								style="width:14rem"--}}
-					{{--							/>--}}
-					{{--						@else--}}
-					{{--							@if( $etsyListing->scent_id )--}}
-					{{--								<span--}}
-					{{--									data-tooltip="{{ $etsyListing->scent->label }}"--}}
-					{{--									class="--tt-right --tt-sm"--}}
-					{{--								>{{ $etsyListing->scent->code }}</span>--}}
-					{{--							@else--}}
-					{{--								<span data-tooltip="{{ $etsyListing->scent?->label }}" class="--tt-right --tt-sm">{{ $etsyListing->scent?->code ?: '[Undefined]' }}</span>--}}
-					{{--							@endif--}}
-					{{--						@endif--}}
-					{{--					</td>--}}
-					{{--					<td @class(['bg_highlight' => !$etsyListing->product_type_id])>--}}
-					{{--						@if( $edit_mode )--}}
-					{{--							<x-form.select--}}
-					{{--								wire:change="updateProductType('{{ $etsyListing->id }}', $event.target.value)"--}}
-					{{--								:options="$product_type_options"--}}
-					{{--								:default="$etsyListing->product_type_id"--}}
-					{{--								initial="-- PRODUCT TYPE --"--}}
-					{{--								style="width:14rem"--}}
-					{{--							/>--}}
-					{{--						@else--}}
-					{{--							<span data-tooltip="{{ $etsyListing->productType?->label }}" class="--tt-right --tt-sm">{{ $etsyListing->productType?->code ?: '[Undefined]' }}</span>--}}
-					{{--						@endif--}}
-					{{--					</td>--}}
 					<td>
 						<div class="l_cols">
 							<a href="https://www.etsy.com/your/shops/me/listing-editor/edit/{{ $etsyListing->id }}" target="_blank"><img src="{{ $etsyListing->thumbnail }}" alt="Thumbnail"/></a>
@@ -182,7 +157,7 @@
 					<td>
 						<div class="l_cols --sm">@svg('icon-heart', 'text-success') {{ number_format($etsyListing->meta['num_favorers']) }}</div>
 					</td>
-					<td class="nowrap">
+					<td @class(['nowrap', 'bg_highlight' => $etsyListing->ending_at->isPast()])>
 						<div class="l_cols --sm">@svg('icon-calendar-days', 'text-muted') {{ $etsyListing->ending_at->format('M d, Y') }}</div>
 						<small>{{ $etsyListing->ending_at->diffForHumans(short:true) }}</small>
 					</td>

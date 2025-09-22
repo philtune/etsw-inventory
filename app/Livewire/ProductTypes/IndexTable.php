@@ -57,7 +57,7 @@ class IndexTable extends IndexTableComponent
 		$productType = ProductType::create([
 			'label'         => $formData['label'],
 			'code'          => $formData['code'],
-			'variant_label' => $formData['variant_label'],
+			'variant_label' => $formData['variant_label'] ?? null,
 		]);
 		foreach ( ( $formData['variants'] ?? [] ) as $key => $config ) {
 			$productTypeVariant = $productType->variants()->create([

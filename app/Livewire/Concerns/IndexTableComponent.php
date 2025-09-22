@@ -3,6 +3,7 @@
 namespace App\Livewire\Concerns;
 
 use Closure;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,7 +22,7 @@ abstract class IndexTableComponent extends Component
 	use Sortable;
 
 	#[Url]
-	public int $perPage = 15;
+	public int $perPage = 24;
 	#[Url]
 	public bool $trashed = false;
 
@@ -44,6 +45,7 @@ abstract class IndexTableComponent extends Component
 	 * @return Builder<TModel>
 	 */
 	abstract protected function query():Builder;
+	abstract public function render():View;
 
 	/**
 	 * @return LengthAwarePaginator<array-key,TModel>

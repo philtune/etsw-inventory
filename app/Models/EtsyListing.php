@@ -81,6 +81,22 @@ class EtsyListing extends Model
 	}
 
 	/**
+	 * @return Attribute<boolean,never>
+	 */
+	public function isActive():Attribute
+	{
+		return Attribute::get(fn() => $this->state_enum === self::STATE_ACTIVE)->shouldCache();
+	}
+
+	/**
+	 * @return Attribute<boolean,never>
+	 */
+	public function isInactive():Attribute
+	{
+		return Attribute::get(fn() => $this->state_enum === self::STATE_INACTIVE)->shouldCache();
+	}
+
+	/**
 	 * @return Attribute<string,never>
 	 */
 	public function stateClass():Attribute
@@ -118,13 +134,19 @@ class EtsyListing extends Model
 	//		return Attribute::get(fn() => $this->created_at->monthsUntil(now())->count())->shouldCache();
 	//	}
 
-	public function variant_in_stock(string $aliases)
+	public function variant_in_stock(?string $aliases = null):int
 	{
-		foreach ( explode(',', $aliases) as $alias ) {
-			if ( array_key_exists($alias, $this->variants_in_stock) ) {
-				return $this->variants_in_stock[$alias];
+		if ( !$this->is_active ) {
+			return 0;
+		}
+		if ( $aliases ) {
+			foreach ( explode(',', $aliases) as $alias ) {
+				if ( array_key_exists($alias, $this->variants_in_stock) ) {
+					return $this->variants_in_stock[$alias];
+				}
 			}
 		}
-		return null;
+		return $this->variants_in_stock['default'] ?? 0;
 	}
+
 }

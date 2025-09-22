@@ -23,8 +23,12 @@ return new class extends Migration {
 			      ->nullConstrained();
 			$table->unsignedSmallInteger('stock')
 			      ->default(0);
+			$table->dateTime('stock_updated_at')
+			      ->nullable();
 			$table->boolean('is_archived')
 			      ->default(false);
+			$table->string('notes', 1024)
+			      ->nullable();
 		});
 	}
 

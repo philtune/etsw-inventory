@@ -25,11 +25,11 @@ class IndexTable extends Component
 	public array $scent_options;
 	public array $product_type_options;
 	#[Url]
-	public int $perPage = 50;
+	public int $perPage = 100;
 	#[Url]
 	public string $search = '';
 	#[Url]
-	public string $order_column = 'etsy_listings.created_at';
+	public string $order_column = 'revenue';
 	#[Url]
 	public bool $order_desc = true;
 	#[Url]

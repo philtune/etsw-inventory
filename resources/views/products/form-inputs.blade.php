@@ -74,4 +74,15 @@
 			/>
 		</td>
 	</tr>
+	<tr>
+		<th><label for="{{ $uid }}_notes">Notes</label></th>
+		<td>
+			<textarea
+				class="textarea"
+				name="notes"
+				id="{{ $uid }}_notes"
+				maxlength="1024"
+			>{{ $product?->notes }}</textarea>
+		</td>
+	</tr>
 </table>

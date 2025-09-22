@@ -72,6 +72,10 @@ class EtsyListingService
 			'variants_in_stock' => array_reduce(
 				array: $row['inventory']['products'],
 				callback: function (array $c, array $product) {
+					$offering = $product['offerings'][0];
+					if ( !$offering['is_enabled'] || $offering['is_deleted'] ) {
+						return $c;
+					}
 					if (
 						empty($product['property_values']) ||
 						count($product['property_values']) > 1 ||
@@ -80,7 +84,7 @@ class EtsyListingService
 						$key = 'default';
 					}
 					return $c + [
-							$key => $product['offerings'][0]['quantity'],
+							$key => $offering['quantity'],
 						];
 				},
 				initial: []
