@@ -27,6 +27,9 @@
 	&:not(:hover):after {
 		opacity: 0;
 	}
+	&.--tt-xs:before {
+		width: 4rem;
+	}
 	&.--tt-sm:before {
 		width: 8rem;
 	}

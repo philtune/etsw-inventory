@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Scents;
 
-use App\Livewire\Concerns\IndexTableComponent;
+use App\Livewire\Concerns\LivewireTable;
 use App\Models\Scent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,9 +11,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 
 /**
- * @extends IndexTableComponent<Scent>
+ * @extends LivewireTable<Scent>
  */
-class IndexTable extends IndexTableComponent
+class IndexTable extends LivewireTable
 {
 
 	public int $perPage = 32;

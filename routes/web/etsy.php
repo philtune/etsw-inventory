@@ -21,7 +21,7 @@ Route::get('/etsy-api/import-listings', [EtsyApiController::class, 'importListin
      ->name('etsy-api.import-listings');
 
 Route::get('/etsy-api/import-inventory', function () {
-	EtsyListingService::importInventory();
+	EtsyListingService::importAllInventory();
 	return back()->with('toast', 'Etsy stock updated!');
 })
      ->name('etsy-api.import-inventory');

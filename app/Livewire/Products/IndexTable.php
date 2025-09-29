@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Products;
 
-use App\Livewire\Concerns\IndexTableComponent;
+use App\Livewire\Concerns\LivewireTable;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\ProductTypeVariant;
@@ -16,9 +16,9 @@ use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
 /**
- * @extends IndexTableComponent<Product>
+ * @extends LivewireTable<Product>
  */
-class IndexTable extends IndexTableComponent
+class IndexTable extends LivewireTable
 {
 	use WithPagination;
 

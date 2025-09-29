@@ -57,7 +57,9 @@
 				padding: 0.5rem 0.5rem;
 			}
 			td:has(.input),
-			td:has(.output) {
+			td:has(.output),
+			td:has(button),
+			{
 				padding: 0;
 			}
 			.input {

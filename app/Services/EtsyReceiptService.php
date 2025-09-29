@@ -16,7 +16,7 @@ class EtsyReceiptService
 	{
 		$offset = 0;
 		do {
-			$response = EtsyApplicationApi::getReceipts(['limit' => 100, 'offset' => $offset]);
+			$response = EtsyApi::getReceipts(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];
 			foreach ( $response['results'] as $receipt ) {
 				EtsyReceipt::firstOrCreate(['id' => $receipt['receipt_id']], static::mapReceipt($receipt));
@@ -36,7 +36,7 @@ class EtsyReceiptService
 	 */
 	public static function importReceipt(string $receipt_id):void
 	{
-		EtsyReceipt::firstOrCreate(['id' => $receipt_id], static::mapReceipt(EtsyApplicationApi::getReceipt($receipt_id)));
+		EtsyReceipt::firstOrCreate(['id' => $receipt_id], static::mapReceipt(EtsyApi::getReceipt($receipt_id)));
 	}
 
 	private static function mapReceipt(array $receipt):array

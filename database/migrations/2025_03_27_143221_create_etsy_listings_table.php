@@ -12,21 +12,24 @@ return new class extends Migration {
 		Schema::create('etsy_listings', function (Blueprint $table) {
 			$table->unsignedBigInteger('id')
 			      ->primary();
+			$table->dateTime('last_imported_at');
+			$table->dateTime('created_at');
+			$table->dateTime('updated_at');
+			$table->dateTime('ending_at');
 			$table->foreignIdFor(Product::class)
 			      ->nullConstrained();
 			$table->string('title');
 			$table->enum('state_enum', array_keys(EtsyListing::state_options));
 			$table->boolean('is_archived')
 			      ->default(false);
+			$table->json('inventory');
+			$table->string('variants_in_stock');
 			//			$table->json('price');
 			//			$table->unsignedSmallInteger('quantity');
 			$table->string('url');
 			$table->string('thumbnail')
 			      ->nullable();
 			$table->json('meta');
-			$table->dateTime('created_at');
-			$table->dateTime('updated_at');
-			$table->dateTime('ending_at');
 			//			$table->unsignedBigIntpeger('shop_section_id')
 			//			      ->nullable();
 			//			$table->text('description');

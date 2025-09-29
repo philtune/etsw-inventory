@@ -180,7 +180,7 @@ class IndexTable extends Component
 	{
 		return EtsyListing
 			::query()
-			->whereRaw('etsy_listings.`meta`->>"$.who_made" = "i_did"')
+//			->whereRaw('etsy_listings.`meta`->>"$.who_made" = "i_did"')
 			->when(
 				$this->search,
 				fn($query) => $query->where('etsy_listings.title', 'like', "%$this->search%")

@@ -10,9 +10,6 @@ use Illuminate\Support\Str;
 
 class EtsyAuthService
 {
-	const ACCESS_TOKEN = 'etsy_access_token';
-	const ACCESS_TOKEN_EXPIRES_AT = 'etsy_access_token_expires_at';
-	const REFRESH_TOKEN = 'etsy_refresh_token';
 
 	public static function connectUrl():string
 	{

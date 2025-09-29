@@ -10,14 +10,15 @@ use Illuminate\Support\Collection;
 
 class EtsyListingService
 {
+
 	/**
 	 * @throws ConnectionException
 	 */
-	public static function import(string $state = 'active'):void
+	public static function importState(string $state = 'active'):void
 	{
 		$offset = 0;
 		do {
-			$response = EtsyApplicationApi::getListings([
+			$response = EtsyApi::getListings([
 				'limit'    => 100,
 				'offset'   => $offset,
 				'state'    => $state,
@@ -31,10 +32,20 @@ class EtsyListingService
 		} while ( $offset < $count );
 	}
 
+	public static function import(string $listing_id):array|false
+	{
+		try {
+			$row = EtsyApi::getListing($listing_id);
+			return self::map($row);
+		} catch ( ConnectionException $e ) {
+			return false;
+		}
+	}
+
 	/**
 	 * @throws ConnectionException
 	 */
-	public static function importInventory():void
+	public static function importAllInventory():void
 	{
 		EtsyListing
 			::query()
@@ -42,7 +53,7 @@ class EtsyListingService
 			->pluck('id')
 			->chunk(100)
 			->each(function (Collection $listing_ids) {
-				$response = EtsyApplicationApi::getListingsByIds($listing_ids->toArray(), [
+				$response = EtsyApi::getListingsByIds($listing_ids->toArray(), [
 					'includes' => 'Inventory,Images',
 				]);
 				foreach ( $response['results'] as $row ) {
@@ -51,50 +62,49 @@ class EtsyListingService
 			});
 	}
 
+	public static function getInventory(string $listing_id):array|false
+	{
+		try {
+			return EtsyApi::getListingInventory($listing_id);
+		} catch ( ConnectionException $e ) {
+			return false;
+		}
+	}
+
+	public static function updateInventory(string $listing_id, array $inventory):array|false
+	{
+		try {
+			return EtsyApi::updateListingInventory($listing_id, $inventory);
+		} catch ( ConnectionException $e ) {
+			return false;
+		}
+	}
+
 	/**
 	 * @throws ConnectionException
 	 */
 	public static function importAll():void
 	{
-		static::import('active');
-		static::import('inactive');
-		static::import('sold_out');
-		static::import('expired');
+		static::importState('active');
+		static::importState('inactive');
+		static::importState('sold_out');
+		static::importState('expired');
 	}
 
 	private static function map($row):array
 	{
 		return [
-			'title'             => $row['title'],
-			'state_enum'        => $row['state'],
+			'title'      => $row['title'],
+			'state_enum' => $row['state'],
 			//						'price'      => $row['price'],
 			//						'quantity'   => $row['quantity'],
-			'variants_in_stock' => array_reduce(
-				array: $row['inventory']['products'],
-				callback: function (array $c, array $product) {
-					$offering = $product['offerings'][0];
-					if ( !$offering['is_enabled'] || $offering['is_deleted'] ) {
-						return $c;
-					}
-					if (
-						empty($product['property_values']) ||
-						count($product['property_values']) > 1 ||
-						!( $key = $product['property_values'][0]['values'][0] ?? false )
-					) {
-						$key = 'default';
-					}
-					return $c + [
-							$key => $offering['quantity'],
-						];
-				},
-				initial: []
-			),
-			'url'               => $row['url'],
-			'thumbnail'         => $row['images'][0]['url_75x75'] ?? null,
-			'meta'              => $row,
-			'created_at'        => Carbon::createFromTimestamp($row['original_creation_timestamp']),
+			'inventory'  => $row['inventory'],
+			'url'        => $row['url'],
+			'thumbnail'  => $row['images'][0]['url_75x75'] ?? null,
+			'meta'       => $row,
+			'created_at' => Carbon::createFromTimestamp($row['original_creation_timestamp']),
 			//			'updated_at'        => Carbon::createFromTimestamp($row['updated_timestamp']),
-			'ending_at'         => Carbon::createFromTimestamp($row['ending_timestamp']),
+			'ending_at'  => Carbon::createFromTimestamp($row['ending_timestamp']),
 			//							[
 			//							'id'                     => $row['listing_id'],
 			//							'title'                          => $row['title'],

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\ProductTypes;
 
-use App\Livewire\Concerns\IndexTableComponent;
+use App\Livewire\Concerns\LivewireTable;
 use App\Models\ProductType;
 use App\Models\ProductTypeVariant;
 use Illuminate\Contracts\View\View;
@@ -11,9 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Url;
 
 /**
- * @extends IndexTableComponent<ProductType>
+ * @extends LivewireTable<ProductType>
  */
-class IndexTable extends IndexTableComponent
+class IndexTable extends LivewireTable
 {
 
 	public int $perPage = 20;
@@ -63,7 +63,7 @@ class IndexTable extends IndexTableComponent
 			$productTypeVariant = $productType->variants()->create([
 				'label'       => $config['label'],
 				'aliases'     => $config['aliases'],
-				'is_archived' => $config['is_archived'],
+				'is_archived' => $config['is_archived'] ?? false,
 			]);
 			if ( $formData['variant_default'] == $key ) {
 				$productType->update([

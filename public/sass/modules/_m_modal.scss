@@ -21,8 +21,8 @@
 		align-items: center;
 		max-height: 100%;
 		overflow: auto;
-		@include scrollbar;
 		z-index: 1;
+		@include scrollbar;
 		@media (min-width: 48rem) {
 			padding: 2rem 3rem;
 		}

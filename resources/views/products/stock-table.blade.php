@@ -1,94 +1,90 @@
-<div>
-	<div class="l_cols --split">
-		<div>{{ $products->links('pagination') }}</div>
-		<div class="l_cols --md">
-			<button
-				type="button"
-				wire:click="updateAggregates"
-				class="u_btn --warning --sm">
-				@svg('icon-rotate') Update Aggregates
-			</button>
+<x-layouts.livewire-table
+	:$stack_id
+	:$collection
+	table-class="--sheet"
+>
+	<x-slot:filters>
+		<label>
 			<input
-				type="search"
-				wire:model.live.debounce="search"
-				placeholder="Search"
-				class="input"
-			/>
-		</div>
-	</div>
-	<div class="m_table__container">
-		<table class="m_table --sheet">
-			<thead>
-			<tr>
-				<th>Etsy Listings</th>
-				<th class="w-1px">Type</th>
-				<th class="w-1px">Scent</th>
-				<x-th.sortable label="Product Label" column="products.label"/>
-				<x-th.sortable label="Notes" column="products.notes"/>
-				<th class="w-1px">Stock</th>
-				<th><small>Etsy<br/>Stock</small></th>
-				<x-th.sortable column="product_aggregates.etsy_transactions_qty" desc-first>
-					<x-slot:label><small>Sold:<br/>Etsy</small></x-slot:label>
-				</x-th.sortable>
-				<x-th.sortable column="product_aggregates.etsy_revenue" desc-first>
-					<x-slot:label><small>Revenue:<br/>Etsy</small></x-slot:label>
-				</x-th.sortable>
-				<x-th.sortable column="product_aggregates.wholesale_order_products_qty" desc-first>
-					<x-slot:label><small>Sold:<br/>Wholesale</small></x-slot:label>
-				</x-th.sortable>
-				<x-th.sortable column="product_aggregates.wholesale_revenue" desc-first>
-					<x-slot:label><small>Revenue:<br/>Wholesale</small></x-slot:label>
-				</x-th.sortable>
-				<th><small class="l_cols --inline">Sold:<br/>TOTAL</small></th>
-				<x-th.sortable column="product_aggregates.total_revenue" desc-first>
-					<x-slot:label><small>Revenue:<br/>TOTAL</small></x-slot:label>
-				</x-th.sortable>
-			</tr>
-			</thead>
-			<tbody>
-			@foreach( $products as $product )
-				@php($firstListing = $product->etsyListings->first())
-				<tr wire:key="product_{{ $product->id }}">
-					<td data-tooltip="Etsy Listings" class="text-center">
-						@if( $firstListing )
-							<a tabindex="-1" href="{{ route('etsy.listings.index', [
-								'product_type_id' => $product->product_type_id,
-								'scent_id' => $product->scent_id
-							]) }}"><img src="{{ $firstListing->thumbnail }}" alt="Thumbnail"/></a>
-						@else
-							<em>No Etsy<br/>Listing</em>
-						@endif
-					</td>
-					@if( $product->is_bundle )
-						<td data-tooltip="Is Bundle?" colspan="2">BUNDLE</td>
-					@else
-						<td data-tooltip="Type" class="text-center">{{ $product->productType?->code ?: '??' }}</td>
-						<td data-tooltip="Scent" class="text-center">{{ $product->scent?->code ?: '??' }}</td>
+				type="checkbox"
+				wire:model.live="include_archived"
+			/> Include Archived
+		</label>
+	</x-slot:filters>
+	<x-slot:headers>
+		<th>&nbsp;</th>
+		<th><small>Etsy Listings</small></th>
+		<x-th.sortable label="Type" column="product_types.code"/>
+		<x-th.sortable label="Scent" column="scents.code"/>
+		<x-th.sortable label="Label" column="products.label"/>
+		<th>Notes</th>
+		<th>In Stock</th>
+		<th><small>Etsy<br/>Stock</small></th>
+		<x-th.sortable
+			label="<small>Etsy<br/>Revenue LTM</small>"
+			column="etsy_revenue"
+			desc-first
+		/>
+		<x-th.sortable
+			label="<small>Wholesale<br/>Revenue LTM</small>"
+			column="wholesale_revenue"
+			desc-first
+		/>
+		<x-th.sortable
+			label="<small>Total<br/>Revenue LTM</small>"
+			column="total_revenue"
+			desc-first
+		/>
+	</x-slot:headers>
+	@foreach( $collection as $i => $product )
+		@php($firstListing = $product->etsyListings->first())
+		<x-index-table-row
+			:model="$product"
+			model-name="Product"
+			:$stack_id
+			:$loop
+			without-delete
+			@class(['bg-warning' => $product->is_archived])
+		>
+			@if( $firstListing )
+				<x-slot:editWireModal>
+					@include('products.stock-form-inputs')
+				</x-slot:editWireModal>
+			@endif
+			<td>{{ ( ( $collection->currentPage() - 1 ) * $collection->perPage() ) + $i + 1 }}</td>
+			<td>
+				@if( $firstListing )
+					<a tabindex="-1" href="{{ route('etsy.listings.index', [
+						'product_type_id' => $product->product_type_id,
+						'scent_id' => $product->scent_id
+					]) }}"><img src="{{ $firstListing->thumbnail }}" alt="Thumbnail"/></a>
+				@else
+					<em>No Etsy<br/>Listing</em>
+				@endif
+			</td>
+			@if( $product->is_bundle )
+				<td colspan="2">[BUNDLE]</td>
+			@else
+				<td>{{ $product['product_type_code'] }}</td>
+				<td>{{ $product['scent_code'] }}</td>
+			@endif
+			<td>
+				<span
+					@if( Str::length($product->label) >= 48 )
+						data-tooltip="{{ $product->label }}"
 					@endif
-					<td data-tooltip="Label">
-						<span data-tooltip="{{ $product->label }}">{{ Str::limit($product->label, 48) }}</span>
-					</td>
-					<td data-tooltip="Notes">
-						<span data-tooltip="{{ $product->notes }}">{{ Str::limit($product->notes, 24) }}</span>
-					</td>
-					<td data-tooltip="Stock" class="text-right">
-						@include('products.partials.stock')
-					</td>
-					<td data-tooltip="Etsy Stock" class="text-right">
-						@include('products.partials.etsy-stock')
-					</td>
-					<td data-tooltip="Sold: Etsy" class="text-center">{{ $product->productAggregate?->etsy_transactions_qty ?: 0 }}</td>
-					<td data-tooltip="Revenue: Etsy" class="text-right">${{ number_format($product->productAggregate?->etsy_revenue, 2) }}</td>
-					<td data-tooltip="Sold: Wholesale" class="text-center">{{ $product->productAggregate?->wholesale_order_products_qty ?: 0 }}</td>
-					<td data-tooltip="Revenue: Wholesale" class="text-right">${{ number_format($product->productAggregate?->wholesale_revenue ?: 0, 2) }}</td>
-					<td data-tooltip="Sold: TOTAL" class="text-center">
-						<strong>{{ ($product->productAggregate?->etsy_transactions_qty ?: 0) + ($product->productAggregate?->wholesale_order_products_qty ?: 0) }}</strong>
-					</td>
-					<td data-tooltip="Revenue: TOTAL" class="text-right"><strong>${{ number_format($product->productAggregate?->total_revenue, 2) }}</strong></td>
-				</tr>
-			@endforeach
-			</tbody>
-		</table>
-	</div>
-	{{ $products->links('pagination') }}
-</div>
+				>{{ Str::limit($product->label, 48) }}</span>
+			</td>
+			<td><span data-tooltip="{{ $product->notes }}">{{ Str::limit($product->notes, 24) }}</span></td>
+			<td
+				class="text-right"
+				onclick="event.stopPropagation()"
+				style="cursor:initial"
+			>@include('products.partials.stock')</td>
+			<td class="text-right">@include('products.partials.etsy-stock')</td>
+			<td class="text-right">${{ number_format($product['etsy_revenue'], 2) }}</td>
+			<td class="text-right">${{ number_format($product['wholesale_revenue'], 2) }}</td>
+			<td class="text-right"><b>${{ number_format($product['total_revenue'], 2) }}</b></td>
+		</x-index-table-row>
+	@endforeach
+</x-layouts.livewire-table>

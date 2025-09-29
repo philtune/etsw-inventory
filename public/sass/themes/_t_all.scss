@@ -66,6 +66,8 @@ textarea.textarea,
 
 output.output {
 	display: inline-block;
+	line-height: 1.5rem;
+	white-space: nowrap;
 }
 
 input.input.--shy:not(:focus):placeholder-shown,

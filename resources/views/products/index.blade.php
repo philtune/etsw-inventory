@@ -1,6 +1,6 @@
 <x-layouts.app>
 	<x-slot:toolbar>
-		<x-model.trigger.create
+		<x-modal.trigger.create
 			for="create_product"
 			model-name="Product"
 		/>

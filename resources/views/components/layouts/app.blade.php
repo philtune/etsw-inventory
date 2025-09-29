@@ -15,6 +15,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 	<script src="https://kit.fontawesome.com/9b9b99bb33.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="{{ asset('css/styles.css') }}"/>
+	<link rel="preload" href="{{ asset('img/spinner.gif') }}" as="image">
 </head>
 <body class="l_body">
 <header class="l_body-nav">

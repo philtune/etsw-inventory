@@ -6,8 +6,10 @@
 	'after' => null,
 	'withoutActions' => false,
 	'filters' => null,
+	'tableClass' => null
 ])
-<div class="l_rows">
+<div {{ $attributes->class('l_rows u_loading__container') }}>
+	<div wire:loading.delay.longest class="u_loading"></div>
 	{!! $before !!}
 	<div class="l_cols --split" style="z-index:2">
 		{{ $collection->links('pagination') }}
@@ -28,7 +30,7 @@
 		</div>
 	</div>
 	<div class="m_table__container">
-		<table class='m_table'>
+		<table class="m_table {{ $tableClass }}">
 			<thead>
 			<tr>
 				{!! $headers !!}

@@ -1,4 +1,4 @@
-<x-layouts.index-table :$stack_id :$collection>
+<x-layouts.livewire-table :$stack_id :$collection>
 	<x-slot:before>
 		<x-modal.wire.create
 			:push-to="$stack_id"
@@ -88,4 +88,4 @@
 			</x-slot:secondaryActions>
 		</x-index-table-row>
 	@endforeach
-</x-layouts.index-table>
+</x-layouts.livewire-table>

@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -117,6 +121,23 @@ class Product extends Model
 		return $this->hasMany(ProductVariantStock::class);
 	}
 
+	public function scopeAddBundleStock(Builder $query):void
+	{
+		$query->addSelect([
+			'bundle_stock'     => DB
+				::table('products as p')
+				->selectRaw('MIN(product_variant_stocks.stock)')
+				->leftJoin('product_bundle_items', 'product_bundle_items.product_id', '=', 'p.id')
+				->leftJoin('product_variant_stocks', function($join) {
+					$join
+						->on('product_variant_stocks.product_id', '=', 'product_bundle_items.child_product_id')
+						->on('product_variant_stocks.product_type_variant_id', '=', 'product_bundle_items.product_type_variant_id');
+				})
+				->where('product_bundle_items.product_id', '=', DB::raw('products.id'))
+				->where('products.is_bundle', true)
+		]);
+	}
+
 	public function getVariantStock(ProductTypeVariant $productTypeVariant):?ProductVariantStock
 	{
 		return $this
@@ -129,13 +150,32 @@ class Product extends Model
 	{
 		return $this
 			->getVariantStock($productTypeVariant)
-			?->stock ?: 0;
+			?->stock ?: $this->stock;
+	}
+
+	public function getDefaultVariantStockCount():int
+	{
+		return $this->productType->defaultVariant ?
+			$this->getVariantStockCount($this->productType->defaultVariant) :
+			$this->stock;
+	}
+
+	/**
+	 * @return Attribute<?Collection<array-key,ProductTypeVariant>,never>
+	 */
+	public function variants():Attribute
+	{
+		return Attribute::get(fn() => $this
+			->productType
+			?->variants
+			->where('is_archived', false))
+		                ->shouldCache();
 	}
 
 	/**
 	 * @return Attribute<int,never>
 	 */
-	public function bundleStock():Attribute
+	public function bundleMinStock():Attribute
 	{
 		return Attribute::get(
 			fn() => $this->is_bundle ?

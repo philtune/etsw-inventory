@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Validator;
 
-class EtsyApplicationApi
+class EtsyApi
 {
 
 	/**
@@ -41,6 +41,18 @@ class EtsyApplicationApi
 			'last_used_at'          => now()
 		]);
 		return $response->json();
+	}
+
+	/**
+	 * @see https://developers.etsy.com/documentation/reference/#operation/getListing
+	 * @throws ConnectionException
+	 */
+	public static function getListing(string $listing_id):array
+	{
+		return self::send(fn(PendingRequest $request) => $request
+			->get('/listings/' . $listing_id, [
+				'includes' => 'Inventory,Images'
+			]));
 	}
 
 	/**
@@ -74,8 +86,8 @@ class EtsyApplicationApi
 	{
 		return self::send(fn(PendingRequest $request) => $request
 			->get('/listings/batch', [
-				'listing_ids' => $listing_ids,
-			] + $params));
+					'listing_ids' => $listing_ids,
+				] + $params));
 	}
 
 	/**
@@ -136,5 +148,32 @@ class EtsyApplicationApi
 				'limit'  => $params['limit'] ?? 100,
 				'offset' => $params['offset'] ?? 0,
 			]));
+	}
+
+	/**
+	 * @see https://developers.etsy.com/documentation/reference/#operation/getListingInventory
+	 * @throws ConnectionException
+	 */
+	public static function getListingInventory(string $listing_id):array
+	{
+		return self::send(fn(PendingRequest $request) => $request
+			->get('/listings/' . $listing_id . '/inventory'));
+	}
+
+	/**
+	 * @param array{
+	 *     products:array,
+	 *     price_on_property:array,
+	 *     quantity_on_property:array,
+	 *     sku_on_property:array,
+	 *     readiness_state_on_property:array
+	 * } $inventory
+	 * @throws ConnectionException
+	 */
+	public static function updateListingInventory(string $listing_id, array $inventory):array
+	{
+		return self::send(fn(PendingRequest $request) => $request
+			->withUrlParameters(['listing_id' => $listing_id])
+			->put('/listings/{listing_id}/inventory', $inventory));
 	}
 }

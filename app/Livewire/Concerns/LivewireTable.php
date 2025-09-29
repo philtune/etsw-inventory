@@ -15,7 +15,7 @@ use Livewire\WithPagination;
 /**
  * @template TModel of Model
  */
-abstract class IndexTableComponent extends Component
+abstract class LivewireTable extends Component
 {
 	use WithPagination;
 	use Searchable;

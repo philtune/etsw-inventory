@@ -9,7 +9,7 @@
 	{{ $attributes->style('cursor:pointer') }}
 >
 	<span class="l_cols --inline">
-	{{ $label ?: $slot }}
+	{!! $label ?: $slot !!}
 		@if( $this->order_column === $column )
 			<small class="text-muted">
 			@if( $this->order_desc )

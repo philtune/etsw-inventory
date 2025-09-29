@@ -1,4 +1,4 @@
-<x-layouts.index-table :$stack_id :$collection>
+<x-layouts.livewire-table :$stack_id :$collection>
 	<x-slot:before>
 		<x-modal.wire.create
 			:push-to="$stack_id"
@@ -35,4 +35,4 @@
 			<td class='text-right'>${{ number_format($scent['total_revenue'], 2) }}</td>
 		</x-index-table-row>
 	@endforeach
-</x-layouts.index-table>
+</x-layouts.livewire-table>

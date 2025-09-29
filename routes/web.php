@@ -19,9 +19,6 @@ Route::group([], [
 
 		Route::view('/products.stock', 'products.stock')
 		     ->name('products.stock');
-
-		Route::view('/products.stock2', 'products.stock2')
-		     ->name('products.stock2');
 	}
 ]);
 
