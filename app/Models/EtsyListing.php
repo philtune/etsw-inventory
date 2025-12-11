@@ -43,7 +43,7 @@ class EtsyListing extends Model
 	protected static function booted():void
 	{
 		static::creating(function (self $self) {
-			$self->variants_in_stock = $this->calculateVariantsInStock();
+			$self->variants_in_stock = $self->calculateVariantsInStock();
 			$self->last_imported_at = now();
 		});
 		static::updating(function (self $self) {
@@ -52,10 +52,15 @@ class EtsyListing extends Model
 		});
 	}
 
-	protected function calculateVariantsInStock()
+	protected function calculateVariantsInStock():array
+	{
+		return static::calculateVariantsInStockFromProducts($this->inventory['products']);
+	}
+
+	public static function calculateVariantsInStockFromProducts(array $products):array
 	{
 		return array_reduce(
-			array: $this->inventory['products'],
+			array: $products,
 			callback: function (array $c, array $product) {
 				$offering = $product['offerings'][0];
 				if ( !$offering['is_enabled'] || ( $offering['is_deleted'] ?? false ) ) {

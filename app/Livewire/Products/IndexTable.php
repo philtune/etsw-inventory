@@ -119,11 +119,12 @@ class IndexTable extends LivewireTable
 	private function rules():array
 	{
 		return [
-			'product_type_id' => 'nullable|exists:product_types,id',
-			'scent_id'        => 'nullable|exists:scents,id',
-			'label'           => 'nullable|string|max:255',
-			'is_bundle'       => 'boolean',
-			'notes'           => 'nullable|string|max:1024',
+			'product_type_id'  => 'nullable|exists:product_types,id',
+			'scent_id'         => 'nullable|exists:scents,id',
+			'label'            => 'nullable|string|max:255',
+			'is_bundle'        => 'boolean',
+			'is_made_to_order' => 'boolean',
+			'notes'            => 'nullable|string|max:1024',
 		];
 	}
 

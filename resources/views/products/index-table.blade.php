@@ -19,9 +19,11 @@
 	<x-slot:headers>
 		<th>&nbsp;</th>
 		<x-th.sortable label="Label" column="products.label"/>
+		<th>Notes</th>
 		<x-th.sortable label="Bundle" column="products.is_bundle" desc-first/>
 		<x-th.sortable label="Type" column="product_types.label"/>
 		<x-th.sortable label="Scent" column="scents.label"/>
+		<x-th.sortable label="Made To Order" column="products.is_made_to_order"/>
 	</x-slot:headers>
 	@foreach( $collection as $product )
 		<x-index-table-row
@@ -47,6 +49,13 @@
 				@endif
 				{{ $product->label }}
 			</td>
+			<td>
+				<span
+					@if(strlen($product->notes) > 24)
+						data-tooltip="{{ $product->notes }}" class="--tt-md"
+					@endif
+				>{{ Str::limit($product->notes, 24) }}</span>
+			</td>
 			<x-td.boolean :default="$product->is_bundle" yes-only/>
 			@if( $product->is_bundle )
 				<td colspan="2">
@@ -61,6 +70,9 @@
 					{{ $product->scent?->label }}
 				</td>
 			@endif
+			<td>
+				<x-boolean :default="$product->is_made_to_order"/>
+			</td>
 			<x-slot:editWireModal>
 				@include('products.form-inputs')
 			</x-slot:editWireModal>

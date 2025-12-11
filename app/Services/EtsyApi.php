@@ -32,7 +32,7 @@ class EtsyApi
 			::baseUrl('https://openapi.etsy.com/v3/application')
 			->withToken(EtsyAuthService::getAccessToken())
 			->withHeaders([
-				'x-api-key' => config('services.etsy.api.key'),
+				'x-api-key' => config('services.etsy.api.key') . ':' . config('services.etsy.api_secret'),
 			]);
 		$response = $callback($pendingRequest);
 		$etsyOauthToken->update([

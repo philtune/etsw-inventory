@@ -39,6 +39,7 @@ return [
 		'shop_id' => env('ETSY_SHOP_ID'),
 		'api'     => [
 			'key'            => env('ETSY_API_KEY'),
+			'secret'         => env('ETSY_API_SECRET'),
 			'code_challenge' => env('ETSY_API_CODE_CHALLENGE'),
 			'code_verifier'  => env('ETSY_API_CODE_VERIFIER'),
 		],

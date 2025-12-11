@@ -94,17 +94,19 @@ class EtsyListingService
 	private static function map($row):array
 	{
 		return [
-			'title'      => $row['title'],
-			'state_enum' => $row['state'],
+			'title'             => $row['title'],
+			'state_enum'        => $row['state'],
 			//						'price'      => $row['price'],
 			//						'quantity'   => $row['quantity'],
-			'inventory'  => $row['inventory'],
-			'url'        => $row['url'],
-			'thumbnail'  => $row['images'][0]['url_75x75'] ?? null,
-			'meta'       => $row,
-			'created_at' => Carbon::createFromTimestamp($row['original_creation_timestamp']),
+			'inventory'         => $row['inventory'],
+			'variants_in_stock' => EtsyListing::calculateVariantsInStockFromProducts($row['inventory']['products']),
+			'last_imported_at'  => now(),
+			'url'               => $row['url'],
+			'thumbnail'         => $row['images'][0]['url_75x75'] ?? null,
+			'meta'              => $row,
+			'created_at'        => Carbon::createFromTimestamp($row['original_creation_timestamp']),
 			//			'updated_at'        => Carbon::createFromTimestamp($row['updated_timestamp']),
-			'ending_at'  => Carbon::createFromTimestamp($row['ending_timestamp']),
+			'ending_at'         => Carbon::createFromTimestamp($row['ending_timestamp']),
 			//							[
 			//							'id'                     => $row['listing_id'],
 			//							'title'                          => $row['title'],

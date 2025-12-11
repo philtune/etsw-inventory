@@ -7,6 +7,18 @@
 		<label>
 			<input
 				type="checkbox"
+				wire:model.live="only_stockable"
+			/> Only Stockable
+		</label>
+		<label>
+			<input
+				type="checkbox"
+				wire:model.live="last_twelve_months"
+			/> Last 12 Months (LTM)
+		</label>
+		<label>
+			<input
+				type="checkbox"
 				wire:model.live="include_archived"
 			/> Include Archived
 		</label>
@@ -20,21 +32,15 @@
 		<th>Notes</th>
 		<th>In Stock</th>
 		<th><small>Etsy<br/>Stock</small></th>
-		<x-th.sortable
-			label="<small>Etsy<br/>Revenue LTM</small>"
-			column="etsy_revenue"
-			desc-first
-		/>
-		<x-th.sortable
-			label="<small>Wholesale<br/>Revenue LTM</small>"
-			column="wholesale_revenue"
-			desc-first
-		/>
-		<x-th.sortable
-			label="<small>Total<br/>Revenue LTM</small>"
-			column="total_revenue"
-			desc-first
-		/>
+		<x-th.sortable column="etsy_revenue" desc-first>
+			<x-slot:label><small>Etsy<br/>Revenue @if( $last_twelve_months) LTM @endif</small></x-slot:label>
+		</x-th.sortable>
+		<x-th.sortable column="wholesale_revenue" desc-first>
+			<x-slot:label><small>Wholesale<br/>Revenue @if( $last_twelve_months) LTM @endif</small></x-slot:label>
+		</x-th.sortable>
+		<x-th.sortable column="total_revenue" desc-first>
+			<x-slot:label><small>Total<br/>Revenue @if( $last_twelve_months) LTM @endif</small></x-slot:label>
+		</x-th.sortable>
 	</x-slot:headers>
 	@foreach( $collection as $i => $product )
 		@php($firstListing = $product->etsyListings->first())
@@ -47,7 +53,7 @@
 			@class(['bg-warning' => $product->is_archived])
 		>
 			@if( $firstListing )
-				<x-slot:editWireModal>
+				<x-slot:editWireModal submit="Update Etsy Stock">
 					@include('products.stock-form-inputs')
 				</x-slot:editWireModal>
 			@endif

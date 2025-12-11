@@ -8,9 +8,9 @@
 		<output
 			@class([
 				'output',
-				'bg-success' => $etsy_inventory == $product_stock,
-				'bg-warning' => $etsy_inventory < $product_stock,
-				'bg-danger' => $etsy_inventory > $product_stock,
+				'bg-success' => $product->is_made_to_order || $etsy_inventory == $product_stock,
+				'bg-warning' => !$product->is_made_to_order && $etsy_inventory < $product_stock,
+				'bg-danger' => !$product->is_made_to_order && $etsy_inventory > $product_stock,
 			])
 		>{!! $etsy_inventory !!}</output>
 	@elseif( $product->variants?->isNotEmpty() )
@@ -24,9 +24,9 @@
 						<output
 							@class([
 								'output',
-								'bg-success' => $etsy_inventory != 0 && $etsy_inventory == $product_stock,
-								'bg-warning' => $etsy_inventory != 0 && $etsy_inventory < $product_stock,
-								'bg-danger' => $etsy_inventory == 0 || $etsy_inventory > $product_stock,
+								'bg-success' => $etsy_inventory != 0 && ( $product->is_made_to_order || $etsy_inventory == $product_stock ),
+								'bg-warning' => $etsy_inventory != 0 && !$product->is_made_to_order && $etsy_inventory < $product_stock,
+								'bg-danger' => $etsy_inventory == 0 || ( !$product->is_made_to_order && $etsy_inventory > $product_stock ),
 							])
 						>{{ $etsy_inventory }}</output>
 					</td>

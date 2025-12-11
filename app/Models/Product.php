@@ -23,6 +23,7 @@ class Product extends Model
 	protected $guarded = [];
 	protected $casts = [
 		'stock'            => 'integer',
+		'is_made_to_order' => 'boolean',
 		'is_archived'      => 'boolean',
 		'is_bundle'        => 'boolean',
 		'stock_updated_at' => 'datetime',
@@ -155,7 +156,7 @@ class Product extends Model
 
 	public function getDefaultVariantStockCount():int
 	{
-		return $this->productType->defaultVariant ?
+		return $this->productType?->defaultVariant ?
 			$this->getVariantStockCount($this->productType->defaultVariant) :
 			$this->stock;
 	}

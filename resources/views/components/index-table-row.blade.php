@@ -30,6 +30,7 @@
 					:action="$editModal->attributes->get('action')"
 					:uid="$edit_uid"
 					:push-to="$stack_id"
+					:attributes="$editModal->attributes"
 				>
 					{!! $editModal !!}
 				</x-modal.edit>
@@ -39,6 +40,7 @@
 					:$modelName
 					:uid="$edit_uid"
 					:push-to="$stack_id"
+					:attributes="$editWireModal->attributes"
 				>
 					{!! $editWireModal !!}
 				</x-modal.wire.edit>

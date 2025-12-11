@@ -75,6 +75,17 @@
 		</td>
 	</tr>
 	<tr>
+		<th><label class="nowrap" for="{{ $uid }}_is_made_to_order">Made To Order?</label></th>
+		<td>
+			<input
+				type="checkbox"
+				name="is_made_to_order"
+				@checked($product?->is_made_to_order)
+				id="{{ $uid }}_is_made_to_order"
+			/>
+		</td>
+	</tr>
+	<tr>
 		<th><label for="{{ $uid }}_notes">Notes</label></th>
 		<td>
 			<textarea

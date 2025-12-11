@@ -21,9 +21,13 @@ return new class extends Migration {
 			      ->nullConstrained();
 			$table->foreignIdFor(Scent::class)
 			      ->nullConstrained();
+			$table->boolean('is_made_to_order')
+			      ->default(false);
 			$table->unsignedSmallInteger('stock')
 			      ->default(0);
 			$table->dateTime('stock_updated_at')
+			      ->nullable();
+			$table->dateTime('snooze_until')
 			      ->nullable();
 			$table->boolean('is_archived')
 			      ->default(false);

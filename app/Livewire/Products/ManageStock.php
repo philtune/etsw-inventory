@@ -8,6 +8,7 @@ use App\Models\EtsyTransaction;
 use App\Models\Product;
 use App\Models\ProductTypeVariant;
 use App\Models\WholesaleOrderProduct;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,10 +19,10 @@ use Livewire\Attributes\Url;
 /**
  * @extends LivewireTable<Product>
  */
-class StockTable extends LivewireTable
+class ManageStock extends LivewireTable
 {
 
-	public int $perPage = 100;
+	public int $perPage = 128;
 	public string $order_column = 'total_revenue';
 	public bool $order_desc = true;
 	protected array $searchColumns = [
@@ -33,12 +34,16 @@ class StockTable extends LivewireTable
 	];
 	#[Url]
 	public $include_archived = false;
+	#[Url]
+	public $last_twelve_months = true;
+	#[Url]
+	public $only_stockable = true;
 
 	public function render():View
 	{
 		/** @var LengthAwarePaginator<array-key,Product> $collection */
 		$collection = $this->collection();
-		return view('products.stock-table', [
+		return view('products.manage-stock', [
 			'collection' => $collection,
 		]);
 	}
@@ -48,7 +53,13 @@ class StockTable extends LivewireTable
 	 */
 	protected function query():Builder
 	{
-		$ytd = now()->subYear()->toDateTimeString();
+		$ytd = now()
+			->when(
+				$this->last_twelve_months,
+				fn(Carbon $date) => $date->subYear(),
+				fn(Carbon $date) => $date->subYears(20)
+			)
+			->toDateTimeString();
 		return Product
 			::query()
 			->select([
@@ -85,21 +96,21 @@ COALESCE((SELECT
 ), 0) AS total_revenue
 EOT
 				),
-//				'bundle_stock2'      => ProductVariantStock
-//					::query()
-//					->selectRaw('MIN(product_variant_stocks.stock)')
-//					->leftJoin('products as cp', 'cp.id', '=', 'product_variant_stocks.product_id')
-//					->leftJoin('product_bundle_items', 'product_bundle_items.child_product_id', '=', 'cp.id')
-//					->where('product_bundle_items.product_id', '=', DB::raw('products.id'))
-//					->where('products.is_bundle', true),
 			])
-			->addBundleStock()
+			->when(
+				$this->only_stockable,
+				fn(Builder $query) => $query
+					->where('products.is_bundle', false)
+					->where('products.is_made_to_order', false),
+				fn(Builder $query) => $query->addBundleStock()
+			)
 			->leftJoin('product_types', 'product_types.id', '=', 'products.product_type_id')
 			->leftJoin('scents', 'scents.id', '=', 'products.scent_id')
 			->when(
 				!$this->include_archived,
 				fn(Builder $query) => $query->where('products.is_archived', false)
 			)
+			->where(fn(Builder $query) => $query->whereNull('products.snooze_until')->orWhere('products.snooze_until', '<', now()))
 			->with([
 				'etsyListings'                           => fn(HasMany $query) => $query
 					->orderBy('is_archived')
@@ -175,6 +186,11 @@ EOT
 		} else {
 			$this->dispatch('toast', 'There was a problem importing inventory.', '--danger');
 		}
+	}
+
+	public function updatedIncludeArchived():void
+	{
+		$this->resetPage();
 	}
 
 }

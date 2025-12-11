@@ -8,38 +8,40 @@
 				<th>
 					{{ $productTypeVariant->label }}
 				</th>
-				<td>
-					@if( $recently_updated )
-						<button
-							class="u_btn --sm --muted"
-							tabindex="-1"
-							data-tooltip="Undo mark stock updated"
-							wire:click="undoMarkVariantStockUpdated('{{ $product->id }}', '{{ $productTypeVariant->id }}')"
-						>@svg('icon-rotate-left')</button>
-					@else
-						<button
-							class="u_btn --sm --warning"
-							tabindex="-1"
-							data-tooltip="Mark stock updated"
-							wire:click="markVariantStockUpdated('{{ $product->id }}', '{{ $productTypeVariant->id }}')"
-						>@svg('icon-check')</button>
-					@endif
-				</td>
-				<td wire:ignore>
-					<input
-						type="number"
-						onwheel="event.preventDefault()"
-						@class(['input'])
-						id="stock-{{ uniqid() }}"
-						value="{{ $product->getVariantStockCount($productTypeVariant) }}"
-						min="0"
-						wire:change.live.debounce="updateVariantStock('{{ $product->id }}', '{{ $productTypeVariant->id }}', $event.target.value)"
-					/>
-				</td>
+				@if( !$product->is_made_to_order )
+					<td>
+						@if( $recently_updated )
+							<button
+								class="u_btn --sm --muted"
+								tabindex="-1"
+								data-tooltip="Undo mark stock updated"
+								wire:click="undoMarkVariantStockUpdated('{{ $product->id }}', '{{ $productTypeVariant->id }}')"
+							>@svg('icon-rotate-left')</button>
+						@else
+							<button
+								class="u_btn --sm --warning"
+								tabindex="-1"
+								data-tooltip="Mark stock updated"
+								wire:click="markVariantStockUpdated('{{ $product->id }}', '{{ $productTypeVariant->id }}')"
+							>@svg('icon-check')</button>
+						@endif
+					</td>
+					<td wire:ignore>
+						<input
+							type="number"
+							onwheel="event.preventDefault()"
+							@class(['input'])
+							id="stock-{{ uniqid() }}"
+							value="{{ $product->getVariantStockCount($productTypeVariant) }}"
+							min="0"
+							wire:change.live.debounce="updateVariantStock('{{ $product->id }}', '{{ $productTypeVariant->id }}', $event.target.value)"
+						/>
+					</td>
+				@endif
 			</tr>
 		@endforeach
 	</table>
-@else
+@elseif( !$product->is_made_to_order )
 	@php($recently_updated = $product->stock_updated_at?->addDays(5)->isFuture())
 	<table class="m_table --stock w-auto" style="margin-left: auto">
 		<tr>

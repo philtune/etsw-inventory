@@ -15,6 +15,7 @@ class EtsyReceiptService
 	public static function import():void
 	{
 		$offset = 0;
+		$latest = EtsyReceipt::latest()->first();
 		do {
 			$response = EtsyApi::getReceipts(['limit' => 100, 'offset' => $offset]);
 			$count = $response['count'];

@@ -92,6 +92,8 @@
 									PayPal
 								@elseif( Str::startsWith($wholesaleOrder->invoice_url, 'https://docs.google.com/spreadsheets') )
 									@svg('icon-google-sheets') Sheets
+								@elseif( Str::contains($wholesaleOrder->invoice_url, 'squarespace.com/config/invoicing/invoices'))
+									@svg('icon-squarespace') Squarespace
 								@else
 									{{ Str::limit($wholesaleOrder->invoice_url, 32) }}
 								@endif
