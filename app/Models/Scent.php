@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Scent extends Model
 {
-	use HasUuids;
-	use SoftDeletes;
 	/** @use HasFactory<ScentFactory> */
 	use HasFactory;
+	use HasUuids;
+	use SoftDeletes;
 
 	protected $guarded = [];
 

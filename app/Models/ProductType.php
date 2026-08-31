@@ -14,11 +14,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductType extends Model
 {
-	use HasUuids;
-	use SoftDeletes;
-
 	/** @use HasFactory<ProductTypeFactory> */
 	use HasFactory;
+	use HasUuids;
+	use SoftDeletes;
 
 	protected $guarded = [];
 

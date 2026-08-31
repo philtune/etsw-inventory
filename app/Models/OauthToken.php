@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Database\Factories\OauthTokenFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OauthToken extends Model
 {
+	/** @use HasFactory<OauthTokenFactory> */
+	use HasFactory;
 	use HasUuids;
 
 	public $timestamps = false;
@@ -15,8 +19,8 @@ class OauthToken extends Model
 		'expires_at'   => 'datetime',
 		'last_used_at' => 'datetime',
 	];
-	const CLIENT_ETSY = 'etsy';
-	const clients = [
+	const string CLIENT_ETSY = 'etsy';
+	const array clients = [
 		self::CLIENT_ETSY,
 	];
 

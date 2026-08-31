@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\EtsyTransactionFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EtsyTransaction extends Model
 {
+	/** @use HasFactory<EtsyTransactionFactory> */
+	use HasFactory;
+
 	public $timestamps = false;
 	protected $guarded = [];
 	protected $casts = [

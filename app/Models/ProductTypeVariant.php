@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductTypeVariantFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductTypeVariant extends Model
 {
+	/** @use HasFactory<ProductTypeVariantFactory> */
+	use HasFactory;
 	use HasUuids;
 
 	public $timestamps = false;
